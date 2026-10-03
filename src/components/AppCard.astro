@@ -1,33 +1,26 @@
 ---
+import type { App } from "../data/apps";
+
 interface Props {
-  name: string;
-  description: string;
-  href: string;
-  code: string;
-  status?: string;
-  category?: string;
-  platform?: string;
-  packageName?: string;
-  playUrl?: string;
+  app: App;
 }
 
-const { name, description, status, href, code, category, platform, packageName, playUrl } = Astro.props;
+const { app } = Astro.props;
 ---
 
 <article class="card app-card">
   <div class="card-top">
-    <span class="app-icon" aria-hidden="true">{code}</span>
-    {status && <span class="tag tag-neutral">{status}</span>}
-    {platform && <span class="tag tag-blue">{platform}</span>}
+    <span class="app-icon" aria-hidden="true">{app.code}</span>
+    <span class:list={["tag", "app-status", app.status === "Published" ? "tag-green" : app.status === "Coming Soon" ? "tag-neutral" : "tag-blue"]}>
+      {app.status}
+    </span>
   </div>
-  <h2>{name}</h2>
-  <p>{description}</p>
-  {packageName && <p><strong>Package:</strong> <code>{packageName}</code></p>}
-  {category && (
-    <div class="card-meta">
-      <span class="tag tag-blue">{category}</span>
-    </div>
+  <h2>{app.name}</h2>
+  <p>{app.description}</p>
+  {app.playUrl && (
+    <a class="button button-primary play-link" href={app.playUrl} target="_blank" rel="noopener noreferrer">
+      View on Google Play <span aria-hidden="true">→</span>
+    </a>
   )}
-  <a class="card-link" href={href}>View details <span aria-hidden="true">→</span></a>
-  {playUrl && <a class="play-link" href={playUrl}>Google Play</a>}
+  <a class="card-link" href={`/apps/${app.slug}/`}>View details <span aria-hidden="true">→</span></a>
 </article>

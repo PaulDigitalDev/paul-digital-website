@@ -3,12 +3,12 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import AppDetail from "../../../components/AppDetail.astro";
 import { getAppBySlug } from "../../../data/apps";
 
-const app = getAppBySlug("wifi-site-survey-pro");
+const app = getAppBySlug("image-to-pdf-converter");
 ---
 
 <BaseLayout
   title={`${app.name} — Paul Digital`}
-  description={app.description}
+  description={`${app.description} View Image to PDF Converter Offline on Google Play.`}
 >
   <AppDetail app={app} />
 </BaseLayout>

@@ -37,8 +37,9 @@ public/                  Official logo, social card, robots.txt, and sitemap.xml
 src/
   components/            Shared navigation, footer, and content cards
   config/                Centralized Paul Digital brand asset paths
+  data/                  Shared app catalogue and publication status
   layouts/               Shared document layout and SEO metadata
-  pages/                 File-based routes and guide content
+  pages/                 File-based routes, app details, and guide content
   styles/                Global responsive styles
 astro.config.mjs         Static-site configuration and canonical site URL
 ```

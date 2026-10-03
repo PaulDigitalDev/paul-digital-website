@@ -1,23 +1,14 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AppDetail from "../../../components/AppDetail.astro";
+import { getAppBySlug } from "../../../data/apps";
+
+const app = getAppBySlug("text-to-pdf");
 ---
 
 <BaseLayout
-  title="Text to PDF Converter — Paul Digital"
-  description="Text to PDF Converter is a Paul Digital Android utility app."
+  title={`${app.name} — Paul Digital`}
+  description={app.description}
 >
-  <section class="page-hero">
-    <div class="container">
-      <span class="eyebrow">Paul Digital app</span>
-      <h1>Text to PDF Converter</h1>
-      <p>An Android utility app from Paul Digital.</p>
-    </div>
-  </section>
-  <section class="content-section">
-    <div class="container prose">
-      <h2>App information</h2>
-      <p><strong>Platform:</strong> Android</p>
-      <p><strong>Package name:</strong> <code>com.pauldigital.texttopdfconverter</code></p>
-    </div>
-  </section>
+  <AppDetail app={app} />
 </BaseLayout>

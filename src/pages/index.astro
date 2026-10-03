@@ -4,28 +4,7 @@ import AppCard from "../components/AppCard.astro";
 import ToolCard from "../components/ToolCard.astro";
 import HeroVisual from "../components/HeroVisual.astro";
 import ValueStrip from "../components/ValueStrip.astro";
-
-const featuredApps = [
-  {
-    name: "Text to PDF Converter",
-    description: "Android utility app.",
-    href: "/apps/text-to-pdf/",
-    code: "PDF",
-    platform: "Android",
-  },
-  {
-    name: "WiFi Site Survey Pro",
-    description: "Paul Digital app.",
-    href: "/apps/wifi-site-survey-pro/",
-    code: "WiFi",
-  },
-  {
-    name: "VOB Video Player",
-    description: "Paul Digital app.",
-    href: "/apps/vob-video-player/",
-    code: "VOB",
-  },
-];
+import { comingSoonApps, publishedApps } from "../data/apps";
 
 const tools = [
   { id: "image-compressor", name: "Image Compressor", description: "Browser-based image tool.", code: "IMG" },
@@ -61,12 +40,16 @@ const tools = [
       <div class="section-heading">
         <div>
           <h2 id="featured-apps" class="section-title">Featured Apps</h2>
-          <p>Lightweight Android utilities and practical tools for everyday tasks.</p>
+          <p>Explore published apps and upcoming utilities for everyday tasks.</p>
         </div>
         <a class="section-link" href="/apps/">View all apps <span aria-hidden="true">→</span></a>
       </div>
       <div class="card-grid app-grid">
-        {featuredApps.map((app) => <AppCard {...app} />)}
+        {publishedApps.map((app) => <AppCard app={app} />)}
+      </div>
+      <h3 class="app-section-heading">Coming Soon</h3>
+      <div class="card-grid app-grid">
+        {comingSoonApps.map((app) => <AppCard app={app} />)}
       </div>
     </div>
   </section>

@@ -781,9 +781,18 @@ main {
   color: #075db0;
 }
 
+.tag-green {
+  background: #eaf8f0;
+  color: #087a43;
+}
+
 .tag-neutral {
   background: #f1f4f8;
   color: #475569;
+}
+
+.play-link {
+  margin-top: 0.65rem;
 }
 
 .card-link {
@@ -800,6 +809,12 @@ main {
 
 .card-link:hover {
   color: var(--navy);
+}
+
+.app-section-heading {
+  margin-top: 2rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.25rem;
 }
 
 .tools-section {
@@ -1140,7 +1155,7 @@ main {
   }
 
   .app-card .app-icon {
-    grid-row: span 3;
+    grid-row: span 4;
   }
 
   .app-card .tag {
@@ -1164,8 +1179,18 @@ main {
 
   .app-card .card-link {
     grid-column: 2;
-    grid-row: 4;
+    grid-row: 5;
     padding-top: 0.35rem;
+  }
+
+  .app-card .play-link {
+    grid-column: 2;
+    grid-row: 4;
+    justify-self: start;
+    min-height: 2.2rem;
+    margin-top: 0.4rem;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.7rem;
   }
 
   .tool-card {

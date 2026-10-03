@@ -1,16 +1,14 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AppDetail from "../../../components/AppDetail.astro";
+import { getAppBySlug } from "../../../data/apps";
+
+const app = getAppBySlug("vob-video-player");
 ---
 
 <BaseLayout
-  title="VOB Video Player — Paul Digital"
-  description="VOB Video Player is a Paul Digital app."
+  title={`${app.name} — Paul Digital`}
+  description={app.description}
 >
-  <section class="page-hero">
-    <div class="container">
-      <span class="eyebrow">Paul Digital app</span>
-      <h1>VOB Video Player</h1>
-      <p>A Paul Digital app.</p>
-    </div>
-  </section>
+  <AppDetail app={app} />
 </BaseLayout>
