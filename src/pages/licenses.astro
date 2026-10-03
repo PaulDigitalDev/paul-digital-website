@@ -4,21 +4,93 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <BaseLayout
   title="Licenses — Paul Digital"
-  description="Information about open-source software licenses used by Paul Digital."
+  description="Open-source license information for verified dependencies in the Paul Digital website project."
 >
   <section class="page-hero">
     <div class="container">
       <span class="eyebrow">Open source</span>
       <h1>Licenses</h1>
-      <p>A place for clear attribution of open-source software used by Paul Digital projects.</p>
+      <p>Open-source license information for Paul Digital projects.</p>
     </div>
   </section>
   <section class="content-section">
     <div class="container prose">
-      <h2>Third-party software</h2>
-      <p>Open-source notices identify applicable components, versions, copyright notices, licenses and license texts or links.</p>
+      <p>
+        Paul Digital applications may use third-party open-source software. Applicable license
+        notices are provided here when the relevant project dependencies and license information
+        can be verified.
+      </p>
+      <h2>Paul Digital website</h2>
+      <p>
+        The following are the direct dependencies declared for this website project and verified
+        against its package manifest, lockfile, and installed package license metadata. This
+        table does not list transitive dependencies or Android app dependencies.
+      </p>
+      <div
+        role="region"
+        aria-label="Verified website dependency licenses"
+        tabindex="0"
+        style="max-width: 100%; overflow-x: auto; margin-top: 1rem;"
+      >
+        <table style="width: 100%; min-width: 48rem; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr>
+              <th scope="col" style="padding: 0.65rem; border: 1px solid var(--border);">Project/App</th>
+              <th scope="col" style="padding: 0.65rem; border: 1px solid var(--border);">Library/Component</th>
+              <th scope="col" style="padding: 0.65rem; border: 1px solid var(--border);">Version</th>
+              <th scope="col" style="padding: 0.65rem; border: 1px solid var(--border);">License</th>
+              <th scope="col" style="padding: 0.65rem; border: 1px solid var(--border);">Copyright/Attribution</th>
+              <th scope="col" style="padding: 0.65rem; border: 1px solid var(--border);">Official source</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">Paul Digital Website</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">Astro</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">7.3.5</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">MIT</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">Copyright (c) 2021 Fred K. Schott</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">
+                <a href="https://www.npmjs.com/package/astro/v/7.3.5" target="_blank" rel="noopener noreferrer">Astro 7.3.5 package and license</a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">Paul Digital Website</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">@astrojs/check</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">0.9.10</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">MIT</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">Copyright (c) 2021 Fred K. Schott</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">
+                <a href="https://www.npmjs.com/package/@astrojs/check/v/0.9.10" target="_blank" rel="noopener noreferrer">@astrojs/check 0.9.10 package and license</a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">Paul Digital Website</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">TypeScript</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">5.9.3</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">Apache-2.0</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">Microsoft Corp.</td>
+              <td style="padding: 0.65rem; border: 1px solid var(--border);">
+                <a href="https://github.com/microsoft/TypeScript/blob/main/LICENSE.txt" target="_blank" rel="noopener noreferrer">TypeScript official license</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <h2>Paul Digital content</h2>
       <p>Copyright and reuse terms depend on the applicable Paul Digital work.</p>
+      <h2>Additional projects</h2>
+      <p>
+        This website workspace does not include the Android app source projects. Their
+        dependencies and notices are not listed here because they could not be inspected and
+        verified in this workspace. Verified app dependencies can be added as those project
+        manifests and license information become available.
+      </p>
+      <h2>Contact</h2>
+      <p>
+        For license or attribution questions, contact
+        <a href="mailto:askpaulonline@gmail.com">askpaulonline@gmail.com</a>.
+      </p>
     </div>
   </section>
 </BaseLayout>
