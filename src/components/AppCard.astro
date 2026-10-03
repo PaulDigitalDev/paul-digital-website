@@ -1,0 +1,33 @@
+---
+interface Props {
+  name: string;
+  description: string;
+  href: string;
+  code: string;
+  status?: string;
+  category?: string;
+  platform?: string;
+  packageName?: string;
+  playUrl?: string;
+}
+
+const { name, description, status, href, code, category, platform, packageName, playUrl } = Astro.props;
+---
+
+<article class="card app-card">
+  <div class="card-top">
+    <span class="app-icon" aria-hidden="true">{code}</span>
+    {status && <span class="tag tag-neutral">{status}</span>}
+    {platform && <span class="tag tag-blue">{platform}</span>}
+  </div>
+  <h2>{name}</h2>
+  <p>{description}</p>
+  {packageName && <p><strong>Package:</strong> <code>{packageName}</code></p>}
+  {category && (
+    <div class="card-meta">
+      <span class="tag tag-blue">{category}</span>
+    </div>
+  )}
+  <a class="card-link" href={href}>View details <span aria-hidden="true">→</span></a>
+  {playUrl && <a class="play-link" href={playUrl}>Google Play</a>}
+</article>

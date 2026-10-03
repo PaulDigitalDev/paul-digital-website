@@ -1,0 +1,142 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AppCard from "../components/AppCard.astro";
+import ToolCard from "../components/ToolCard.astro";
+import HeroVisual from "../components/HeroVisual.astro";
+import ValueStrip from "../components/ValueStrip.astro";
+
+const featuredApps = [
+  {
+    name: "Text to PDF Converter",
+    description: "Android utility app.",
+    href: "/apps/text-to-pdf/",
+    code: "PDF",
+    platform: "Android",
+  },
+  {
+    name: "WiFi Site Survey Pro",
+    description: "Paul Digital app.",
+    href: "/apps/wifi-site-survey-pro/",
+    code: "WiFi",
+  },
+  {
+    name: "VOB Video Player",
+    description: "Paul Digital app.",
+    href: "/apps/vob-video-player/",
+    code: "VOB",
+  },
+];
+
+const tools = [
+  { id: "image-compressor", name: "Image Compressor", description: "Browser-based image tool.", code: "IMG" },
+  { id: "text-to-pdf", name: "Text to PDF", description: "Browser-based PDF tool.", code: "PDF" },
+  { id: "json-viewer", name: "JSON Viewer", description: "Browser-based JSON tool.", code: "{ }" },
+  { id: "image-to-pdf", name: "Image to PDF", description: "Browser-based PDF tool.", code: "PDF" },
+];
+---
+
+<BaseLayout
+  title="Paul Digital — Simple Utilities. Powerful Results."
+  description="Paul Digital creates lightweight, fast and practical digital tools for everyday tasks."
+>
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <span class="hero-label"><span class="label-dot"></span> Android Apps &amp; Web Tools</span>
+        <h1>Paul <span>Digital</span></h1>
+        <h2>Simple Utilities. Powerful Results.</h2>
+        <p>Paul Digital creates lightweight, fast and practical digital tools for everyday tasks.</p>
+        <div class="actions">
+          <a class="button button-primary" href="/apps/"><span aria-hidden="true">▶</span> Explore apps <span aria-hidden="true">→</span></a>
+          <a class="button button-soft" href="/tools/"><span aria-hidden="true">▦</span> Explore web tools <span aria-hidden="true">→</span></a>
+        </div>
+        <ValueStrip compact />
+      </div>
+      <HeroVisual />
+    </div>
+  </section>
+
+  <section class="section home-section" aria-labelledby="featured-apps">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <h2 id="featured-apps" class="section-title">Featured Apps</h2>
+          <p>Lightweight Android utilities and practical tools for everyday tasks.</p>
+        </div>
+        <a class="section-link" href="/apps/">View all apps <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="card-grid app-grid">
+        {featuredApps.map((app) => <AppCard {...app} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section home-section tools-section" aria-labelledby="web-tools">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <h2 id="web-tools" class="section-title">Web Tools</h2>
+          <p>Practical browser-based tools for everyday tasks, coming soon.</p>
+        </div>
+        <a class="section-link" href="/tools/">View all tools <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="card-grid tool-grid">
+        {tools.map((tool) => <ToolCard {...tool} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-values" aria-labelledby="why-paul-digital">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <h2 id="why-paul-digital" class="section-title">Why Paul Digital</h2>
+          <p>Lightweight, practical tools with a thoughtful approach.</p>
+        </div>
+      </div>
+      <ValueStrip />
+    </div>
+  </section>
+
+  <section class="section home-section guides-section" aria-labelledby="featured-guide">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <h2 id="featured-guide" class="section-title">Latest Guides</h2>
+          <p>Tips, tutorials and helpful articles.</p>
+        </div>
+        <a class="section-link" href="/guides/">View all guides <span aria-hidden="true">→</span></a>
+      </div>
+      <article class="guide-feature">
+        <span class="guide-icon" aria-hidden="true">PDF</span>
+        <div>
+          <h3>Preparing text before creating a PDF</h3>
+          <p>A few simple checks for clearer documents.</p>
+          <p class="guide-meta"><time datetime="2026-10-03">Oct 3, 2026</time><span>3 min read</span></p>
+        </div>
+        <a class="guide-arrow" href="/guides/preparing-text-for-a-pdf/" aria-label="Read Preparing text before creating a PDF">→</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-privacy">
+    <div class="container home-privacy-inner">
+      <div>
+        <span class="eyebrow">Built with care</span>
+        <h2>Simple, fast &amp; privacy-conscious</h2>
+        <p>We aim to keep this website lightweight and respect your privacy.</p>
+      </div>
+      <a class="section-link" href="/privacy/">Read privacy information <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section class="home-cta">
+    <div class="container home-cta-inner">
+      <div>
+        <h2>Simple tools for everyday tasks.</h2>
+        <p>Take a look at the Paul Digital apps.</p>
+      </div>
+      <a class="button button-primary" href="/apps/">Explore apps <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</BaseLayout>

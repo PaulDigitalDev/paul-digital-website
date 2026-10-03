@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F7FAFF"/>
+  <circle cx="1000" cy="80" r="260" fill="#EAF3FF"/>
+  <circle cx="1030" cy="80" r="170" fill="#FF6B00"/>
+  <circle cx="1090" cy="390" r="210" fill="#087FEA"/>
+  <image href="/paul-digital-logo.png" x="82" y="78" width="72" height="72"/>
+  <text x="174" y="128" fill="#0B1F5E" font-family="Arial, sans-serif" font-size="43" font-weight="700">Paul Digital</text>
+  <rect x="84" y="235" width="48" height="6" rx="3" fill="#FF6B00"/>
+  <text x="82" y="330" fill="#0B1F5E" font-family="Arial, sans-serif" font-size="76" font-weight="700">Simple Utilities.</text>
+  <text x="82" y="423" fill="#A64400" font-family="Arial, sans-serif" font-size="76" font-weight="700">Powerful Results.</text>
+  <text x="86" y="496" fill="#64748B" font-family="Arial, sans-serif" font-size="29">Lightweight, fast and practical digital tools.</text>
+  <rect x="86" y="548" width="155" height="10" rx="5" fill="#087FEA"/>
+  <rect x="255" y="548" width="94" height="10" rx="5" fill="#16B364"/>
+</svg>

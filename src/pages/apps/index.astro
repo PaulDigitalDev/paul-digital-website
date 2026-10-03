@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AppCard from "../../components/AppCard.astro";
+
+const apps = [
+  {
+    name: "Text to PDF Converter",
+    description: "Android utility app.",
+    href: "/apps/text-to-pdf/",
+    code: "PDF",
+    platform: "Android",
+  },
+  {
+    name: "WiFi Site Survey Pro",
+    description: "Paul Digital app.",
+    href: "/apps/wifi-site-survey-pro/",
+    code: "WiFi",
+  },
+  {
+    name: "VOB Video Player",
+    description: "Paul Digital app.",
+    href: "/apps/vob-video-player/",
+    code: "VOB",
+  },
+];
+---
+
+<BaseLayout
+  title="Apps — Paul Digital"
+  description="Explore Paul Digital apps, including Text to PDF Converter, WiFi Site Survey Pro, and VOB Video Player."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Paul Digital apps</span>
+      <h1>Apps</h1>
+      <p>Lightweight utilities for everyday tasks.</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container">
+      <div class="card-grid">
+        {apps.map((app) => <AppCard {...app} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

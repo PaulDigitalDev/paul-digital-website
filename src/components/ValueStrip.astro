@@ -1,0 +1,23 @@
+---
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+
+const values = [
+  { symbol: "↯", title: "Fast & lightweight", description: "Less clutter, more clarity", color: "orange" },
+  { symbol: "◇", title: "Privacy considered", description: "Thoughtful by design", color: "blue" },
+  { symbol: "✳", title: "Practical tools", description: "Made for everyday tasks", color: "green" },
+  { symbol: "♡", title: "Built for everyone", description: "Simple to understand", color: "orange" },
+];
+---
+
+<div class:list={["value-strip", compact && "value-strip-compact"]}>
+  {values.slice(0, compact ? 3 : values.length).map((value) => (
+    <div class="value-item">
+      <span class:list={["value-icon", `value-${value.color}`]} aria-hidden="true">{value.symbol}</span>
+      <span class="value-copy"><strong>{value.title}</strong><small>{value.description}</small></span>
+    </div>
+  ))}
+</div>

@@ -1,0 +1,21 @@
+---
+import { BRAND_LOGO } from "../config/brand";
+
+interface Props {
+  footer?: boolean;
+}
+
+const { footer = false } = Astro.props;
+---
+
+<a class:list={["brand", footer && "brand-footer"]} href="/" aria-label="Paul Digital home">
+  <img
+    class="brand-mark"
+    src={BRAND_LOGO}
+    alt=""
+    width={footer ? 28 : 36}
+    height={footer ? 28 : 36}
+    decoding="async"
+  />
+  <span>Paul Digital</span>
+</a>

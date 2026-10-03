@@ -1,0 +1,53 @@
+---
+import Brand from "./Brand.astro";
+
+const groups = [
+  {
+    title: "Explore",
+    links: [
+      { label: "Apps", href: "/apps/" },
+      { label: "Web tools", href: "/tools/" },
+      { label: "Guides", href: "/guides/" },
+    ],
+  },
+  {
+    title: "Paul Digital",
+    links: [
+      { label: "About", href: "/about/" },
+      { label: "Contact", href: "/contact/" },
+    ],
+  },
+  {
+    title: "Information",
+    links: [
+      { label: "Privacy", href: "/privacy/" },
+      { label: "Terms", href: "/terms/" },
+      { label: "Licenses", href: "/licenses/" },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <Brand footer />
+      <p>Lightweight Android utilities and practical web tools, made with care.</p>
+    </div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      {groups.map((group) => (
+        <section class="footer-group" aria-label={group.title}>
+          <h2>{group.title}</h2>
+          <ul>
+            {group.links.map((link) => (
+              <li><a href={link.href}>{link.label}</a></li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </nav>
+  </div>
+  <div class="container copyright">
+    <p>© {new Date().getFullYear()} Paul Digital. All rights reserved.</p>
+  </div>
+</footer>

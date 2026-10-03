@@ -1,0 +1,47 @@
+---
+import Brand from "./Brand.astro";
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const links = [
+  { label: "Home", href: "/" },
+  { label: "Apps", href: "/apps/" },
+  { label: "Tools", href: "/tools/" },
+  { label: "Guides", href: "/guides/" },
+  { label: "About", href: "/about/" },
+  { label: "Contact", href: "/contact/" },
+];
+
+const isCurrent = (href: string) =>
+  currentPath === href || (href !== "/" && currentPath.startsWith(href));
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <Brand />
+    <nav class="desktop-nav" aria-label="Main navigation">
+      {links.map((link) => (
+        <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
+          {link.label}
+        </a>
+      ))}
+      <a class="button button-primary nav-cta" href="/apps/">Explore apps</a>
+    </nav>
+    <details class="mobile-nav">
+      <summary aria-label="Toggle navigation menu">
+        <span class="menu-bars" aria-hidden="true"></span>
+        <span>Menu</span>
+      </summary>
+      <nav class="mobile-links" aria-label="Mobile navigation">
+        {links.map((link) => (
+          <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
+            {link.label}
+          </a>
+        ))}
+      </nav>
+    </details>
+  </div>
+</header>

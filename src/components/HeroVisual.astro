@@ -1,0 +1,36 @@
+---
+import { BRAND_LOGO } from "../config/brand";
+---
+
+<!-- Kept isolated so the decorative device artwork can later be replaced by real app screenshots. -->
+<div class="hero-art" aria-hidden="true">
+  <span class="art-orbit art-orbit-orange"></span>
+  <span class="art-orbit art-orbit-blue"></span>
+  <div class="device device-back">
+    <div class="device-screen">
+      <span class="screen-brand"><img class="screen-mark" src={BRAND_LOGO} alt="" width="20" height="20" /> Paul Digital</span>
+      <div class="screen-grid">
+        <span class="screen-tile tile-orange"><i>↗</i></span>
+        <span class="screen-tile tile-blue"><i>⌘</i></span>
+        <span class="screen-tile tile-green"><i>✓</i></span>
+        <span class="screen-tile tile-purple"><i>+</i></span>
+      </div>
+      <span class="screen-line"></span>
+      <span class="screen-line short"></span>
+    </div>
+  </div>
+  <div class="device device-front">
+    <div class="device-screen">
+      <span class="screen-title">Simple tools</span>
+      <div class="screen-list">
+        <span><i class="list-icon list-orange">P</i><b></b><em></em></span>
+        <span><i class="list-icon list-blue">W</i><b></b><em></em></span>
+        <span><i class="list-icon list-purple">V</i><b></b><em></em></span>
+      </div>
+      <span class="screen-line"></span>
+      <span class="screen-line short"></span>
+    </div>
+  </div>
+  <span class="art-spark spark-one">✦</span>
+  <span class="art-spark spark-two">✦</span>
+</div>

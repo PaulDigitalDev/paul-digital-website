@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolCard from "../../components/ToolCard.astro";
+
+const tools = [
+  { id: "image-compressor", name: "Image Compressor", description: "Browser-based image tool.", code: "IMG" },
+  { id: "text-to-pdf", name: "Text to PDF", description: "Browser-based PDF tool.", code: "PDF" },
+  { id: "json-viewer", name: "JSON Viewer", description: "Browser-based JSON tool.", code: "{ }" },
+  { id: "image-to-pdf", name: "Image to PDF", description: "Browser-based PDF tool.", code: "PDF" },
+];
+---
+
+<BaseLayout
+  title="Web Tools — Paul Digital"
+  description="Explore upcoming Paul Digital web tools: Image Compressor, Text to PDF, JSON Viewer, and Image to PDF."
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Useful tools, right in your browser</span>
+      <h1>Web tools</h1>
+      <p>Practical browser-based tools for everyday tasks. All tools are coming soon.</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container">
+      <div class="card-grid">
+        {tools.map((tool) => <ToolCard {...tool} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
