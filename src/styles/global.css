@@ -143,6 +143,11 @@ p {
   color: var(--navy);
 }
 
+.brand:not(.brand-footer) .brand-accent,
+.homepage .hero-copy h1 .brand-accent {
+  color: var(--orange);
+}
+
 .brand-mark {
   width: 1.8rem;
   height: 1.8rem;

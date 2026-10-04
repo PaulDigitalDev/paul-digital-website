@@ -17,5 +17,9 @@ const { footer = false } = Astro.props;
     height={footer ? 28 : 36}
     decoding="async"
   />
-  <span>Paul Digital</span>
+  {footer ? (
+    <span>Paul Digital</span>
+  ) : (
+    <span>Paul <span class="brand-accent">Digital</span></span>
+  )}
 </a>
