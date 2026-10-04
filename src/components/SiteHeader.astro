@@ -9,11 +9,12 @@ const { currentPath } = Astro.props;
 const links = [
   { label: "Home", href: "/" },
   { label: "Apps", href: "/apps/" },
-  { label: "Tools", href: "/tools/" },
+  { label: "Web Tools", href: "/tools/" },
   { label: "Guides", href: "/guides/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
 ];
+const playStoreUrl = "https://play.google.com/store/apps/dev?id=7949073170466838031";
 
 const isCurrent = (href: string) =>
   currentPath === href || (href !== "/" && currentPath.startsWith(href));
@@ -28,7 +29,9 @@ const isCurrent = (href: string) =>
           {link.label}
         </a>
       ))}
-      <a class="button button-primary nav-cta" href="/apps/">Explore apps</a>
+      <a class="button button-primary nav-cta nav-store-link" href={playStoreUrl} target="_blank" rel="noopener noreferrer">
+        View on Play Store
+      </a>
     </nav>
     <details class="mobile-nav">
       <summary aria-label="Toggle navigation menu">
@@ -41,6 +44,9 @@ const isCurrent = (href: string) =>
             {link.label}
           </a>
         ))}
+        <a class="nav-store-link" href={playStoreUrl} target="_blank" rel="noopener noreferrer">
+          View on Play Store
+        </a>
       </nav>
     </details>
   </div>

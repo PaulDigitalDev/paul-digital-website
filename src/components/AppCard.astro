@@ -9,18 +9,27 @@ const { app } = Astro.props;
 ---
 
 <article class="card app-card">
-  <div class="card-top">
+  {app.icon ? (
+    <img class="app-icon" src={app.icon} alt={`${app.name} app icon`} width="72" height="72" loading="lazy" decoding="async" />
+  ) : (
     <span class="app-icon" aria-hidden="true">{app.code}</span>
-    <span class:list={["tag", "app-status", app.status === "Published" ? "tag-green" : app.status === "Coming Soon" ? "tag-neutral" : "tag-blue"]}>
-      {app.status}
-    </span>
-  </div>
-  <h2>{app.name}</h2>
-  <p>{app.description}</p>
-  {app.playUrl && (
-    <a class="button button-primary play-link" href={app.playUrl} target="_blank" rel="noopener noreferrer">
-      View on Google Play <span aria-hidden="true">→</span>
-    </a>
   )}
-  <a class="card-link" href={`/apps/${app.slug}/`}>View details <span aria-hidden="true">→</span></a>
+  <div class="app-card-content">
+    <div class="app-card-tags">
+      <span class="tag tag-category">Android app</span>
+      <span class:list={["tag", "app-status", app.status === "Published" ? "tag-green" : app.status === "Coming Soon" ? "tag-neutral" : "tag-blue"]}>
+        {app.status}
+      </span>
+    </div>
+    <h2>{app.name}</h2>
+    <p>{app.description}</p>
+    <div class="app-card-actions">
+      {app.playUrl && (
+        <a class="card-link" href={app.playUrl} target="_blank" rel="noopener noreferrer">
+          View on Play Store <span aria-hidden="true">→</span>
+        </a>
+      )}
+      <a class="card-link" href={`/apps/${app.slug}/`}>App details <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
 </article>

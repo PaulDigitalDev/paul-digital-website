@@ -2,8 +2,6 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import AppCard from "../components/AppCard.astro";
 import ToolCard from "../components/ToolCard.astro";
-import HeroVisual from "../components/HeroVisual.astro";
-import ValueStrip from "../components/ValueStrip.astro";
 import { comingSoonApps, publishedApps } from "../data/apps";
 
 const tools = [
@@ -16,110 +14,77 @@ const tools = [
 
 <BaseLayout
   title="Paul Digital — Simple Utilities. Powerful Results."
-  description="Paul Digital creates lightweight, fast and practical digital tools for everyday tasks."
+  description="Paul Digital creates lightweight Android apps and practical digital tools for everyday tasks."
 >
-  <section class="hero">
-    <div class="container hero-inner">
-      <div class="hero-copy">
-        <span class="hero-label"><span class="label-dot"></span> Android Apps &amp; Web Tools</span>
-        <h1>Paul <span>Digital</span></h1>
-        <h2>Simple Utilities. Powerful Results.</h2>
-        <p>Paul Digital creates lightweight, fast and practical digital tools for everyday tasks.</p>
-        <div class="actions">
-          <a class="button button-primary" href="/apps/"><span aria-hidden="true">▶</span> Explore apps <span aria-hidden="true">→</span></a>
-          <a class="button button-soft" href="/tools/"><span aria-hidden="true">▦</span> Explore web tools <span aria-hidden="true">→</span></a>
-        </div>
-        <ValueStrip compact />
-      </div>
-      <HeroVisual />
-    </div>
-  </section>
-
-  <section class="section home-section" aria-labelledby="featured-apps">
-    <div class="container">
-      <div class="section-heading">
-        <div>
-          <h2 id="featured-apps" class="section-title">Featured Apps</h2>
-          <p>Explore published apps and upcoming utilities for everyday tasks.</p>
-        </div>
-        <a class="section-link" href="/apps/">View all apps <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="card-grid app-grid">
-        {publishedApps.map((app) => <AppCard app={app} />)}
-      </div>
-      <h3 class="app-section-heading">Coming Soon</h3>
-      <div class="card-grid app-grid">
-        {comingSoonApps.map((app) => <AppCard app={app} />)}
-      </div>
-    </div>
-  </section>
-
-  <section class="section home-section tools-section" aria-labelledby="web-tools">
-    <div class="container">
-      <div class="section-heading">
-        <div>
-          <h2 id="web-tools" class="section-title">Web Tools</h2>
-          <p>Practical browser-based tools for everyday tasks, coming soon.</p>
-        </div>
-        <a class="section-link" href="/tools/">View all tools <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="card-grid tool-grid">
-        {tools.map((tool) => <ToolCard {...tool} />)}
-      </div>
-    </div>
-  </section>
-
-  <section class="home-values" aria-labelledby="why-paul-digital">
-    <div class="container">
-      <div class="section-heading">
-        <div>
-          <h2 id="why-paul-digital" class="section-title">Why Paul Digital</h2>
-          <p>Lightweight, practical tools with a thoughtful approach.</p>
+  <div class="homepage">
+    <section class="hero home-hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1>Paul Digital</h1>
+          <h2>Simple Utilities. Powerful Results.</h2>
+          <p>Paul Digital creates lightweight Android apps and practical digital tools for everyday tasks.</p>
+          <div class="actions">
+            <a class="button button-primary" href="/apps/">Apps <span aria-hidden="true">→</span></a>
+            <a class="button button-soft" href="/tools/">Web Tools <span aria-hidden="true">→</span></a>
+          </div>
         </div>
       </div>
-      <ValueStrip />
-    </div>
-  </section>
+    </section>
 
-  <section class="section home-section guides-section" aria-labelledby="featured-guide">
-    <div class="container">
-      <div class="section-heading">
-        <div>
-          <h2 id="featured-guide" class="section-title">Latest Guides</h2>
-          <p>Tips, tutorials and helpful articles.</p>
+    <section class="section home-section" aria-labelledby="android-apps">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <h2 id="android-apps" class="section-title">Android Apps</h2>
+            <p>Lightweight Android utilities for everyday tasks.</p>
+          </div>
+          <a class="section-link" href="/apps/">View all apps <span aria-hidden="true">→</span></a>
         </div>
-        <a class="section-link" href="/guides/">View all guides <span aria-hidden="true">→</span></a>
-      </div>
-      <article class="guide-feature">
-        <span class="guide-icon" aria-hidden="true">PDF</span>
-        <div>
-          <h3>Preparing text before creating a PDF</h3>
-          <p>A few simple checks for clearer documents.</p>
-          <p class="guide-meta"><time datetime="2026-10-03">Oct 3, 2026</time><span>3 min read</span></p>
+        <div class="card-grid app-grid app-grid-published">
+          {publishedApps.map((app) => <AppCard app={app} />)}
         </div>
-        <a class="guide-arrow" href="/guides/preparing-text-for-a-pdf/" aria-label="Read Preparing text before creating a PDF">→</a>
-      </article>
-    </div>
-  </section>
-
-  <section class="home-privacy">
-    <div class="container home-privacy-inner">
-      <div>
-        <span class="eyebrow">Built with care</span>
-        <h2>Simple, fast &amp; privacy-conscious</h2>
-        <p>We aim to keep this website lightweight and respect your privacy.</p>
+        <h3 class="app-section-heading">Coming Soon</h3>
+        <div class="card-grid app-grid app-grid-coming-soon">
+          {comingSoonApps.map((app) => <AppCard app={app} />)}
+        </div>
       </div>
-      <a class="section-link" href="/privacy/">Read privacy information <span aria-hidden="true">→</span></a>
-    </div>
-  </section>
+    </section>
 
-  <section class="home-cta">
-    <div class="container home-cta-inner">
-      <div>
-        <h2>Simple tools for everyday tasks.</h2>
-        <p>Take a look at the Paul Digital apps.</p>
+    <section class="section home-section tools-section" aria-labelledby="web-tools">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <h2 id="web-tools" class="section-title">Web Tools</h2>
+            <p>Practical browser-based tools for everyday tasks.</p>
+          </div>
+          <a class="section-link" href="/tools/">View all tools <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="card-grid tool-grid">
+          {tools.map((tool) => <ToolCard {...tool} />)}
+        </div>
       </div>
-      <a class="button button-primary" href="/apps/">Explore apps <span aria-hidden="true">→</span></a>
-    </div>
-  </section>
+    </section>
+
+    <section class="section home-section guides-section" aria-labelledby="featured-guide">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <h2 id="featured-guide" class="section-title">Guides</h2>
+            <p>Short, practical reading for everyday digital tasks.</p>
+          </div>
+          <a class="section-link" href="/guides/">View all guides <span aria-hidden="true">→</span></a>
+        </div>
+        <article class="guide-feature">
+          <span class="guide-icon" aria-hidden="true">PDF</span>
+          <div>
+            <h3>Preparing text before creating a PDF</h3>
+            <p>A few simple checks for clearer documents.</p>
+          </div>
+          <a class="guide-arrow" href="/guides/preparing-text-for-a-pdf/" aria-label="Read Preparing text before creating a PDF">
+            Read guide <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      </div>
+    </section>
+  </div>
 </BaseLayout>

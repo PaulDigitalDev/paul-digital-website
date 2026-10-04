@@ -7,6 +7,7 @@ export interface App {
   purpose: string;
   status: AppStatus;
   code: string;
+  icon?: string;
   platform?: string;
   playUrl?: string;
   packageName?: string;
@@ -20,6 +21,7 @@ export const apps = {
     purpose: "Convert images to PDF files offline.",
     status: "Published",
     code: "PDF",
+    icon: "https://play-lh.googleusercontent.com/7O05GWfUwRB9OnUDyXhES4y3xfhayuOep6IE3BTekfhZ-BXMSQxjXZoG_yEkDi1o2xfSlOnnnZck0nSR2xwxbA=w240-h480-rw",
     platform: "Android",
     playUrl: "https://play.google.com/store/apps/details?id=com.pauldigital.imagetopdf",
   },
@@ -30,6 +32,7 @@ export const apps = {
     purpose: "Convert WAV audio files to MP3 format.",
     status: "Published",
     code: "WAV",
+    icon: "https://play-lh.googleusercontent.com/LVMuMJT9ImuUn_QTa3pQEeAyifdOOLBx72Zf-I788QfXN7rg7ErTzwFuQpDYRkSzCM8gQX3o1dMJEduvrJmW=w240-h480-rw",
     platform: "Android",
     playUrl: "https://play.google.com/store/apps/details?id=com.pauldigital.wavmp3converter&pcampaignid=web_share",
   },
