@@ -1,0 +1,25 @@
+---
+import type { RegistryTool } from "../data/toolRegistry";
+import { categoryById } from "../data/toolRegistry";
+
+interface Props {
+  tools: RegistryTool[];
+  showCategory?: boolean;
+}
+
+const { tools, showCategory = false } = Astro.props;
+---
+
+<ul class="tool-list">
+  {
+    tools.map((tool) => (
+      <li class="tool-item" data-tool data-search={[tool.name, tool.description, ...tool.keywords].join(" ").toLowerCase()}>
+        <a class="tool-item-link" href={tool.route}>
+          <span class="tool-item-name">{tool.name}</span>
+          <span class="tool-item-desc">{tool.description}</span>
+          {showCategory && <span class="tag tag-neutral">{categoryById.get(tool.category)?.name}</span>}
+        </a>
+      </li>
+    ))
+  }
+</ul>

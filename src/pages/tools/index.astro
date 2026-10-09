@@ -1,103 +1,99 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ToolCard from "../../components/ToolCard.astro";
-import { imageSizeRoutes } from "../../data/imageSizeRoutes";
-import { jpgToPdfRoutes } from "../../data/jpgToPdfRoutes";
-import { formatTools } from "../../data/formatTools";
-import { socialTools } from "../../data/socialTools";
+import ToolList from "../../components/ToolList.astro";
+import { categories, toolsInCategory, availableTools, registryProblems } from "../../data/toolRegistry";
 
-const tools = [
-  {
-    id: "image-compressor",
-    name: "Image Compressor",
-    description: "Compress or resize an image toward a target size, right in your browser.",
-    code: "IMG",
-    href: "/image-compressor/",
-    art: "compress" as const,
-  },
-  {
-    id: "jpg-to-pdf",
-    name: "JPG to PDF",
-    description: "Combine JPG images into a PDF in your browser and check the real file size against a target.",
-    code: "PDF",
-    href: "/jpg-to-pdf/",
-    art: "pdf" as const,
-  },
-  {
-    id: "format-conversions",
-    name: "Format Conversions",
-    description: "Convert images, create Word files and text, and build icons, all in your browser.",
-    code: "CNV",
-    href: "/format-conversions/",
-    art: "convert" as const,
-  },
-];
+const problems = registryProblems();
+if (problems.length) throw new Error(`Tool registry is inconsistent:\n${problems.join("\n")}`);
+
+// Only categories that have working tools are shown.
+const shown = categories.map((category) => ({ category, tools: toolsInCategory(category.id) })).filter((group) => group.tools.length > 0);
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+const listSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Paul Digital web tools",
+  itemListElement: availableTools.map((tool, index) => ({ "@type": "ListItem", position: index + 1, name: tool.name, url: site(tool.route) })),
+};
 ---
 
 <BaseLayout
   title="Web Tools — Paul Digital"
-  description="Paul Digital web tools: reduce or resize images toward a target file size, convert JPG images to PDF, convert image formats, and resize images for Instagram, WhatsApp and YouTube, all in your browser."
+  description="Paul Digital web tools: compress and resize images toward a target size, convert image formats, turn JPG images into a PDF, fit photos to Instagram, WhatsApp and YouTube, and extract text. Runs in your browser."
+  canonicalUrl="/tools/"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(listSchema)} />
+  </Fragment>
   <section class="page-hero">
     <div class="container">
       <span class="eyebrow">Useful tools, right in your browser</span>
       <h1>Web tools</h1>
-      <p>Practical browser-based tools for everyday tasks.</p>
+      <p>
+        {availableTools.length} working tools for images, PDFs and documents. Every tool on this page runs in your browser and your files
+        are not uploaded.
+      </p>
     </div>
   </section>
+
   <section class="content-section">
     <div class="container">
-      <div class="card-grid tool-grid">
-        {tools.map((tool) => <ToolCard {...tool} />)}
+      <div class="tool-search" role="search">
+        <label for="tool-search-input">Search tools</label>
+        <input id="tool-search-input" type="search" placeholder="Try “compress”, “webp”, “instagram” or “pdf”" autocomplete="off" />
+        <p id="tool-search-status" class="tool-search-status" role="status" aria-live="polite"></p>
       </div>
-    </div>
-  </section>
-  <section class="content-section" style="padding-top: 0" aria-labelledby="image-sizes-heading">
-    <div class="container">
-      <h2 id="image-sizes-heading">Image Compressor by target size</h2>
-      <p style="color: var(--muted)">
-        Pick a size to open the compressor with that target already set. You can edit it on the page. Not sure which size you need?
-        Start with the <a href="/compress-image-to-100kb/">main Image Compressor</a>.
+
+      <nav class="category-nav" aria-label="Tool categories">
+        <ul class="ic-links">
+          {shown.map(({ category }) => <li><a href={`#cat-${category.id}`}>{category.name}</a></li>)}
+        </ul>
+      </nav>
+
+      {
+        shown.map(({ category, tools }) => (
+          <section class="tool-category" id={`cat-${category.id}`} data-category aria-labelledby={`h-${category.id}`}>
+            <h2 id={`h-${category.id}`}>
+              {category.route ? <a href={category.route}>{category.name}</a> : category.name}
+              <span class="tool-count">{tools.length}</span>
+            </h2>
+            <p class="tool-category-summary">{category.summary}</p>
+            <ToolList tools={tools} />
+          </section>
+        ))
+      }
+      <p id="tool-search-empty" class="tool-search-empty" hidden>No tools match that search. Try a file type such as “png”, or a task such as “resize”.</p>
+
+      <p class="tool-note">
+        More categories, such as developer tools and calculators, will appear here only once they have working tools.
+        Need a particular size? Open <a href="/image-compressor/">Image Compressor</a> or <a href="/jpg-to-pdf/">JPG to PDF</a> to see
+        every exact target-size page.
       </p>
-      <ul class="ic-links">
-        {imageSizeRoutes.map((route) => <li><a href={`/${route.slug}/`}>{route.h1}</a></li>)}
-      </ul>
-    </div>
-  </section>
-  <section class="content-section" style="padding-top: 0" aria-labelledby="jpg-to-pdf-heading">
-    <div class="container">
-      <h2 id="jpg-to-pdf-heading">JPG to PDF by target size</h2>
-      <p style="color: var(--muted)">
-        Convert one or more JPG images into a single PDF with a size goal already filled in. You can edit the target on the page,
-        and the actual PDF size is always measured and reported.
-      </p>
-      <ul class="ic-links">
-        {jpgToPdfRoutes.map((route) => <li><a href={`/${route.slug}/`}>{route.h1}</a></li>)}
-      </ul>
-    </div>
-  </section>
-  <section class="content-section" style="padding-top: 0" aria-labelledby="format-heading">
-    <div class="container">
-      <h2 id="format-heading">Format Conversions</h2>
-      <p style="color: var(--muted)">
-        Convert image formats, put images into Word documents, extract text with OCR and generate icons. See the
-        <a href="/format-conversions/">Format Conversions overview</a>.
-      </p>
-      <ul class="ic-links">
-        {formatTools.map((tool) => <li><a href={`/${tool.slug}/`}>{tool.h1}</a></li>)}
-      </ul>
-    </div>
-  </section>
-  <section class="content-section" style="padding-top: 0" aria-labelledby="social-heading">
-    <div class="container">
-      <h2 id="social-heading">Social media image tools</h2>
-      <p style="color: var(--muted)">
-        Fit photos to Instagram, WhatsApp and YouTube sizes without cropping, split a picture into a grid, or zoom an image out onto a larger canvas.
-        All processing happens in your browser.
-      </p>
-      <ul class="ic-links">
-        {socialTools.map((tool) => <li><a href={`/${tool.slug}/`}>{tool.h1}</a></li>)}
-      </ul>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const input = document.getElementById("tool-search-input") as HTMLInputElement | null;
+  const status = document.getElementById("tool-search-status");
+  const empty = document.getElementById("tool-search-empty");
+  if (input) {
+    const items = Array.from(document.querySelectorAll<HTMLElement>("[data-tool]"));
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-category]"));
+    const apply = () => {
+      const terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+      let visible = 0;
+      for (const item of items) {
+        const hay = item.dataset.search ?? "";
+        const match = terms.every((t) => hay.includes(t));
+        item.hidden = !match;
+        if (match) visible++;
+      }
+      for (const section of sections) section.hidden = !section.querySelector("[data-tool]:not([hidden])");
+      if (empty) empty.hidden = visible > 0;
+      if (status) status.textContent = terms.length ? `${visible} tool${visible === 1 ? "" : "s"} found` : "";
+    };
+    input.addEventListener("input", apply);
+  }
+</script>

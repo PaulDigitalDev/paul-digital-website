@@ -1,0 +1,86 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolList from "../../components/ToolList.astro";
+import { categories, toolsInCategory, type ToolCategory } from "../../data/toolRegistry";
+
+export function getStaticPaths() {
+  return categories
+    .filter((category) => category.route && toolsInCategory(category.id).length > 0)
+    .map((category) => ({ params: { category: category.id }, props: { category } }));
+}
+
+const { category } = Astro.props as { category: ToolCategory };
+const tools = toolsInCategory(category.id);
+const path = category.route!;
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const copy: Record<string, { description: string; about: string[]; crossLinks: { href: string; label: string }[] }> = {
+  image: {
+    description:
+      "Compress images to a target file size, resize, crop and rotate them, view and remove metadata, convert JPG, PNG, WebP, AVIF and HEIC, make icons, and prepare photos for passports, signatures, Instagram, WhatsApp and YouTube. Everything runs in your browser.",
+    about: [
+      "These tools read your image with your browser, process it on your device and give you a file to download. Nothing is sent to Paul Digital or any other server.",
+      "Quality settings and results depend on the original image and the browser you use. Tools that aim for a size, such as the Image Compressor, treat it as a goal and always report the actual size of the file they produce.",
+    ],
+    crossLinks: [
+      { href: "/jpg-to-pdf/", label: "Put JPG images into a PDF" },
+      { href: "/image-to-word/", label: "Put images into a Word document" },
+    ],
+  },
+  document: {
+    description:
+      "Put images into a Word document or pull printed English text out of JPG and PNG pictures with browser-based OCR. Processing happens on your device.",
+    about: [
+      "Image to Word places your pictures into a .docx file; it does not turn them into editable text. For text, the OCR tools read printed English and may make mistakes, so check the result.",
+      "OCR downloads its engine and English language data (about 8 MB) the first time it runs. They are served from this site, not a third-party network.",
+    ],
+    crossLinks: [
+      { href: "/jpg-to-pdf/", label: "Combine JPG images into a PDF" },
+      { href: "/image-compressor/", label: "Reduce an image before you use it" },
+    ],
+  },
+};
+const info = copy[category.id];
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: "Web tools", item: site("/tools/") },
+    { "@type": "ListItem", position: 3, name: category.name, item: site(path) },
+  ],
+};
+---
+
+<BaseLayout title={`${category.name} — Free Online, In Your Browser | Paul Digital`} description={info.description} canonicalUrl={path}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(schema)} />
+  </Fragment>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/tools/">Web tools</a></li>
+          <li aria-current="page">{category.name}</li>
+        </ol>
+      </nav>
+      <h1>{category.name}</h1>
+      <p>{category.summary} {tools.length} tools, all running in your browser.</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container">
+      <ToolList tools={tools} />
+      <div class="prose target-about">
+        {info.about.map((text) => <p>{text}</p>)}
+        <h2>Related workflows</h2>
+        <ul>
+          {info.crossLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+        </ul>
+        <p><a href="/tools/">Browse all web tools</a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

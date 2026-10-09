@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ImageResizer from "./tools/ImageResizer";
+import CropEditor from "./tools/CropEditor";
+import MetadataTool from "./tools/MetadataTool";
+import { editorToolBySlug } from "../data/editorTools";
+import { relatedTools } from "../data/toolRegistry";
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const tool = editorToolBySlug.get(slug);
+if (!tool) throw new Error(`Unknown editor tool: ${slug}`);
+
+const path = `/${tool.slug}/`;
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "<");
+const related = relatedTools(tool.slug);
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: tool.faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: "Web Tools", item: site("/tools/") },
+    { "@type": "ListItem", position: 3, name: tool.h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: tool.h1,
+  url: site(path),
+  description: tool.description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Any (web browser)",
+  browserRequirements: "Requires JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={tool.title} description={tool.description} canonicalUrl={path}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/tools/">Web Tools</a></li>
+          <li aria-current="page">{tool.h1}</li>
+        </ol>
+      </nav>
+      <h1>{tool.h1}</h1>
+      <p>{tool.intro}</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container">
+      {tool.mode === "resize" && <ImageResizer client:load />}
+      {tool.mode === "crop" && <CropEditor client:load variant="crop" />}
+      {tool.mode === "metadata" && <MetadataTool client:load />}
+      {tool.mode === "passport" && <CropEditor client:load variant="passport" />}
+      {tool.mode === "signature" && <CropEditor client:load variant="signature" />}
+    </div>
+  </section>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>How to use the {tool.h1}</h2>
+      <ol>
+        {tool.steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>About this tool</h2>
+      {tool.explanation.map((text) => <p>{text}</p>)}
+
+      <h2>Practical uses</h2>
+      <ul>
+        {tool.useCases.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>Tips for better results</h2>
+      <ul>
+        {tool.tips.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        {
+          tool.faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.q}</h3>
+              <p>{faq.a}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <h2>Related tools</h2>
+      <ul class="ic-links">
+        {related.map((item) => <li><a href={item.route}>{item.name}</a></li>)}
+        <li><a href="/tools/">All web tools</a></li>
+      </ul>
+
+      <h2>Privacy</h2>
+      <p>Your image is processed in your browser on your own device. It is not uploaded to Paul Digital or any other server, and nothing is stored once you close the page.</p>
+    </div>
+  </section>
+</BaseLayout>

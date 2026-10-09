@@ -3,8 +3,11 @@
   <url><loc>https://pauldigital.dev/</loc></url>
   <url><loc>https://pauldigital.dev/apps/</loc></url>
   <url><loc>https://pauldigital.dev/apps/image-to-pdf-converter/</loc></url>
+  <url><loc>https://pauldigital.dev/apps/photo-exif-editor/</loc></url>
   <url><loc>https://pauldigital.dev/apps/wav-to-mp3-converter/</loc></url>
   <url><loc>https://pauldigital.dev/tools/</loc></url>
+  <url><loc>https://pauldigital.dev/tools/image/</loc></url>
+  <url><loc>https://pauldigital.dev/tools/document/</loc></url>
   <url><loc>https://pauldigital.dev/image-compressor/</loc></url>
   <url><loc>https://pauldigital.dev/jpg-to-pdf/</loc></url>
   <url><loc>https://pauldigital.dev/guides/</loc></url>
@@ -67,4 +70,9 @@
   <url><loc>https://pauldigital.dev/resize-image-for-whatsapp-dp/</loc></url>
   <url><loc>https://pauldigital.dev/resize-image-for-youtube-banner/</loc></url>
   <url><loc>https://pauldigital.dev/zoom-out-image/</loc></url>
+  <url><loc>https://pauldigital.dev/image-resizer/</loc></url>
+  <url><loc>https://pauldigital.dev/crop-rotate-flip-image/</loc></url>
+  <url><loc>https://pauldigital.dev/image-metadata/</loc></url>
+  <url><loc>https://pauldigital.dev/passport-photo-resizer/</loc></url>
+  <url><loc>https://pauldigital.dev/signature-resizer/</loc></url>
 </urlset>
