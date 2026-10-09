@@ -34,7 +34,7 @@ interface Attempt {
 
 interface Goal {
   upper: number;
-  /** Preferred lower bound; also the hard minimum for range routes. */
+  /** Preferred lower bound (soft); only the upper bound is a hard limit. */
   lower: number;
 }
 
@@ -166,7 +166,6 @@ async function fit(ctx: FitContext): Promise<FitOutcome> {
   const compressFirst = async () => {
     const full = await encode(1, Q_HIGH);
     if (full.blob.size <= goal.upper) {
-      if (full.blob.size < goal.lower) await encode(1, 1); // range routes: try max quality once
       return;
     }
     const lowest = await encode(1, Q_COMPRESS_FLOOR);
@@ -233,8 +232,6 @@ export interface ImageCompressorProps {
   scope: ImageFormatScope;
   target: number;
   unit: SizeUnit;
-  rangeMin?: number;
-  rangeMax?: number;
 }
 
 type OutputChoice = "keep" | "image/jpeg" | "image/webp";
@@ -269,14 +266,11 @@ function parsePositive(value: string): number | null {
 
 export default function ImageCompressor(props: ImageCompressorProps) {
   const { mode, scope, unit: initialUnit } = props;
-  const isRange = mode === "range";
   const isJpegOnly = scope === "jpeg";
 
   const [file, setFile] = useState<File | null>(null);
   const [inputType, setInputType] = useState<MimeType | null>(null);
   const [targetValue, setTargetValue] = useState(String(props.target));
-  const [minValue, setMinValue] = useState(String(props.rangeMin ?? 20));
-  const [maxValue, setMaxValue] = useState(String(props.rangeMax ?? props.target));
   const [unit, setUnit] = useState<SizeUnit>(initialUnit);
   const [output, setOutput] = useState<OutputChoice>("keep");
   const [webpOk, setWebpOk] = useState(false);
@@ -360,21 +354,10 @@ export default function ImageCompressor(props: ImageCompressorProps) {
     setError("");
     clearResult();
 
-    let upper: number;
-    let lower: number;
-    if (isRange) {
-      const min = parsePositive(minValue);
-      const max = parsePositive(maxValue);
-      if (min === null || max === null) return setError("Enter a minimum and maximum size greater than zero.");
-      if (min >= max) return setError("The minimum size must be smaller than the maximum size.");
-      lower = toBytes(min, unit);
-      upper = toBytes(max, unit);
-    } else {
-      const value = parsePositive(targetValue);
-      if (value === null) return setError("Enter a target size greater than zero.");
-      upper = toBytes(value, unit);
-      lower = Math.round(upper * 0.9);
-    }
+    const value = parsePositive(targetValue);
+    if (value === null) return setError("Enter a target size greater than zero.");
+    const upper = toBytes(value, unit);
+    const lower = Math.round(upper * 0.9);
     if (upper < 1024 || upper > MAX_INPUT_BYTES) return setError("Choose a target between 1 KB and 50 MB.");
 
     const mime: MimeType = isJpegOnly || output === "keep" ? (isJpegOnly ? "image/jpeg" : inputType) : output;
@@ -400,16 +383,10 @@ export default function ImageCompressor(props: ImageCompressorProps) {
       let height = decoded.height;
       let ok: boolean;
 
-      if (mime === inputType && file.size <= upper && (!isRange || file.size >= lower)) {
+      if (mime === inputType && file.size <= upper) {
         finalBlob = file;
         ok = true;
         notes.push("The original file already meets your target, so it was left unchanged.");
-      } else if (isRange && mime === inputType && file.size < lower) {
-        finalBlob = file;
-        ok = false;
-        notes.push(
-          "The original is already smaller than your minimum. A file cannot be made larger without adding useless data, so it was left unchanged.",
-        );
       } else {
         const outcome = await fit({
           source: decoded.source,
@@ -426,21 +403,15 @@ export default function ImageCompressor(props: ImageCompressorProps) {
         finalBlob = chosen.blob;
         width = chosen.width;
         height = chosen.height;
-        ok = chosen.blob.size <= upper && (!isRange || chosen.blob.size >= lower);
+        ok = chosen.blob.size <= upper;
 
         if (!ok) {
-          if (chosen.blob.size > upper) {
-            notes.push(
-              `The target could not be reached: the smallest result was ${exactBytes(chosen.blob.size)}, above your ${exactBytes(upper)} limit. ` +
-                (mime === "image/png"
-                  ? "PNG is lossless, so only fewer pixels reduce its size. Try JPEG or WebP output, or a larger target."
-                  : "The image would have to become too small to be useful. Try a larger target."),
-            );
-          } else {
-            notes.push(
-              `The result is ${exactBytes(chosen.blob.size)}, below your ${exactBytes(lower)} minimum. The image does not contain enough detail to fill the range at its current dimensions.`,
-            );
-          }
+          notes.push(
+            `The target could not be reached: the smallest result was ${exactBytes(chosen.blob.size)}, above your ${exactBytes(upper)} limit. ` +
+              (mime === "image/png"
+                ? "PNG is lossless, so only fewer pixels reduce its size. Try JPEG or WebP output, or a larger target."
+                : "The image would have to become too small to be useful. Try a larger target."),
+          );
         }
         if (mime === "image/png") {
           notes.push("PNG encoding is lossless, so this tool reduced the pixel dimensions rather than the quality.");
@@ -544,50 +515,19 @@ export default function ImageCompressor(props: ImageCompressorProps) {
           void run();
         }}
       >
-        {isRange ? (
-          <>
-            <div className="ic-field">
-              <label htmlFor="ic-min">Minimum size</label>
-              <input
-                id="ic-min"
-                type="number"
-                inputMode="decimal"
-                min="0"
-                step="any"
-                value={minValue}
-                onChange={(event) => setMinValue(event.target.value)}
-                disabled={busy}
-              />
-            </div>
-            <div className="ic-field">
-              <label htmlFor="ic-max">Maximum size</label>
-              <input
-                id="ic-max"
-                type="number"
-                inputMode="decimal"
-                min="0"
-                step="any"
-                value={maxValue}
-                onChange={(event) => setMaxValue(event.target.value)}
-                disabled={busy}
-              />
-            </div>
-          </>
-        ) : (
-          <div className="ic-field">
-            <label htmlFor="ic-target">Target size (maximum)</label>
-            <input
-              id="ic-target"
-              type="number"
-              inputMode="decimal"
-              min="0"
-              step="any"
-              value={targetValue}
-              onChange={(event) => setTargetValue(event.target.value)}
-              disabled={busy}
-            />
-          </div>
-        )}
+        <div className="ic-field">
+          <label htmlFor="ic-target">Target size (maximum)</label>
+          <input
+            id="ic-target"
+            type="number"
+            inputMode="decimal"
+            min="0"
+            step="any"
+            value={targetValue}
+            onChange={(event) => setTargetValue(event.target.value)}
+            disabled={busy}
+          />
+        </div>
         <div className="ic-field ic-field-unit">
           <label htmlFor="ic-unit">Unit</label>
           <select id="ic-unit" value={unit} onChange={(event) => setUnit(event.target.value as SizeUnit)} disabled={busy}>

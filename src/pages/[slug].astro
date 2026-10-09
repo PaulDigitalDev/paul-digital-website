@@ -24,15 +24,11 @@ const fileStep = jpegOnly
   ? "Choose a JPEG file, or drag it onto the drop area. Only .jpg and .jpeg files are accepted on this page."
   : "Choose a JPEG, PNG or WebP file, or drag it onto the drop area.";
 const targetStep =
-  route.mode === "range"
-    ? `Check the minimum and maximum fields (currently ${target}) and edit them to match your form.`
-    : `Check the target size (currently ${target}). It is editable, so change the number or the KB/MB unit if your limit differs.`;
+  `Check the target size (currently ${target}). It is editable, so change the number or the KB/MB unit if your limit differs.`;
 const runStep =
   route.mode === "resize"
     ? "Press the button. The tool scales the dimensions down first and lowers quality only if scaling alone is not enough."
-    : route.mode === "range"
-      ? "Press the button. The tool searches for a result inside your range, reducing quality first and then dimensions."
-      : "Press the button. The tool lowers the quality first, then reduces the dimensions step by step if the file is still too large.";
+    : "Press the button. The tool lowers the quality first, then reduces the dimensions step by step if the file is still too large.";
 const steps = [
   fileStep,
   targetStep,
@@ -88,8 +84,6 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
         scope={route.scope}
         target={route.target}
         unit={route.unit}
-        rangeMin={route.rangeMin}
-        rangeMax={route.rangeMax}
       />
     </div>
   </section>

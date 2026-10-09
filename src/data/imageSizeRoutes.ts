@@ -1,15 +1,12 @@
-export type ImageSizeMode = "compress" | "resize" | "range";
+export type ImageSizeMode = "compress" | "resize";
 export type ImageFormatScope = "jpeg" | "image";
 export type SizeUnit = "KB" | "MB";
 
 export interface ImageSizeRoute {
   slug: string;
-  /** Default target (the maximum, for range routes). */
+  /** Default target the tool initialises with; users can edit it. */
   target: number;
   unit: SizeUnit;
-  /** Range routes only. */
-  rangeMin?: number;
-  rangeMax?: number;
   title: string;
   h1: string;
   /** Unique introduction, also used as the meta description. */
@@ -31,11 +28,7 @@ function build(entry: Entry): ImageSizeRoute {
   const target = label(entry.target, entry.unit);
   const subject = entry.scope === "jpeg" ? "JPEG" : "Image";
   const verb = entry.mode === "resize" ? "Resize" : "Compress";
-  const h1 =
-    entry.h1 ??
-    (entry.mode === "range"
-      ? `Compress JPEG to between ${label(entry.rangeMin ?? 0, entry.unit)} and ${label(entry.rangeMax ?? 0, entry.unit)}`
-      : `${verb} ${subject} to ${target}`);
+  const h1 = entry.h1 ?? `${verb} ${subject} to ${target}`;
   return {
     ...entry,
     title: entry.title ?? `${h1} Online — Paul Digital`,
@@ -92,16 +85,14 @@ export const imageSizeRoutes: ImageSizeRoute[] = (
     },
     {
       slug: "compress-jpeg-between-20kb-to-50kb",
-      target: 50,
+      target: 20,
       unit: "KB",
-      rangeMin: 20,
-      rangeMax: 50,
-      mode: "range",
+      mode: "compress",
       scope: "jpeg",
       description:
-        "Aim a JPEG for a size between 20 KB and 50 KB. Edit the minimum and maximum, and see whether the result actually lands inside the range.",
+        "Compress a JPEG toward 20 KB in your browser. The target starts at 20 KB and stays editable, and the real output size is measured and shown.",
       details:
-        "Some forms reject files that are too small as well as too large. This page searches for a result inside your window and tells you plainly if it cannot get there. A file can't be enlarged beyond what its pixels support.",
+        "Twenty kilobytes is a common ceiling for photo fields on application forms. Quality is lowered first and dimensions shrink only if the file is still too large, so detailed originals may come out noticeably softer.",
     },
     {
       slug: "compress-jpeg-to-25kb",
@@ -296,9 +287,7 @@ export const imageSizeRoutes: ImageSizeRoute[] = (
 export const imageSizeBySlug = new Map(imageSizeRoutes.map((route) => [route.slug, route]));
 
 export function targetLabel(route: ImageSizeRoute): string {
-  return route.mode === "range"
-    ? `${label(route.rangeMin ?? 0, route.unit)}–${label(route.rangeMax ?? 0, route.unit)}`
-    : label(route.target, route.unit);
+  return label(route.target, route.unit);
 }
 
 /** Convert a size to bytes (1 KB = 1,024 bytes). */
