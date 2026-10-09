@@ -2,13 +2,10 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import AppCard from "../components/AppCard.astro";
 import ToolCard from "../components/ToolCard.astro";
-import { comingSoonApps, previewApps, publishedApps } from "../data/apps";
+import { publishedApps } from "../data/apps";
 
 const tools = [
-  { id: "image-compressor", name: "Image Compressor", description: "Browser-based image tool.", code: "IMG" },
-  { id: "text-to-pdf", name: "Text to PDF", description: "Browser-based PDF tool.", code: "PDF" },
-  { id: "json-viewer", name: "JSON Viewer", description: "Browser-based JSON tool.", code: "{ }" },
-  { id: "image-to-pdf", name: "Image to PDF", description: "Browser-based PDF tool.", code: "PDF" },
+  { id: "image-compressor", name: "Image Compressor", description: "Compress or resize an image toward a target size, right in your browser.", code: "IMG", href: "/compress-image-to-100kb/" },
 ];
 ---
 
@@ -42,14 +39,6 @@ const tools = [
         </div>
         <div class="card-grid app-grid app-grid-published">
           {publishedApps.map((app) => <AppCard app={app} />)}
-        </div>
-        <h3 class="app-section-heading">Preview</h3>
-        <div class="card-grid app-grid">
-          {previewApps.map((app) => <AppCard app={app} />)}
-        </div>
-        <h3 class="app-section-heading">Coming Soon</h3>
-        <div class="card-grid app-grid app-grid-coming-soon">
-          {comingSoonApps.map((app) => <AppCard app={app} />)}
         </div>
       </div>
     </section>

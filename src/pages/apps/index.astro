@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import AppCard from "../../components/AppCard.astro";
-import { comingSoonApps, previewApps, publishedApps } from "../../data/apps";
+import { publishedApps } from "../../data/apps";
 ---
 
 <BaseLayout
@@ -12,7 +12,7 @@ import { comingSoonApps, previewApps, publishedApps } from "../../data/apps";
     <div class="container">
       <span class="eyebrow">Paul Digital apps</span>
       <h1>Apps</h1>
-      <p>Explore published apps and upcoming utilities for everyday tasks.</p>
+      <p>Explore Paul Digital apps available on Google Play.</p>
     </div>
   </section>
   <section class="content-section">
@@ -20,14 +20,6 @@ import { comingSoonApps, previewApps, publishedApps } from "../../data/apps";
       <h2 class="section-title">Published Apps</h2>
       <div class="card-grid app-grid">
         {publishedApps.map((app) => <AppCard app={app} />)}
-      </div>
-      <h2 class="section-title app-section-heading">Preview</h2>
-      <div class="card-grid app-grid">
-        {previewApps.map((app) => <AppCard app={app} />)}
-      </div>
-      <h2 class="section-title app-section-heading">Coming Soon</h2>
-      <div class="card-grid app-grid">
-        {comingSoonApps.map((app) => <AppCard app={app} />)}
       </div>
     </div>
   </section>

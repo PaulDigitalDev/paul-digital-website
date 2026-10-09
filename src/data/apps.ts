@@ -49,32 +49,6 @@ export const apps = {
     platform: "Android",
     packageName: "com.pauldigital.photoexifeditor.gps.date.metadata",
   },
-  "text-to-pdf": {
-    slug: "text-to-pdf",
-    name: "Text to PDF Converter",
-    description: "Android utility app.",
-    purpose: "Convert text to PDF.",
-    status: "Coming Soon",
-    code: "PDF",
-    platform: "Android",
-    packageName: "com.pauldigital.texttopdfconverter",
-  },
-  "wifi-site-survey-pro": {
-    slug: "wifi-site-survey-pro",
-    name: "WiFi Site Survey Pro",
-    description: "Paul Digital app.",
-    purpose: "WiFi site survey app.",
-    status: "Coming Soon",
-    code: "WiFi",
-  },
-  "vob-video-player": {
-    slug: "vob-video-player",
-    name: "VOB Video Player",
-    description: "Paul Digital app.",
-    purpose: "VOB video player app.",
-    status: "Coming Soon",
-    code: "VOB",
-  },
 } satisfies Record<string, App>;
 
 export type AppSlug = keyof typeof apps;
@@ -82,7 +56,6 @@ export type AppSlug = keyof typeof apps;
 export const allApps = Object.values(apps);
 export const publishedApps = allApps.filter((app) => app.status === "Published");
 export const previewApps = allApps.filter((app) => app.status === "Preview");
-export const comingSoonApps = allApps.filter((app) => app.status === "Coming Soon");
 
 export function getAppBySlug(slug: AppSlug): App {
   return apps[slug];
