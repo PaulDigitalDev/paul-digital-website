@@ -1,0 +1,96 @@
+---
+import { categories, toolsInCategory, availableTools, registryProblems } from "../data/toolRegistry";
+import type { ToolCategoryId } from "../data/toolRegistry";
+
+const problems = registryProblems();
+if (problems.length) throw new Error(`Tool registry is inconsistent:\n${problems.join("\n")}`);
+
+// Only categories with at least one working tool are shown, straight from the registry.
+const groups = categories.map((category) => ({ category, tools: toolsInCategory(category.id) })).filter((group) => group.tools.length > 0);
+
+// Simple stroke icons, one per category, drawn at 20px inside a 40px container.
+const icons: Record<ToolCategoryId, string> = {
+  image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-9 9"/>',
+  pdf: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6M9 17h4"/>',
+  document: '<path d="M5 4h14M5 9h14M5 14h9M5 19h6"/>',
+  developer: '<path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/>',
+  calculators: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/>',
+  media: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/>',
+};
+const colors: Record<ToolCategoryId, string> = {
+  image: "blue",
+  pdf: "orange",
+  document: "green",
+  developer: "navy",
+  calculators: "blue",
+  media: "orange",
+};
+---
+
+<section class="section home-section tools-section" aria-labelledby="web-tools">
+  <div class="container">
+    <div class="section-heading">
+      <div>
+        <h2 id="web-tools" class="section-title">Web Tools</h2>
+        <p>{availableTools.length} free tools that run in your browser. Your files are not uploaded.</p>
+      </div>
+      <a class="section-link" href="/tools/">Explore all tools <span aria-hidden="true">→</span></a>
+    </div>
+
+    <nav class="hd-nav" aria-label="Tool categories">
+      <ul>
+        {
+          groups.map(({ category, tools }) => (
+            <li>
+              <a href={`#home-cat-${category.id}`} class="hd-chip">
+                <span class={`hd-icon hd-${colors[category.id]}`} aria-hidden="true">
+                  <svg viewBox="0 0 24 24" set:html={icons[category.id]} />
+                </span>
+                <span class="hd-chip-text">
+                  <span class="hd-chip-name">{category.name}</span>
+                  <span class="hd-chip-count">{tools.length} {tools.length === 1 ? "tool" : "tools"}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {
+      groups.map(({ category, tools }) => (
+        <section class="hd-group" id={`home-cat-${category.id}`} aria-labelledby={`home-h-${category.id}`}>
+          <div class="hd-group-head">
+            <h3 id={`home-h-${category.id}`}>{category.route ? <a href={category.route}>{category.name}</a> : category.name}</h3>
+            {category.route && (
+              <a class="hd-more" href={category.route} aria-label={`View all ${category.name}`}>
+                View all <span aria-hidden="true">→</span>
+              </a>
+            )}
+          </div>
+          <ul class="hd-grid">
+            {
+              tools.map((tool) => (
+                <li>
+                  <a class="hd-card" href={tool.route}>
+                    <span class={`hd-icon hd-${colors[category.id]}`} aria-hidden="true">
+                      <svg viewBox="0 0 24 24" set:html={icons[category.id]} />
+                    </span>
+                    <span class="hd-card-body">
+                      <span class="hd-card-name">{tool.name}</span>
+                      <span class="hd-card-desc">{tool.description}</span>
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      ))
+    }
+
+    <p class="hd-all">
+      <a class="button button-soft" href="/tools/">Explore all {availableTools.length} tools <span aria-hidden="true">→</span></a>
+    </p>
+  </div>
+</section>
