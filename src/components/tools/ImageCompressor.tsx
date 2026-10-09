@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, KeyboardEvent } from "react";
 import { toBytes } from "../../data/imageSizeRoutes";
+import { ResultPanel, StatusArea } from "./shared";
 import type { ImageFormatScope, ImageSizeMode, SizeUnit } from "../../data/imageSizeRoutes";
 
 /* ------------------------------------------------------------------ */
@@ -247,6 +248,7 @@ interface Result {
   height: number;
   format: MimeType;
   ok: boolean;
+  limit: number;
   notes: string[];
 }
 
@@ -298,6 +300,14 @@ export default function ImageCompressor(props: ImageCompressorProps) {
     urlRef.current = null;
     setResult(null);
   }, []);
+
+  const reset = useCallback(() => {
+    clearResult();
+    setFile(null);
+    setInputType(null);
+    setError("");
+    setStatus("");
+  }, [clearResult]);
 
   const accept = isJpegOnly ? "image/jpeg,.jpg,.jpeg" : "image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp";
 
@@ -438,6 +448,7 @@ export default function ImageCompressor(props: ImageCompressorProps) {
         height,
         format: mime,
         ok,
+        limit: upper,
         notes,
       });
       setStatus(ok ? "Done. Your image is ready to download." : "Finished, but the target was not met. See the details below.");
@@ -559,44 +570,41 @@ export default function ImageCompressor(props: ImageCompressorProps) {
         {output === "image/jpeg" || isJpegOnly ? " JPEG has no transparency, so transparent areas become white." : ""}
       </p>
 
-      <div className="ic-status" role="status" aria-live="polite">
-        {busy ? <span className="ic-spinner" aria-hidden="true" /> : null}
-        {status}
-      </div>
-      {busy && progress && (
-        <p className="ic-hint" aria-hidden="true">
-          {progress}
-        </p>
-      )}
-      {error && (
-        <p className="ic-error" role="alert">
-          {error}
-        </p>
-      )}
+      <StatusArea busy={busy} progress={progress} status={status} errors={error ? [error] : []} />
 
       {result && (
-        <section className={`ic-result${result.ok ? " is-ok" : " is-warn"}`} aria-label="Result">
-          <h2>{result.ok ? "Target met" : "Target not met"}</h2>
-          <dl className="ic-stats">
-            <div>
-              <dt>Original</dt>
-              <dd>
-                {formatBytes(result.originalSize)}
-                <small>
-                  {result.originalWidth}×{result.originalHeight}px
-                </small>
-              </dd>
-            </div>
-            <div>
-              <dt>Output ({FORMAT_NAMES[result.format]})</dt>
-              <dd>
-                {formatBytes(result.outputSize)}
-                <small>
-                  {result.width}×{result.height}px · {sizeInfo}
-                </small>
-              </dd>
-            </div>
-          </dl>
+        <ResultPanel
+          ariaLabel="Result"
+          tone={result.ok ? "success" : "warning"}
+          title={result.ok ? "Target met" : "Target not met"}
+          summary={
+            result.ok
+              ? `The image is ${formatBytes(result.outputSize)}, within your ${formatBytes(result.limit)} limit.`
+              : `The smallest result is ${formatBytes(result.outputSize)}, above your ${formatBytes(result.limit)} limit.`
+          }
+          fileName={result.fileName}
+          details={[
+            { label: "Format", value: FORMAT_NAMES[result.format] },
+            { label: "Size", value: formatBytes(result.outputSize), hint: `${exactBytes(result.outputSize)} · ${sizeInfo}` },
+            {
+              label: "Dimensions",
+              value: `${result.width}×${result.height}px`,
+              hint:
+                result.width === result.originalWidth && result.height === result.originalHeight
+                  ? "unchanged"
+                  : `was ${result.originalWidth}×${result.originalHeight}px`,
+            },
+            { label: "Original", value: formatBytes(result.originalSize) },
+          ]}
+          notes={result.notes}
+          primary={
+            <a className="button button-download" href={result.url} download={result.fileName}>
+              Download {result.fileName}
+            </a>
+          }
+          resetLabel="Process another image"
+          onReset={reset}
+        >
           <img
             className="ic-preview"
             src={result.url}
@@ -604,17 +612,7 @@ export default function ImageCompressor(props: ImageCompressorProps) {
             height={result.height}
             alt={`Preview of the ${result.ok ? "processed" : "processed (target not met)"} image, ${result.width} by ${result.height} pixels`}
           />
-          {result.notes.length > 0 && (
-            <ul className="ic-notes">
-              {result.notes.map((note) => (
-                <li key={note}>{note}</li>
-              ))}
-            </ul>
-          )}
-          <a className="button button-primary" href={result.url} download={result.fileName}>
-            Download {result.fileName}
-          </a>
-        </section>
+        </ResultPanel>
       )}
     </div>
   );

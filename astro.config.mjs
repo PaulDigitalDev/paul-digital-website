@@ -5,5 +5,6 @@ import react from "@astrojs/react";
 export default defineConfig({
   site: "https://pauldigital.dev",
   trailingSlash: "always",
+  compressHTML: false,
   integrations: [react()],
 });

@@ -1,0 +1,114 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TargetSizeGrid from "../../components/TargetSizeGrid.astro";
+import { formatTools } from "../../data/formatTools";
+
+const path = "/format-conversions/";
+const title = "Format Conversions — Image, HEIC, WebP, ICO, OCR | Paul Digital";
+const description =
+  "Free browser-based format conversions: image converter, HEIC, WebP, AVIF and JFIF to JPG, PNG to ICO, image to Word, JPG and PNG to text, and a favicon generator. Nothing is uploaded.";
+
+const items = formatTools.map((tool) => ({ href: `/${tool.slug}/`, label: tool.h1, ariaLabel: `${tool.h1}: ${tool.summary}` }));
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: "Format Conversions", item: site(path) },
+  ],
+};
+const listSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Format Conversions",
+  itemListElement: formatTools.map((tool, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: tool.h1,
+    url: site(`/${tool.slug}/`),
+  })),
+};
+
+const groups = [
+  { title: "Convert to JPG", slugs: ["image-to-jpg", "jpeg-to-jpg", "heic-to-jpg", "webp-to-jpg", "avif-to-jpg", "jfif-to-jpg"] },
+  { title: "Convert to PNG or another image format", slugs: ["image-converter", "webp-to-png", "jpeg-to-png", "png-to-jpeg"] },
+  { title: "Documents and text", slugs: ["image-to-word", "jpg-to-text", "png-to-text"] },
+  { title: "Icons", slugs: ["png-to-ico", "favicon-generator"] },
+];
+const bySlug = new Map(formatTools.map((tool) => [tool.slug, tool]));
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(listSchema)} />
+  </Fragment>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li aria-current="page">Format Conversions</li>
+        </ol>
+      </nav>
+      <h1>Format Conversions</h1>
+      <p>
+        Convert images between formats, turn pictures into Word documents or text, and build icons, all in your browser. Nothing is
+        uploaded.
+      </p>
+      <div class="actions">
+        <a class="button button-primary" href="/image-converter/">Open Image Converter <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container">
+      <TargetSizeGrid heading="All 15 conversion tools" headingId="format-tools" items={items} />
+
+      <div class="prose target-about">
+        {
+          groups.map((group) => (
+            <>
+              <h2>{group.title}</h2>
+              <ul>
+                {group.slugs.map((slug) => {
+                  const tool = bySlug.get(slug)!;
+                  return (
+                    <li>
+                      <a href={`/${tool.slug}/`}>{tool.h1}</a>: {tool.summary}
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          ))
+        }
+
+        <h2>Privacy</h2>
+        <p>
+          Every tool here works on your own device. Your images are read, converted and saved by your browser and are never uploaded to
+          Paul Digital or any other server. Text recognition also runs locally; its engine and English language data are served from
+          this site rather than a third-party network.
+        </p>
+
+        <h2>Compatibility and honest limits</h2>
+        <ul>
+          <li>JPG, PNG, GIF, BMP and WebP files work in every current browser.</li>
+          <li>AVIF decoding needs Chrome 85+, Edge 121+, Firefox 93+ or Safari 16.4+. Older browsers get an error rather than a fake result.</li>
+          <li>HEIC is decoded natively in Safari and by a decoder that loads only on demand in other browsers. Some unusual HEIF variants cannot be decoded.</li>
+          <li>Converting to JPG fills transparency with white. PNG and WebP keep it. WebP output is unavailable in Safari.</li>
+          <li>Text recognition (OCR) supports printed English only, may make mistakes, and downloads about 8 MB the first time it runs.</li>
+          <li>Image to Word places pictures in a document; it does not make their text editable.</li>
+        </ul>
+
+        <h2>Related tools</h2>
+        <p>
+          Need a particular file size? Try the <a href="/image-compressor/">Image Compressor</a>, or combine pictures into one file with <a href="/jpg-to-pdf/">JPG to PDF</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -4,6 +4,7 @@ import { toBytes } from "../../data/imageSizeRoutes";
 import type { SizeUnit } from "../../data/imageSizeRoutes";
 import { buildPdf, isJpegSignature, parseJpeg } from "../../lib/jpegPdf";
 import type { PageSizeChoice, PdfImage } from "../../lib/jpegPdf";
+import { ResultPanel, StatusArea } from "./shared";
 
 /* Everything runs locally: files are read with File APIs, the PDF is assembled in memory. */
 
@@ -118,6 +119,13 @@ export default function JpgToPdf({
     if (urlRef.current) URL.revokeObjectURL(urlRef.current);
     urlRef.current = null;
     setResult(null);
+  };
+
+  const reset = () => {
+    clearResult();
+    setItems([]);
+    setErrors([]);
+    setStatus("");
   };
 
   const addFiles = async (incoming: File[]) => {
@@ -380,6 +388,8 @@ export default function JpgToPdf({
       <p className="ic-hint">Your images are turned into a PDF on this device and are never uploaded.</p>
 
       {items.length > 0 && (
+        <>
+        <p className="ic-hint">Each image becomes one page, in this order. Use the arrows to reorder or Remove to take one out.</p>
         <ol className="jp-list" aria-label="Selected images in PDF page order">
           {items.map((item, index) => (
             <li key={item.id} className="jp-item">
@@ -414,15 +424,17 @@ export default function JpgToPdf({
             </li>
           ))}
         </ol>
+        </>
       )}
 
       <form
-        className="ic-controls"
+        className="ic-form"
         onSubmit={(event) => {
           event.preventDefault();
           void run();
         }}
       >
+        <div className="ic-controls">
         <div className="ic-field">
           <label htmlFor="jp-target">Target PDF size (maximum)</label>
           <input
@@ -443,6 +455,13 @@ export default function JpgToPdf({
             <option value="MB">MB</option>
           </select>
         </div>
+        <button type="submit" className="button button-primary ic-submit" disabled={items.length === 0 || busy}>
+          {busy ? "Working…" : "Create PDF"}
+        </button>
+        </div>
+        <details className="ic-options">
+          <summary>Page options</summary>
+          <div className="ic-controls">
         <div className="ic-field">
           <label htmlFor="jp-page">Page size</label>
           <select id="jp-page" value={pageSize} onChange={(event) => setPageSize(event.target.value as PageSizeChoice)} disabled={busy}>
@@ -451,58 +470,45 @@ export default function JpgToPdf({
             <option value="image">Match image shape (no margins)</option>
           </select>
         </div>
-        <button type="submit" className="button button-primary ic-submit" disabled={items.length === 0 || busy}>
-          {busy ? "Working…" : "Create PDF"}
-        </button>
+          </div>
+        </details>
       </form>
       <p className="ic-hint">
         1 KB = 1,024 bytes. The size you enter is a goal, not a promise: the finished PDF is measured and the real size is reported.
         Landscape images get landscape pages automatically.
       </p>
 
-      <div className="ic-status" role="status" aria-live="polite">
-        {busy ? <span className="ic-spinner" aria-hidden="true" /> : null}
-        {busy && progress ? progress : status}
-      </div>
-      {errors.length > 0 && (
-        <div className="ic-error" role="alert">
-          {errors.map((message) => (
-            <p key={message} style={{ margin: 0 }}>
-              {message}
-            </p>
-          ))}
-        </div>
-      )}
+      <StatusArea busy={busy} progress={progress} status={status} errors={errors} />
 
       {result && (
-        <section className={`ic-result${result.ok ? " is-ok" : " is-warn"}`} aria-label="Result">
-          <h2>{result.ok ? "Target met" : "Target not met"}</h2>
-          <dl className="ic-stats">
-            <div>
-              <dt>Your limit</dt>
-              <dd>{formatBytes(result.target)}</dd>
-            </div>
-            <div>
-              <dt>Actual PDF size</dt>
-              <dd data-testid="pdf-size">
-                {formatBytes(result.size)}
-                <small>
-                  {exactBytes(result.size)} · {result.pages} page{result.pages === 1 ? "" : "s"}
-                </small>
-              </dd>
-            </div>
-          </dl>
-          {result.notes.length > 0 && (
-            <ul className="ic-notes">
-              {result.notes.map((note) => (
-                <li key={note}>{note}</li>
-              ))}
-            </ul>
-          )}
-          <a className="button button-primary" href={result.url} download={result.fileName}>
-            Download {result.fileName}
-          </a>
-        </section>
+        <ResultPanel
+          ariaLabel="Result"
+          tone={result.ok ? "success" : "warning"}
+          title={result.ok ? "Target met" : "Target not met"}
+          summary={
+            result.ok
+              ? `The PDF is ${formatBytes(result.size)}, within your ${formatBytes(result.target)} limit.`
+              : `The smallest PDF this tool will produce is ${formatBytes(result.size)}, above your ${formatBytes(result.target)} limit.`
+          }
+          fileName={result.fileName}
+          details={[
+            { label: "Format", value: "PDF" },
+            {
+              label: "Size",
+              value: formatBytes(result.size),
+              hint: exactBytes(result.size),
+            },
+            { label: "Pages", value: String(result.pages) },
+          ]}
+          notes={result.notes}
+          primary={
+            <a className="button button-download" href={result.url} download={result.fileName}>
+              Download {result.fileName}
+            </a>
+          }
+          resetLabel="Convert more images"
+          onReset={reset}
+        />
       )}
     </div>
   );

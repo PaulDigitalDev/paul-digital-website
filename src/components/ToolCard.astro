@@ -1,16 +1,20 @@
 ---
+import ToolArt from "./ToolArt.astro";
+
 interface Props {
   name: string;
   description: string;
   code: string;
   id?: string;
   href?: string;
+  art?: "compress" | "pdf" | "convert";
 }
 
-const { name, description, code, id, href } = Astro.props;
+const { name, description, code, id, href, art } = Astro.props;
 ---
 
-<article id={id} class="card tool-card">
+<article id={id} class:list={["card", "tool-card", { "tool-card-art": art }]}>
+  {art && <div class="tool-thumb"><ToolArt kind={art} /></div>}
   <div class="card-top">
     <span class="app-icon" aria-hidden="true">{code}</span>
     {href ? <span class="tag tag-green">Available</span> : <span class="tag tag-blue">Coming Soon</span>}

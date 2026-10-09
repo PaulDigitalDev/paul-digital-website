@@ -1,0 +1,181 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import FormatConverter from "./tools/FormatConverter";
+import ImageToWord from "./tools/ImageToWord";
+import IconGenerator from "./tools/IconGenerator";
+import OcrTool from "./tools/OcrTool";
+import { formatToolBySlug } from "../data/formatTools";
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const tool = formatToolBySlug.get(slug);
+if (!tool) throw new Error(`Unknown format tool: ${slug}`);
+
+const path = `/${tool.slug}/`;
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+const related = tool.related.map((s) => formatToolBySlug.get(s)).filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+const stepsByKind = {
+  convert: [
+    `Choose ${tool.inputLabel} files, or drag them onto the drop area. Each file is checked by its real contents, not just its name.`,
+    tool.output === "choose"
+      ? "Pick the input format (or leave it on automatic) and the output format you want."
+      : `Adjust the quality if the output is JPG, otherwise leave the defaults.`,
+    `Press ${tool.actionLabel}. Conversion happens in your browser and each result is verified before it is offered.`,
+    "Check the preview and the before and after file sizes, and read any notes.",
+    "Download each file, or take several at once as a ZIP.",
+  ],
+  word: [
+    "Choose one or more images, or drag them onto the drop area.",
+    "Use the arrows to set the page order and Remove to drop any image you do not want.",
+    "Pick A4 or US Letter and press Create Word document.",
+    "Download the .docx and open it in Word, LibreOffice or Google Docs.",
+    "Need the words in the picture as editable text? Run JPG to Text or PNG to Text instead.",
+  ],
+  ocr: [
+    `Choose a ${tool.inputLabel} image, or drag it onto the drop area. The text should be clear and in English.`,
+    "Press Extract text. The first run downloads the OCR engine (about 8 MB) from this site and caches it.",
+    "Wait for recognition to finish. A progress message shows what is happening, and you can cancel.",
+    "Proofread the text, check the confidence score, and edit mistakes directly in the box.",
+    "Copy the text or download it as a .txt file.",
+  ],
+  ico: [
+    "Choose a square PNG, ideally at least 256 × 256 pixels.",
+    "Tick the icon sizes you want inside the ICO file and choose how to handle a non-square image.",
+    "Press Create ICO. The file is built and re-read to confirm it is valid.",
+    "Check the size previews, then download the .ico file.",
+    "Put it at your site root as favicon.ico or use it for a Windows shortcut.",
+  ],
+  favicon: [
+    "Choose a square logo or image, ideally at least 512 × 512 pixels.",
+    "Choose how to handle a non-square image and the Apple touch icon background colour.",
+    "Press Generate favicons to create the ICO, PNG, touch and Android icons plus a web manifest.",
+    "Download files one by one or as a ZIP, and copy the HTML snippet.",
+    "Upload the files to your site root and paste the snippet into your page head.",
+  ],
+} as const;
+const steps = stepsByKind[tool.kind];
+
+const faqs = [
+  ...tool.faqs,
+  {
+    q: "Are my files uploaded anywhere?",
+    a:
+      tool.kind === "ocr"
+        ? "No. Your image is processed in your browser. The OCR engine and English language file are downloaded from Paul Digital itself, never from a third party, and your image is not sent anywhere."
+        : "No. Everything is processed in your browser on your own device. Nothing is sent to Paul Digital or any other server.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: "Format Conversions", item: site("/format-conversions/") },
+    { "@type": "ListItem", position: 3, name: tool.h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: tool.h1,
+  url: site(path),
+  description: tool.description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Any (web browser)",
+  browserRequirements: "Requires JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={tool.title} description={tool.description} canonicalUrl={path}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/format-conversions/">Format Conversions</a></li>
+          <li aria-current="page">{tool.h1}</li>
+        </ol>
+      </nav>
+      <h1>{tool.h1}</h1>
+      <p>{tool.intro}</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container">
+      {tool.kind === "convert" && <FormatConverter client:load tool={tool} />}
+      {tool.kind === "word" && <ImageToWord client:load tool={tool} />}
+      {tool.kind === "ocr" && <OcrTool client:load tool={tool} />}
+      {(tool.kind === "ico" || tool.kind === "favicon") && <IconGenerator client:load tool={tool} />}
+    </div>
+  </section>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>How to use {tool.h1}</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>About this tool</h2>
+      {tool.explanation.map((text) => <p>{text}</p>)}
+
+      <h2>Formats and browser compatibility</h2>
+      <p><strong>Accepted input:</strong> {tool.inputLabel}.</p>
+      {tool.compatibility.map((text) => <p>{text}</p>)}
+
+      <h2>Practical uses</h2>
+      <ul>
+        {tool.useCases.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>Tips for better results</h2>
+      <ul>
+        {tool.tips.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.q}</h3>
+              <p>{faq.a}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <h2>Related tools</h2>
+      <ul class="ic-links">
+        {related.map((item) => <li><a href={`/${item.slug}/`}>{item.h1}</a></li>)}
+        <li><a href="/format-conversions/">All format conversions</a></li>
+      </ul>
+
+      <h2>Privacy</h2>
+      <p>
+        {
+          tool.kind === "ocr"
+            ? "Your image is processed in your browser on your own device and is not uploaded. The OCR engine files are served from Paul Digital rather than a third-party network, and nothing is stored once you close the page."
+            : "Your files are processed entirely in your browser on your own device. They are not uploaded to Paul Digital or any other server, and nothing is stored once you close the page."
+        }
+      </p>
+    </div>
+  </section>
+</BaseLayout>

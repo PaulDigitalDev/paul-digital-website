@@ -1,0 +1,52 @@
+---
+interface Props {
+  kind: "compress" | "pdf" | "convert";
+}
+
+const { kind } = Astro.props;
+---
+
+<svg class="tool-art" viewBox="0 0 240 104" role="presentation" aria-hidden="true" focusable="false">
+  <rect width="240" height="104" rx="10" fill="#f3f8ff" />
+  {
+    kind === "compress" && (
+      <>
+        <rect x="24" y="20" width="76" height="64" rx="7" fill="#ffffff" stroke="#0b1f5e" stroke-width="2.5" />
+        <circle cx="45" cy="40" r="7" fill="#ff6b00" />
+        <path d="M30 78 L55 54 L72 68 L84 58 L96 78 Z" fill="#087fea" />
+        <path d="M112 52h24m0 0-8-8m8 8-8 8" fill="none" stroke="#0b1f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <rect x="148" y="34" width="52" height="42" rx="6" fill="#ffffff" stroke="#0b1f5e" stroke-width="2.5" />
+        <circle cx="161" cy="47" r="4.5" fill="#ff6b00" />
+        <path d="M153 70 L169 56 L179 64 L187 58 L195 70 Z" fill="#087fea" />
+        <text x="174" y="92" font-size="10" font-weight="700" fill="#0b1f5e" text-anchor="middle" font-family="system-ui, sans-serif">KB</text>
+      </>
+    )
+  }
+  {
+    kind === "pdf" && (
+      <>
+        <rect x="30" y="26" width="52" height="56" rx="6" fill="#ffffff" stroke="#0b1f5e" stroke-width="2.5" />
+        <circle cx="47" cy="44" r="5" fill="#ff6b00" />
+        <path d="M36 74 L52 58 L62 66 L70 60 L77 74 Z" fill="#087fea" />
+        <path d="M100 54h26m0 0-8-8m8 8-8 8" fill="none" stroke="#0b1f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M148 18h34l16 16v52a6 6 0 0 1-6 6h-44a6 6 0 0 1-6-6V24a6 6 0 0 1 6-6Z" fill="#ffffff" stroke="#0b1f5e" stroke-width="2.5" />
+        <path d="M182 18v16h16" fill="none" stroke="#0b1f5e" stroke-width="2.5" stroke-linejoin="round" />
+        <rect x="150" y="52" width="38" height="18" rx="4" fill="#ff6b00" />
+        <text x="169" y="65.5" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif">PDF</text>
+      </>
+    )
+  }
+  {
+    kind === "convert" && (
+      <>
+        <rect x="22" y="30" width="62" height="44" rx="7" fill="#ffffff" stroke="#0b1f5e" stroke-width="2.5" />
+        <text x="53" y="58" font-size="15" font-weight="800" fill="#0b1f5e" text-anchor="middle" font-family="system-ui, sans-serif">HEIC</text>
+        <path d="M96 46h48m0 0-8-8m8 8-8 8M144 62H96m0 0 8-8m-8 8 8 8" fill="none" stroke="#ff6b00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <rect x="156" y="30" width="62" height="44" rx="7" fill="#087fea" />
+        <text x="187" y="58" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle" font-family="system-ui, sans-serif">JPG</text>
+        <rect x="88" y="80" width="64" height="8" rx="4" fill="#dcecff" />
+        <rect x="88" y="80" width="40" height="8" rx="4" fill="#087fea" />
+      </>
+    )
+  }
+</svg>

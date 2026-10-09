@@ -5,8 +5,9 @@ import ToolCard from "../components/ToolCard.astro";
 import { publishedApps } from "../data/apps";
 
 const tools = [
-  { id: "image-compressor", name: "Image Compressor", description: "Compress or resize an image toward a target size, right in your browser.", code: "IMG", href: "/image-compressor/" },
-  { id: "jpg-to-pdf", name: "JPG to PDF", description: "Combine JPG images into a PDF in your browser and check the real file size against a target.", code: "PDF", href: "/jpg-to-pdf/" },
+  { id: "image-compressor", name: "Image Compressor", description: "Compress or resize an image toward a target size, right in your browser.", code: "IMG", href: "/image-compressor/", art: "compress" as const },
+  { id: "jpg-to-pdf", name: "JPG to PDF", description: "Combine JPG images into a PDF in your browser and check the real file size against a target.", code: "PDF", href: "/jpg-to-pdf/", art: "pdf" as const },
+  { id: "format-conversions", name: "Format Conversions", description: "Convert images, create Word files and text, and build icons, all in your browser.", code: "CNV", href: "/format-conversions/", art: "convert" as const },
 ];
 ---
 
