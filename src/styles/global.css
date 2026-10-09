@@ -1658,3 +1658,85 @@ main {
     animation-duration: 3s;
   }
 }
+
+.jp-list {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jp-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--white);
+}
+
+.jp-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #eaf3ff;
+  color: var(--blue-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.jp-name {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--navy);
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.jp-name small {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.jp-actions {
+  display: flex;
+  flex: none;
+  gap: 0.3rem;
+}
+
+.jp-actions button {
+  min-height: 2rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid #c9d6e8;
+  border-radius: 0.45rem;
+  background: var(--white);
+  color: var(--blue-text);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.jp-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 540px) {
+  .jp-item {
+    flex-wrap: wrap;
+  }
+
+  .jp-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

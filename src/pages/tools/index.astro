@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ToolCard from "../../components/ToolCard.astro";
 import { imageSizeRoutes } from "../../data/imageSizeRoutes";
+import { jpgToPdfRoutes } from "../../data/jpgToPdfRoutes";
 
 const tools = [
   {
@@ -11,12 +12,19 @@ const tools = [
     code: "IMG",
     href: "/compress-image-to-100kb/",
   },
+  {
+    id: "jpg-to-pdf",
+    name: "JPG to PDF",
+    description: "Combine JPG images into a PDF in your browser and check the real file size against a target.",
+    code: "PDF",
+    href: "/jpg-to-pdf-under-100kb/",
+  },
 ];
 ---
 
 <BaseLayout
   title="Web Tools — Paul Digital"
-  description="Paul Digital web tools: use the browser-based Image Compressor to reduce or resize images toward a target file size."
+  description="Paul Digital web tools: reduce or resize images toward a target file size, and convert JPG images to PDF, all in your browser."
 >
   <section class="page-hero">
     <div class="container">
@@ -41,6 +49,18 @@ const tools = [
       </p>
       <ul class="ic-links">
         {imageSizeRoutes.map((route) => <li><a href={`/${route.slug}/`}>{route.h1}</a></li>)}
+      </ul>
+    </div>
+  </section>
+  <section class="content-section" style="padding-top: 0" aria-labelledby="jpg-to-pdf-heading">
+    <div class="container">
+      <h2 id="jpg-to-pdf-heading">JPG to PDF by target size</h2>
+      <p style="color: var(--muted)">
+        Convert one or more JPG images into a single PDF with a size goal already filled in. You can edit the target on the page,
+        and the actual PDF size is always measured and reported.
+      </p>
+      <ul class="ic-links">
+        {jpgToPdfRoutes.map((route) => <li><a href={`/${route.slug}/`}>{route.h1}</a></li>)}
       </ul>
     </div>
   </section>

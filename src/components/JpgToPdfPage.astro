@@ -1,0 +1,176 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import JpgToPdf from "./tools/JpgToPdf";
+import { jpgToPdfRoutes, targetText } from "../data/jpgToPdfRoutes";
+import type { JpgToPdfRoute } from "../data/jpgToPdfRoutes";
+import { toBytes } from "../data/imageSizeRoutes";
+
+interface Props {
+  route: JpgToPdfRoute;
+}
+
+const { route } = Astro.props;
+const target = targetText(route);
+const label = route.label;
+const bytes = toBytes(route.target, route.unit);
+
+const related = jpgToPdfRoutes
+  .filter((item) => item.slug !== route.slug)
+  .sort(
+    (a, b) =>
+      Math.abs(Math.log(toBytes(a.target, a.unit) / bytes)) - Math.abs(Math.log(toBytes(b.target, b.unit) / bytes)),
+  )
+  .slice(0, 5);
+
+const steps = [
+  `Choose one or more ${label} files, or drag them onto the drop area. Only .jpg and .jpeg files are accepted.`,
+  "Check the order of the list. Use the arrows to reorder pages and Remove to take out any image you do not want.",
+  `Confirm the target size (currently ${target}). It is editable, so change the number or the KB/MB unit if your limit differs, and pick a page size.`,
+  "Press Create PDF. Your images are embedded as they are when that already fits; otherwise they are recompressed gradually and the PDF is measured after each attempt.",
+  "Read the result: the actual PDF size is shown with a clear Target met or Target not met message. Then download the PDF.",
+];
+
+const faqs = [
+  {
+    q: `How do I convert a ${label} to a PDF under ${target}?`,
+    a: `Add your ${label} files, keep or edit the ${target} target, and press Create PDF. The tool builds the PDF in your browser and tells you the real size so you can see whether it is under ${target}.`,
+  },
+  route.faq,
+  {
+    q: "Are my images uploaded anywhere?",
+    a: "No. Files are read and the PDF is generated entirely on your device. Nothing is sent to Paul Digital or any other server.",
+  },
+  {
+    q: "Can it guarantee the PDF will be under the limit?",
+    a: "No. The size depends on your images. The tool embeds JPEGs unchanged when possible, then lowers quality and dimensions only down to a readable floor. If that is not enough it reports the actual size and says the target was not met.",
+  },
+  {
+    q: "Can I combine several images into one PDF?",
+    a: "Yes. Select multiple files, reorder them with the arrows, remove any you do not need, and each image becomes one page in that order.",
+  },
+  {
+    q: "Is the PDF a normal, standards-compliant file?",
+    a: "Yes. It is a standard PDF 1.4 file with each JPEG embedded as an image on its own page. Nothing is truncated or padded to hit a number.",
+  },
+];
+
+const url = route.canonical;
+const site = (path: string) => new URL(path, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: "Tools", item: site("/tools/") },
+    { "@type": "ListItem", position: 3, name: route.h1, item: url },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: route.h1,
+  url,
+  description: route.description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Any (web browser)",
+  browserRequirements: "Requires JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={route.title} description={route.description} canonicalUrl={`/${route.slug}/`}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/tools/">Tools</a></li>
+          <li aria-current="page">{route.h1}</li>
+        </ol>
+      </nav>
+      <h1>{route.h1}</h1>
+      <p>{route.intro}</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container">
+      <JpgToPdf client:load target={route.target} unit={route.unit} label={route.label} />
+    </div>
+  </section>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>How to convert {label} to PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>What a {target} PDF limit means</h2>
+      <p>{route.explanation}</p>
+      <p>
+        The size you enter is a goal, not a promise. A PDF made from JPEG images is almost entirely the size of those
+        images, so the result depends on how many images you add, their resolution and how detailed they are. This tool
+        measures the finished file and reports the true byte count instead of assuming success.
+      </p>
+
+      <h2>Format and page settings</h2>
+      <p>
+        Accepted input: {label} images (.jpg and .jpeg are the same format). Each image becomes one page, in the order shown
+        in the list. Choose A4 or US Letter to fit each image on a page with a small margin, with portrait or landscape
+        chosen automatically, or choose &ldquo;Match image shape&rdquo; for pages that follow each image's proportions. Images
+        are never stretched or cropped. PNG, WebP, HEIC and other formats are not accepted here.
+      </p>
+      <p>
+        When the untouched JPEGs already fit the target, they are embedded without recompression. Otherwise quality is lowered
+        in steps (not below about 50 percent) and dimensions are reduced only as far as roughly 800 px on the long side.
+        Photos stored with an EXIF rotation flag are re-encoded upright, since PDF viewers ignore that flag.
+      </p>
+
+      <h2>Practical uses</h2>
+      <ul>
+        {route.useCases.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>Tips for a smaller PDF</h2>
+      <ul>
+        {route.tips.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.q}</h3>
+              <p>{faq.a}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <h2>Related tools</h2>
+      <ul class="ic-links">
+        <li><a href={`/${route.compressor.slug}/`}>{route.compressor.text}</a></li>
+        {related.map((item) => <li><a href={`/${item.slug}/`}>{item.h1}</a></li>)}
+        <li><a href="/tools/#jpg-to-pdf-heading">All JPG to PDF sizes</a></li>
+      </ul>
+
+      <h2>Privacy</h2>
+      <p>
+        Your images are processed entirely in your browser on your own device. They are not uploaded to Paul Digital or any
+        other server, and nothing is stored once you close the page.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

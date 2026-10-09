@@ -1,0 +1,19 @@
+---
+import JpgToPdfPage from "../components/JpgToPdfPage.astro";
+import { jpgToPdfRoutes } from "../data/jpgToPdfRoutes";
+import type { JpgToPdfRoute } from "../data/jpgToPdfRoutes";
+
+export function getStaticPaths() {
+  return jpgToPdfRoutes
+    .filter((route) => route.prefix === "jpg")
+    .map((route) => ({ params: { size: route.size }, props: { route } }));
+}
+
+interface Props {
+  route: JpgToPdfRoute;
+}
+
+const { route } = Astro.props;
+---
+
+<JpgToPdfPage route={route} />
