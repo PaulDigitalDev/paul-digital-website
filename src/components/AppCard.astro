@@ -17,7 +17,7 @@ const { app } = Astro.props;
   <div class="app-card-content">
     <div class="app-card-tags">
       <span class="tag tag-category">Android app</span>
-      <span class:list={["tag", "app-status", app.status === "Published" ? "tag-green" : app.status === "Coming Soon" ? "tag-neutral" : "tag-blue"]}>
+      <span class:list={["tag", "app-status", app.status === "Published" ? "tag-green" : app.status === "Preview" ? "tag-blue" : "tag-neutral"]}>
         {app.status}
       </span>
     </div>

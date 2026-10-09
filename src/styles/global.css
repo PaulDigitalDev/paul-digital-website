@@ -1160,9 +1160,9 @@ main {
 }
 
 .site-footer {
-  border-top: 1px solid #203b75;
-  background: var(--navy);
-  color: var(--white);
+  border-top: 1px solid #d4d9e1;
+  background: #f2f2f2;
+  color: #334155;
 }
 
 .footer-inner {
@@ -1173,13 +1173,18 @@ main {
 
 .brand-footer,
 .brand-footer:hover {
-  color: var(--white);
+  color: var(--navy);
+}
+
+/* The logo PNG has an opaque near-white background; blend it into the grey footer. */
+.brand-footer .brand-mark {
+  mix-blend-mode: multiply;
 }
 
 .footer-brand p {
   max-width: 19rem;
   margin-top: 0.45rem;
-  color: #c5d2eb;
+  color: #334155;
   font-size: 0.75rem;
 }
 
@@ -1191,7 +1196,7 @@ main {
 
 .footer-group h2 {
   margin-bottom: 0.4rem;
-  color: var(--white);
+  color: var(--navy);
   font-size: 0.78rem;
 }
 
@@ -1204,20 +1209,20 @@ main {
 }
 
 .footer-group a {
-  color: #c5d2eb;
+  color: #334155;
   font-size: 0.75rem;
   text-decoration: none;
 }
 
 .footer-group a:hover {
-  color: var(--white);
+  color: var(--blue);
   text-decoration: underline;
 }
 
 .copyright {
   padding-block: 0.7rem;
-  border-top: 1px solid rgb(255 255 255 / 16%);
-  color: #c5d2eb;
+  border-top: 1px solid #d4d9e1;
+  color: #475569;
   font-size: 0.7rem;
 }
 

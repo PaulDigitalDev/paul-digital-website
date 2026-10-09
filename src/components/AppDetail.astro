@@ -18,7 +18,7 @@ const { app } = Astro.props;
 <section class="content-section">
   <div class="container prose">
     <p>
-      <span class:list={["tag", "app-status", app.status === "Published" ? "tag-green" : app.status === "Coming Soon" ? "tag-neutral" : "tag-blue"]}>
+      <span class:list={["tag", "app-status", app.status === "Published" ? "tag-green" : app.status === "Preview" ? "tag-blue" : "tag-neutral"]}>
         {app.status}
       </span>
     </p>
@@ -26,6 +26,18 @@ const { app } = Astro.props;
     <p>{app.purpose}</p>
     {app.platform && <p><strong>Platform:</strong> {app.platform}</p>}
     {app.packageName && <p><strong>Package name:</strong> <code>{app.packageName}</code></p>}
+    {app.status === "Preview" && (
+      <p>
+        This is a preview release. It is not yet listed on Google Play.
+      </p>
+    )}
+    {app.previewApkUrl && (
+      <p>
+        <a class="button button-primary" href={app.previewApkUrl} rel="noopener noreferrer">
+          Download preview APK <span aria-hidden="true">→</span>
+        </a>
+      </p>
+    )}
     {app.playUrl && (
       <p>
         <a class="button button-primary" href={app.playUrl} target="_blank" rel="noopener noreferrer">

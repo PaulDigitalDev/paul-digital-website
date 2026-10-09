@@ -1,4 +1,4 @@
-export type AppStatus = "Published" | "Coming Soon" | "In Development";
+export type AppStatus = "Published" | "Preview" | "Coming Soon" | "In Development";
 
 export interface App {
   slug: string;
@@ -11,6 +11,8 @@ export interface App {
   platform?: string;
   playUrl?: string;
   packageName?: string;
+  /** Direct link to a preview APK. Omit until the file is hosted somewhere. */
+  previewApkUrl?: string;
 }
 
 export const apps = {
@@ -35,6 +37,17 @@ export const apps = {
     icon: "https://play-lh.googleusercontent.com/LVMuMJT9ImuUn_QTa3pQEeAyifdOOLBx72Zf-I788QfXN7rg7ErTzwFuQpDYRkSzCM8gQX3o1dMJEduvrJmW=w240-h480-rw",
     platform: "Android",
     playUrl: "https://play.google.com/store/apps/details?id=com.pauldigital.wavmp3converter&pcampaignid=web_share",
+  },
+  "photo-exif-editor": {
+    slug: "photo-exif-editor",
+    name: "Photo EXIF Editor",
+    description: "View and edit photo GPS, date and time, and metadata on Android.",
+    purpose: "View and edit photo metadata such as GPS location, date and time, and other EXIF details.",
+    status: "Preview",
+    code: "EXIF",
+    icon: "/apps/photo-exif-editor-icon.png",
+    platform: "Android",
+    packageName: "com.pauldigital.photoexifeditor.gps.date.metadata",
   },
   "text-to-pdf": {
     slug: "text-to-pdf",
@@ -68,6 +81,7 @@ export type AppSlug = keyof typeof apps;
 
 export const allApps = Object.values(apps);
 export const publishedApps = allApps.filter((app) => app.status === "Published");
+export const previewApps = allApps.filter((app) => app.status === "Preview");
 export const comingSoonApps = allApps.filter((app) => app.status === "Coming Soon");
 
 export function getAppBySlug(slug: AppSlug): App {

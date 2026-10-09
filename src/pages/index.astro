@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import AppCard from "../components/AppCard.astro";
 import ToolCard from "../components/ToolCard.astro";
-import { comingSoonApps, publishedApps } from "../data/apps";
+import { comingSoonApps, previewApps, publishedApps } from "../data/apps";
 
 const tools = [
   { id: "image-compressor", name: "Image Compressor", description: "Browser-based image tool.", code: "IMG" },
@@ -42,6 +42,10 @@ const tools = [
         </div>
         <div class="card-grid app-grid app-grid-published">
           {publishedApps.map((app) => <AppCard app={app} />)}
+        </div>
+        <h3 class="app-section-heading">Preview</h3>
+        <div class="card-grid app-grid">
+          {previewApps.map((app) => <AppCard app={app} />)}
         </div>
         <h3 class="app-section-heading">Coming Soon</h3>
         <div class="card-grid app-grid app-grid-coming-soon">

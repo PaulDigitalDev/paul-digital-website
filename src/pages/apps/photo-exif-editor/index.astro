@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AppDetail from "../../../components/AppDetail.astro";
+import { getAppBySlug } from "../../../data/apps";
+
+const app = getAppBySlug("photo-exif-editor");
+---
+
+<BaseLayout
+  title={`${app.name} — Paul Digital`}
+  description={app.description}
+>
+  <AppDetail app={app} />
+</BaseLayout>
