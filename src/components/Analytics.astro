@@ -1,0 +1,141 @@
+---
+// Google Analytics 4 (gtag.js), loaded only after the visitor opts in.
+// Consent Mode defaults everything to "denied"; gtag.js is not requested until
+// the visitor accepts. The choice is kept in localStorage and can be changed
+// from the "Analytics choices" link in the footer (#analytics-choices).
+// The site is multi-page (no client-side router), so each navigation is a full
+// page load and GA4 records its page_view from the config call.
+const GA_ID = "G-YFFSSE7VTC";
+---
+
+<div id="analytics-consent" class="analytics-consent" role="region" aria-label="Analytics choice" hidden>
+  <p>
+    We'd like to use Google Analytics to count visits and see which pages are used. It never
+    receives your files or their contents.
+    <a href="/privacy/#analytics">Learn more</a>
+  </p>
+  <div class="analytics-consent-actions">
+    <button type="button" class="button button-primary" data-analytics-choice="granted">Accept</button>
+    <button type="button" class="button" data-analytics-choice="denied">Decline</button>
+  </div>
+</div>
+
+<script is:inline define:vars={{ GA_ID }}>
+  (function () {
+    var KEY = "pd_analytics_consent";
+    var loaded = false;
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      window.dataLayer.push(arguments);
+    }
+    gtag("consent", "default", {
+      analytics_storage: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+    });
+
+    function read() {
+      try {
+        return localStorage.getItem(KEY);
+      } catch (e) {
+        return null;
+      }
+    }
+    function write(v) {
+      try {
+        localStorage.setItem(KEY, v);
+      } catch (e) {}
+    }
+
+    function load() {
+      if (loaded) return;
+      loaded = true;
+      gtag("consent", "update", { analytics_storage: "granted" });
+      var s = document.createElement("script");
+      s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+      document.head.appendChild(s);
+      gtag("js", new Date());
+      gtag("config", GA_ID, {
+        allow_google_signals: false,
+        allow_ad_personalization_signals: false,
+      });
+    }
+
+    function disable() {
+      window["ga-disable-" + GA_ID] = true;
+      if (loaded) gtag("consent", "update", { analytics_storage: "denied" });
+    }
+
+    function apply(choice) {
+      var banner = document.getElementById("analytics-consent");
+      if (choice === "granted") {
+        window["ga-disable-" + GA_ID] = false;
+        load();
+        if (banner) banner.hidden = true;
+      } else if (choice === "denied") {
+        disable();
+        if (banner) banner.hidden = true;
+      } else if (banner) {
+        banner.hidden = false;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var current = read();
+      if (current === "denied") disable();
+      apply(current);
+      document.addEventListener("click", function (e) {
+        var t = e.target instanceof Element ? e.target : null;
+        var btn = t && t.closest("[data-analytics-choice]");
+        if (btn) {
+          var v = btn.getAttribute("data-analytics-choice");
+          write(v);
+          apply(v);
+          return;
+        }
+        var link = t && t.closest("a[href='#analytics-choices']");
+        if (link) {
+          e.preventDefault();
+          var b = document.getElementById("analytics-consent");
+          if (b) {
+            b.hidden = false;
+            var first = b.querySelector("button");
+            if (first) first.focus();
+          }
+        }
+      });
+    });
+  })();
+</script>
+
+<style is:global>
+  .analytics-consent {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1000;
+    max-width: 40rem;
+    margin-inline: auto;
+    padding: 1rem 1.25rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(11, 31, 94, 0.18);
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+  .analytics-consent[hidden] {
+    display: none;
+  }
+  .analytics-consent p {
+    margin: 0 0 0.75rem;
+  }
+  .analytics-consent-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+</style>

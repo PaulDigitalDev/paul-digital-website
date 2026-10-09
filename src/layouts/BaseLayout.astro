@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import Analytics from "../components/Analytics.astro";
 import { BRAND_LOGO } from "../config/brand";
 
 interface Props {
@@ -56,5 +57,6 @@ const socialImage = new URL(image, Astro.site);
       <slot />
     </main>
     <SiteFooter />
+    <Analytics />
   </body>
 </html>
