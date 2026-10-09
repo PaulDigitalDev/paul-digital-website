@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ImageCompressor from "../components/tools/ImageCompressor";
+import { imageSizeBySlug, imageSizeRoutes, targetLabel } from "../data/imageSizeRoutes";
+import type { ImageSizeRoute } from "../data/imageSizeRoutes";
+import { getContent } from "../data/imageSizeContent";
+
+export function getStaticPaths() {
+  return imageSizeRoutes.map((route) => ({ params: { slug: route.slug }, props: { route } }));
+}
+
+interface Props {
+  route: ImageSizeRoute;
+}
+
+const { route } = Astro.props;
+const content = getContent(route);
+const related = content.related.map((slug) => imageSizeBySlug.get(slug)).filter((item): item is ImageSizeRoute => Boolean(item));
+const jpegOnly = route.scope === "jpeg";
+const target = targetLabel(route);
+const keyword = route.h1.charAt(0).toLowerCase() + route.h1.slice(1);
+
+const fileStep = jpegOnly
+  ? "Choose a JPEG file, or drag it onto the drop area. Only .jpg and .jpeg files are accepted on this page."
+  : "Choose a JPEG, PNG or WebP file, or drag it onto the drop area.";
+const targetStep =
+  route.mode === "range"
+    ? `Check the minimum and maximum fields (currently ${target}) and edit them to match your form.`
+    : `Check the target size (currently ${target}). It is editable, so change the number or the KB/MB unit if your limit differs.`;
+const runStep =
+  route.mode === "resize"
+    ? "Press the button. The tool scales the dimensions down first and lowers quality only if scaling alone is not enough."
+    : route.mode === "range"
+      ? "Press the button. The tool searches for a result inside your range, reducing quality first and then dimensions."
+      : "Press the button. The tool lowers the quality first, then reduces the dimensions step by step if the file is still too large.";
+const steps = [
+  fileStep,
+  targetStep,
+  runStep,
+  "Compare the preview and the measured output size with the original, and read any notes or warnings.",
+  "Download the new file. If it missed the target, adjust the target slightly or crop the original, and try again.",
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: content.faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a },
+  })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", Astro.site).href },
+    { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).href },
+    { "@type": "ListItem", position: 3, name: route.h1, item: route.canonical },
+  ],
+};
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+---
+
+<BaseLayout title={route.title} description={route.description} canonicalUrl={`/${route.slug}/`}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/tools/">Tools</a></li>
+          <li aria-current="page">{route.h1}</li>
+        </ol>
+      </nav>
+      <h1>{route.h1}</h1>
+      <p>{content.intro}</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container">
+      <ImageCompressor
+        client:load
+        mode={route.mode}
+        scope={route.scope}
+        target={route.target}
+        unit={route.unit}
+        rangeMin={route.rangeMin}
+        rangeMax={route.rangeMax}
+      />
+    </div>
+  </section>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>How to use this tool</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>What to know before you {keyword}</h2>
+      <p>{content.explanation}</p>
+      <p>
+        {route.details} The size you enter is a goal, not a promise: the result depends on the original image, its dimensions,
+        its complexity, its format and your browser's encoder, and the tool reports the real size instead of assuming it.
+      </p>
+
+      <h2>Recommended settings and supported formats</h2>
+      <p>{content.settings}</p>
+      <p>
+        {
+          jpegOnly
+            ? "Accepted input: JPEG (.jpg, .jpeg). Output is always JPEG, and transparent areas, if any, are filled with white."
+            : "Accepted input: JPEG, PNG and WebP (WebP depends on your browser). HEIC and AVIF are not supported. PNG is lossless, so it can only get smaller with fewer pixels unless you choose JPEG or WebP output."
+        }
+      </p>
+
+      <h2>Practical uses</h2>
+      <ul>
+        {content.useCases.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>Tips for a smaller file</h2>
+      <ul>
+        {content.tips.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        {
+          content.faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.q}</h3>
+              <p>{faq.a}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <h2>Related image size tools</h2>
+      <ul class="ic-links">
+        {related.map((item) => <li><a href={`/${item.slug}/`}>{item.h1}</a></li>)}
+        <li><a href="/tools/#image-sizes-heading">All target sizes</a></li>
+      </ul>
+
+      <h2>Privacy</h2>
+      <p>
+        Your image is processed entirely in your browser using your own device. It is not uploaded to Paul Digital or any
+        other server, and nothing is stored once you close the page.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

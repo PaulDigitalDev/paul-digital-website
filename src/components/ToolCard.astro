@@ -4,16 +4,18 @@ interface Props {
   description: string;
   code: string;
   id?: string;
+  href?: string;
 }
 
-const { name, description, code, id } = Astro.props;
+const { name, description, code, id, href } = Astro.props;
 ---
 
 <article id={id} class="card tool-card">
   <div class="card-top">
     <span class="app-icon" aria-hidden="true">{code}</span>
-    <span class="tag tag-blue">Coming Soon</span>
+    {href ? <span class="tag tag-green">Available</span> : <span class="tag tag-blue">Coming Soon</span>}
   </div>
   <h2>{name}</h2>
   <p>{description}</p>
+  {href && <a class="card-link" href={href}>Open tool <span aria-hidden="true">→</span></a>}
 </article>

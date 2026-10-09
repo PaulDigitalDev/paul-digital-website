@@ -1,9 +1,16 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ToolCard from "../../components/ToolCard.astro";
+import { imageSizeRoutes } from "../../data/imageSizeRoutes";
 
 const tools = [
-  { id: "image-compressor", name: "Image Compressor", description: "Browser-based image tool.", code: "IMG" },
+  {
+    id: "image-compressor",
+    name: "Image Compressor",
+    description: "Compress or resize an image toward a target size, right in your browser.",
+    code: "IMG",
+    href: "/compress-image-to-100kb/",
+  },
   { id: "text-to-pdf", name: "Text to PDF", description: "Browser-based PDF tool.", code: "PDF" },
   { id: "json-viewer", name: "JSON Viewer", description: "Browser-based JSON tool.", code: "{ }" },
   { id: "image-to-pdf", name: "Image to PDF", description: "Browser-based PDF tool.", code: "PDF" },
@@ -12,13 +19,13 @@ const tools = [
 
 <BaseLayout
   title="Web Tools — Paul Digital"
-  description="Explore upcoming Paul Digital web tools: Image Compressor, Text to PDF, JSON Viewer, and Image to PDF."
+  description="Paul Digital web tools: use the browser-based Image Compressor now, with Text to PDF, JSON Viewer, and Image to PDF coming soon."
 >
   <section class="page-hero">
     <div class="container">
       <span class="eyebrow">Useful tools, right in your browser</span>
       <h1>Web tools</h1>
-      <p>Practical browser-based tools for everyday tasks. All tools are coming soon.</p>
+      <p>Practical browser-based tools for everyday tasks. The Image Compressor is available now; the others are coming soon.</p>
     </div>
   </section>
   <section class="content-section">
@@ -26,6 +33,18 @@ const tools = [
       <div class="card-grid">
         {tools.map((tool) => <ToolCard {...tool} />)}
       </div>
+    </div>
+  </section>
+  <section class="content-section" style="padding-top: 0" aria-labelledby="image-sizes-heading">
+    <div class="container">
+      <h2 id="image-sizes-heading">Image Compressor by target size</h2>
+      <p style="color: var(--muted)">
+        Pick a size to open the compressor with that target already set. You can edit it on the page. Not sure which size you need?
+        Start with the <a href="/compress-image-to-100kb/">main Image Compressor</a>.
+      </p>
+      <ul class="ic-links">
+        {imageSizeRoutes.map((route) => <li><a href={`/${route.slug}/`}>{route.h1}</a></li>)}
+      </ul>
     </div>
   </section>
 </BaseLayout>
