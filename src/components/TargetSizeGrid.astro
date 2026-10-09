@@ -1,0 +1,18 @@
+---
+interface Props {
+  heading?: string;
+  headingId: string;
+  items: { href: string; label: string; ariaLabel: string }[];
+}
+
+const { heading = "Exact Target Sizes", headingId, items } = Astro.props;
+---
+
+<section class="target-sizes" aria-labelledby={headingId}>
+  <h2 id={headingId}>{heading}</h2>
+  <ul class="target-grid">
+    {items.map((item) => (
+      <li><a href={item.href} aria-label={item.ariaLabel}>{item.label}</a></li>
+    ))}
+  </ul>
+</section>

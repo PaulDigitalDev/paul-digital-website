@@ -1,0 +1,27 @@
+---
+import ToolCategoryPage from "../../components/ToolCategoryPage.astro";
+import { jpgToPdfRoutes } from "../../data/jpgToPdfRoutes";
+
+const items = jpgToPdfRoutes.map((route) => ({
+  href: `/${route.slug}/`,
+  label: route.h1,
+  ariaLabel: route.h1,
+}));
+---
+
+<ToolCategoryPage
+  path="/jpg-to-pdf/"
+  title="JPG to PDF Converter — Online, Private | Paul Digital"
+  description="Convert JPG images into a PDF in your browser and check the real file size against a target such as 100 KB, 500 KB or 1 MB. Nothing is uploaded."
+  h1="JPG to PDF"
+  intro="Combine JPG images into a single PDF in your browser and check the real file size against a target. Nothing is uploaded."
+  group="PDF Tools"
+  openHref="/jpg-to-pdf-under-100kb/"
+  openLabel="Open JPG to PDF Converter"
+  gridId="pdf-target-sizes"
+  items={items}
+  about={[
+    "Choose an exact size limit below to open the converter with that target already set, or start with the default converter and edit the target yourself.",
+    "The actual size of the finished PDF is always measured and reported, so you can see whether it meets the limit before you download it.",
+  ]}
+/>

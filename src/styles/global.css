@@ -1740,3 +1740,71 @@ main {
     justify-content: flex-end;
   }
 }
+
+.target-sizes h2 {
+  margin: 0 0 1rem;
+  color: var(--navy);
+}
+
+.target-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.target-grid a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--navy);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--navy);
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.target-grid a:hover {
+  border-color: var(--blue);
+  background: #f1f7ff;
+  color: var(--blue-text);
+}
+
+.target-grid a:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 2px;
+}
+
+.target-about {
+  margin-top: 2rem;
+}
+
+.page-hero .actions {
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .target-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .target-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .target-grid a {
+    font-size: 0.88rem;
+  }
+}

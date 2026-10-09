@@ -1,0 +1,27 @@
+---
+import ToolCategoryPage from "../../components/ToolCategoryPage.astro";
+import { imageSizeRoutes, targetLabel } from "../../data/imageSizeRoutes";
+
+const items = imageSizeRoutes.map((route) => {
+  const verb = route.mode === "resize" ? "Resize" : route.scope === "jpeg" ? "JPEG" : "Compress";
+  const label = `${verb} to ${targetLabel(route)}`;
+  return { href: `/${route.slug}/`, label, ariaLabel: route.h1 };
+});
+---
+
+<ToolCategoryPage
+  path="/image-compressor/"
+  title="Image Compressor — Reduce Image Size Online | Paul Digital"
+  description="Compress or resize JPEG, PNG and WebP images toward an exact file size such as 20 KB, 50 KB, 100 KB or 1 MB, right in your browser with nothing uploaded."
+  h1="Image Compressor"
+  intro="Compress or resize an image toward a target file size, right in your browser. Nothing is uploaded, and the real output size is measured and shown."
+  group="Image Tools"
+  openHref="/compress-image-to-100kb/"
+  openLabel="Open Image Compressor"
+  gridId="image-target-sizes"
+  items={items}
+  about={[
+    "Pick an exact target size below to open the compressor with that goal already filled in, or open the default compressor and type your own limit. The target stays editable on every page.",
+    "The size you choose is a goal, not a promise. The result depends on the original image and your browser, so the tool reports the actual size of the file it produces.",
+  ]}
+/>
