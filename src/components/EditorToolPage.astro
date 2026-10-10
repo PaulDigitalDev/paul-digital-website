@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ImageResizer from "./tools/ImageResizer";
 import CropEditor from "./tools/CropEditor";
 import MetadataTool from "./tools/MetadataTool";
+import UkPhotoCheck from "./tools/UkPhotoCheck";
 import { editorToolBySlug } from "../data/editorTools";
 import { relatedTools } from "../data/toolRegistry";
 
@@ -73,6 +74,8 @@ const appSchema = {
       {tool.mode === "metadata" && <MetadataTool client:load />}
       {tool.mode === "passport" && <CropEditor client:load variant="passport" />}
       {tool.mode === "signature" && <CropEditor client:load variant="signature" />}
+      {tool.mode === "government" && <CropEditor client:load variant="government" />}
+      {tool.mode === "ukdigital" && <UkPhotoCheck client:load />}
     </div>
   </section>
   <section class="content-section" style="padding-top: 0">
@@ -84,6 +87,25 @@ const appSchema = {
 
       <h2>About this tool</h2>
       {tool.explanation.map((text) => <p>{text}</p>)}
+
+      {
+        tool.sources && (
+          <>
+            <h2>Official sources</h2>
+            {tool.sources.map((source) => (
+              <>
+                <p>
+                  <a href={source.url} rel="noopener noreferrer">{source.label}</a> — checked {source.verified}. What it says:
+                </p>
+                <ul>
+                  {source.says.map((line) => <li>{line}</li>)}
+                </ul>
+              </>
+            ))}
+            <p>Paul Digital is not affiliated with the UK Government. Requirements can change, so confirm them on the official page before you apply.</p>
+          </>
+        )
+      }
 
       <h2>Practical uses</h2>
       <ul>

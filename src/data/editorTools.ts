@@ -1,6 +1,14 @@
 import type { Faq } from "./formatTools";
 
-export type EditorMode = "resize" | "crop" | "metadata" | "passport" | "signature";
+export type EditorMode = "resize" | "crop" | "metadata" | "passport" | "signature" | "government" | "ukdigital";
+
+export interface OfficialSource {
+  label: string;
+  url: string;
+  verified: string;
+  /** What the source does and does not say, shown on the page. */
+  says: string[];
+}
 
 export interface EditorTool {
   slug: string;
@@ -17,6 +25,8 @@ export interface EditorTool {
   tips: string[];
   faqs: Faq[];
   related: string[];
+  /** Official source for requirement claims, with the date it was checked. */
+  sources?: OfficialSource[];
 }
 
 export const editorTools: EditorTool[] = [
@@ -224,6 +234,107 @@ export const editorTools: EditorTool[] = [
       { q: "Is my signature uploaded?", a: "No. It is processed in your browser and never leaves your device." },
     ],
     related: ["passport-photo-resizer", "image-compressor", "image-resizer", "crop-rotate-flip-image"],
+  },
+  {
+    slug: "government-job-photo-signature-resizer",
+    mode: "government",
+    h1: "Government Job Photo and Signature Resizer",
+    title: "Government Job Photo and Signature Resizer | Paul Digital",
+    description:
+      "Crop and resize a photo or signature to the exact pixel size and minimum and maximum file size in your application notice. Reports the real result. Private, in your browser.",
+    summary: "Crop a photo or signature to the pixel size and KB range your application notice states, and check the real file.",
+    intro: "Type the width, height and file-size range from your recruitment or exam notice, crop the picture, and get a file that is measured against those numbers. Nothing is uploaded.",
+    keywords: ["government job", "recruitment", "application photo", "signature", "kb range", "min kb", "exam form"],
+    steps: [
+      "Open your application notice or form instructions and note the required width, height, minimum KB and maximum KB for the photo or signature.",
+      "Choose your picture, or drag it onto the drop area.",
+      "Enter the width and height in pixels, and the minimum and maximum file size in KB. Leave either size box empty if the notice does not give that limit.",
+      "Move and resize the crop box. It stays locked to the output shape, so the picture is not stretched.",
+      "Press Create, read the measured size and any warnings, then download.",
+    ],
+    explanation: [
+      "Every recruitment body, exam and even each notification can set its own pixel size, file-size range and file type, and they change between cycles. Because of that, this page deliberately has no built-in presets for named exams. You enter the numbers from the notice that applies to you.",
+      "With a maximum, the tool lowers JPG or WebP quality in steps until the file fits. With a minimum, it raises quality in steps while the file stays under the maximum. The size shown at the end is the real size of the file you download. If a limit could not be met, the result panel says so instead of presenting the file as correct.",
+      "A small or very simple picture can stay below a minimum even at full quality, and a detailed one can stay above a maximum at the lowest quality tried. In those cases change the pixel size if your notice allows it, or start from a better original. PNG is lossless, so its size cannot be tuned.",
+      "This tool changes pixel size and file size only. It does not check background colour, face position, ink colour, capital letters, dates on the photo or whether a portal will accept the file, and resizing never guarantees acceptance.",
+    ],
+    useCases: [
+      "Preparing a photo for a government job or exam form that gives a pixel size and a KB range.",
+      "Preparing a signature image for the same form.",
+      "Checking the real size of a file before you upload it.",
+    ],
+    tips: [
+      "Copy the numbers from the current notice, not from an older year or a third-party site.",
+      "Use a photo taken against a plain background in even light, and sign with dark ink on plain white paper.",
+      "Keep the original files. This tool always creates a new file.",
+    ],
+    faqs: [
+      { q: "Does this have SSC, UPSC, NEET or railway presets?", a: "No. Those requirements are set per notification and change, and this site has not confirmed them from the official notices, so you enter the numbers yourself." },
+      { q: "Can I set only a maximum, or only a minimum?", a: "Yes. Either box can be left empty if your notice does not state that limit." },
+      { q: "What if the file is still outside my limits?", a: "The result panel shows a warning with the real size. Adjust the pixel size or use a different original and try again." },
+      { q: "Is my photo uploaded?", a: "No. It is processed in your browser and never leaves your device." },
+    ],
+    related: ["passport-photo-resizer", "signature-resizer", "image-compressor", "jpg-to-pdf"],
+  },
+  {
+    slug: "uk-passport-photo-digital",
+    mode: "ukdigital",
+    h1: "UK Digital Passport Photo Checker",
+    title: "UK Digital Passport Photo Checker — Size and File Size | Paul Digital",
+    description:
+      "Check a photo against the GOV.UK digital passport photo size rules: at least 600 × 750 pixels and 50 KB to 10 MB. Private, in your browser, and it never crops.",
+    summary: "Check a photo against GOV.UK's digital pixel-size and file-size rules for online passport applications.",
+    intro: "Find out whether your photo is at least 600 × 750 pixels and between 50 KB and 10 MB, the digital rules GOV.UK states for online passport applications. Nothing is uploaded and nothing is cropped.",
+    keywords: ["uk passport", "gov.uk", "digital photo", "600x750", "passport photo upload", "hm passport office"],
+    steps: [
+      "Choose the photo you plan to upload, or drag it onto the drop area.",
+      "Read the measured pixel size and file size against the GOV.UK limits.",
+      "If the file is over 10 MB and large enough, make a smaller copy. It is not cropped.",
+      "If the pixel size is too small, or the file is under 50 KB, use a different original photo.",
+    ],
+    explanation: [
+      "GOV.UK sets rules for the digital photo you upload with an online passport application. On the page checked on the date below, the photo must be at least 600 pixels wide and 750 pixels tall, and the file at least 50 KB and no more than 10 MB. This tool measures exactly those two things.",
+      "Digital and printed photos have different rules. The 35 mm × 45 mm size belongs to printed photos, which GOV.UK covers on a separate page. Converting 35 × 45 mm at 300 DPI gives 413 × 531 pixels, which is below the digital minimum, so a printed-size crop is not a valid digital upload.",
+      "GOV.UK says not to crop your digital photo, because it will be done for you. For that reason this page never crops and never enlarges. A copy is made only when a file is over 10 MB, by scaling the whole picture down while keeping it at or above 600 × 750 pixels.",
+      "GOV.UK has other rules this tool cannot check: a plain light-coloured background, a photo taken in the last month, no alteration by computer software, and what the photo must show. The page we read does not state a required file format or aspect ratio, so this tool makes no claim about them. Always read the current GOV.UK rules before you apply.",
+    ],
+    useCases: [
+      "Checking a phone photo before an online UK passport application.",
+      "Finding out why an upload was refused for being too small or too large.",
+      "Making a copy under 10 MB when a camera photo is too big.",
+    ],
+    tips: [
+      "Use the original photo from your camera or phone rather than a copy sent through a messaging app, which is often compressed.",
+      "Do not crop or edit the photo yourself.",
+      "Stand against a plain light-coloured background in even light.",
+    ],
+    faqs: [
+      { q: "Will my photo be accepted?", a: "This tool cannot promise that. It checks pixel size and file size only; GOV.UK also judges background, lighting, how recent the photo is and what it shows." },
+      { q: "Why does this page not crop to 35 × 45 mm?", a: "That is the printed photo size. For digital uploads GOV.UK states a minimum pixel size and says not to crop your photo, so cropping here could cause problems." },
+      { q: "What file format is required?", a: "The GOV.UK page we read does not state one, so this tool does not claim one. A smaller copy is saved as a JPG." },
+      { q: "Is my photo uploaded?", a: "No. It is measured in your browser and never leaves your device." },
+    ],
+    related: ["passport-photo-resizer", "image-compressor", "image-resizer", "image-metadata"],
+    sources: [
+      {
+        label: "GOV.UK: Photos for passports",
+        url: "https://www.gov.uk/photos-for-passports",
+        verified: "10 October 2026",
+        says: [
+          "Digital photo: at least 600 pixels wide and 750 pixels tall.",
+          "File size: at least 50KB and no more than 10MB.",
+          "Do not crop your photo - it will be done for you.",
+          "Your photo must have been taken in the last month; plain light-coloured background; unaltered by computer software.",
+          "Not stated on this page: file format and aspect ratio.",
+        ],
+      },
+      {
+        label: "GOV.UK: Printed passport photo requirements",
+        url: "https://www.gov.uk/photos-for-passports/photo-requirements",
+        verified: "10 October 2026",
+        says: ["Printed photos are 45 mm high by 35 mm wide. This is a print rule and does not set the digital pixel size."],
+      },
+    ],
   },
 ];
 

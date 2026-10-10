@@ -1,5 +1,7 @@
 import { sniffKind } from "./imageFormats";
 import type { OutputKind } from "./imageFormats";
+import { encodeInRangeWith, fitWithin, rangeOutcome } from "./sizeRange";
+import type { RangedBlob, SizedBlob } from "./sizeRange";
 
 /* Canvas helpers shared by the Image Resizer, Crop/Rotate/Flip and the passport/signature tools. */
 
@@ -82,23 +84,32 @@ export async function encodeCanvas(canvas: HTMLCanvasElement, kind: OutputKind, 
   return blob;
 }
 
-export interface SizedBlob {
-  blob: Blob;
-  quality: number;
-  /** True when the file is at or under the requested limit. */
-  met: boolean;
-}
+export type { SizedBlob, RangedBlob } from "./sizeRange";
 
 /** Lowers JPEG/WebP quality in steps until the file fits maxBytes. PNG is lossless here, so it cannot be tuned. */
 export async function encodeWithin(canvas: HTMLCanvasElement, kind: OutputKind, maxBytes: number, startQuality = 0.92): Promise<SizedBlob> {
-  let quality = startQuality;
-  let blob = await encodeCanvas(canvas, kind, quality);
-  if (kind === "png") return { blob, quality: 1, met: blob.size <= maxBytes };
-  while (blob.size > maxBytes && quality > 0.1) {
-    quality = Math.max(0.1, Math.round((quality - 0.07) * 100) / 100);
-    blob = await encodeCanvas(canvas, kind, quality);
-  }
-  return { blob, quality, met: blob.size <= maxBytes };
+  return fitWithin((q) => encodeCanvas(canvas, kind, q), kind === "png", maxBytes, startQuality);
+}
+
+/** Fits the requested [min, max] byte range by tuning quality only; see encodeInRangeWith. */
+export async function encodeInRange(canvas: HTMLCanvasElement, kind: OutputKind, minBytes: number | null, maxBytes: number | null, startQuality = 0.92): Promise<RangedBlob> {
+  // Development-only diagnostics (stripped from production builds): sizes only, never image data.
+  const dev = import.meta.env.DEV;
+  const log = (...args: unknown[]) => dev && console.debug("[size-range]", ...args);
+  log("request", { minBytes, maxBytes, mime: MIME[kind], canvas: `${canvas.width}x${canvas.height}`, startQuality });
+  const result = await encodeInRangeWith(
+    async (q) => {
+      const blob = await encodeCanvas(canvas, kind, q);
+      log("attempt", { quality: q, type: blob.type, bytes: blob.size });
+      return blob;
+    },
+    kind === "png",
+    minBytes,
+    maxBytes,
+    startQuality,
+  );
+  log("final", { quality: result.quality, bytes: result.blob.size, inRange: rangeOutcome(result.blob.size, minBytes, maxBytes), attempts: result.attempts });
+  return result;
 }
 
 /** Re-reads an exported file and confirms its real type and pixel size. */

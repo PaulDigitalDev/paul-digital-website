@@ -7,6 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "test": "node --test tests/sizeRange.test.mjs",
     "prebuild": "node scripts/copy-ocr-assets.mjs",
     "predev": "node scripts/copy-ocr-assets.mjs"
   },

@@ -11,7 +11,7 @@ import {
   cropToPixels,
   drawTransformed,
   encodeCanvas,
-  encodeWithin,
+  encodeInRange,
   release,
   renderTransformed,
   resampleTo,
@@ -20,6 +20,7 @@ import {
 } from "../../lib/imageEdit";
 import type { CropRect, Rotation, Transform } from "../../lib/imageEdit";
 import { baseName, formatBytes } from "../../lib/imageFormats";
+import { parseKb } from "../../lib/sizeRange";
 import type { OutputKind } from "../../lib/imageFormats";
 import { makePreviewSource } from "../../lib/canvasLayout";
 import { EncoderNote, FormatFields } from "./EditorBits";
@@ -30,7 +31,7 @@ import { IMAGE_ACCEPT, useImageSource } from "./useImageSource";
    variant "crop": free or fixed-shape crop, exported at its natural size.
    variant "passport" | "signature": the crop is locked to a preset (or custom) shape and the result is resized to exactly that size. */
 
-export type EditorVariant = "crop" | "passport" | "signature";
+export type EditorVariant = "crop" | "passport" | "signature" | "government";
 
 interface Exported {
   url: string;
@@ -41,6 +42,7 @@ interface Exported {
   format: OutputKind;
   notes: string[];
   overLimit: boolean;
+  underMin: boolean;
 }
 
 const HANDLES: { id: string; handle: Handle; label: string }[] = [
@@ -73,7 +75,10 @@ const nextRotation = (r: Rotation, delta: 90 | -90): Rotation => (((r + delta + 
 
 export default function CropEditor({ variant }: { variant: EditorVariant }) {
   const isPreset = variant !== "crop";
-  const presets = variant === "passport" ? passportPresets : signaturePresets;
+  /* "government" has no presets: the user types the pixel size and KB limits from their own notification. */
+  const isGov = variant === "government";
+  const presets = variant === "passport" ? passportPresets : isGov ? [] : signaturePresets;
+  const initialPresetId = isGov ? "custom" : presets[0].id;
 
   const [result, setResult] = useState<Exported | null>(null);
   const resultRef = useRef<Exported | null>(null);
@@ -88,12 +93,13 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
   const [t, setT] = useState<Transform>({ rotation: 0, flipH: false, flipV: false });
   const [crop, setCrop] = useState<CropRect>({ x: 0, y: 0, w: 1, h: 1 });
   const [aspectId, setAspectId] = useState("free");
-  const [presetId, setPresetId] = useState(presets[0].id);
-  const [customW, setCustomW] = useState(variant === "passport" ? "413" : "300");
-  const [customH, setCustomH] = useState(variant === "passport" ? "531" : "100");
+  const [presetId, setPresetId] = useState(initialPresetId);
+  const [customW, setCustomW] = useState(isGov ? "" : variant === "passport" ? "413" : "300");
+  const [customH, setCustomH] = useState(isGov ? "" : variant === "passport" ? "531" : "100");
   const [format, setFormat] = useState<OutputKind>("jpeg");
   const [quality, setQuality] = useState(0.92);
   const [maxKb, setMaxKb] = useState("");
+  const [minKb, setMinKb] = useState("");
   const [draft, setDraft] = useState<Record<string, string>>({});
 
   const previewRef = useRef<HTMLCanvasElement | null>(null);
@@ -305,8 +311,9 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
     clearResult();
     src.clear();
     setAspectId("free");
-    setPresetId(presets[0].id);
+    setPresetId(initialPresetId);
     setMaxKb("");
+    setMinKb("");
     lastAspect.current = null;
   };
 
@@ -315,8 +322,16 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
   const exportW = isPreset ? target.w : area.w;
   const exportH = isPreset ? target.h : area.h;
   const exportError = isPreset ? target.error : area.w < 1 || area.h < 1 ? "The crop is empty. Drag the box larger." : checkOutputSize(area.w, area.h);
-  const limitKb = Number(maxKb);
-  const limitError = isPreset && maxKb.trim() !== "" && !(limitKb >= 1 && limitKb <= 100000) ? "Enter a maximum file size in KB between 1 and 100000, or leave it empty." : "";
+  const hasMax = isPreset && maxKb.trim() !== "";
+  const hasMin = isGov && minKb.trim() !== "";
+  const maxParsed = hasMax ? parseKb(maxKb, "maximum") : { bytes: null, error: "" };
+  const minParsed = hasMin ? parseKb(minKb, "minimum") : { bytes: null, error: "" };
+  const minBytes = minParsed.bytes;
+  const maxBytes = maxParsed.bytes;
+  const limitKb = maxBytes === null ? 0 : maxBytes / 1024;
+  const limitMinKb = minBytes === null ? 0 : minBytes / 1024;
+  const limitError = maxParsed.error || minParsed.error
+    || (minBytes !== null && maxBytes !== null && minBytes > maxBytes ? "The minimum file size is larger than the maximum. Check both values." : "");
 
   const run = async () => {
     const bitmap = src.bitmapRef.current;
@@ -336,13 +351,22 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
       const notes: string[] = [];
       let blob: Blob;
       let overLimit = false;
-      if (isPreset && maxKb.trim() !== "") {
-        const sized = await encodeWithin(final, format, limitKb * 1024, quality);
+      let underMin = false;
+      if (hasMax || hasMin) {
+        const sized = await encodeInRange(final, format, minBytes, maxBytes, quality);
         blob = sized.blob;
-        overLimit = !sized.met;
+        overLimit = hasMax && !sized.met;
+        underMin = sized.belowMin;
         if (format === "png") notes.push("PNG is lossless, so its size cannot be tuned. Choose JPG or WebP to aim for a file-size limit.");
-        else if (sized.met && sized.quality < quality) notes.push(`Quality was lowered to ${Math.round(sized.quality * 100)}% to get under ${limitKb} KB.`);
-        else if (!sized.met) notes.push(`The file is ${formatBytes(blob.size)}, over your ${limitKb} KB limit even at the lowest quality tried. Use a smaller pixel size or crop less.`);
+        else if (overLimit) notes.push(`The file is ${formatBytes(blob.size)}, over your ${limitKb} KB limit even at the lowest quality tried. Use a smaller pixel size or crop less.`);
+        else if (sized.quality < quality) notes.push(`Quality was lowered to ${Math.round(sized.quality * 100)}% to get under ${limitKb} KB.`);
+        else if (sized.quality > quality) notes.push(`Quality was raised to ${Math.round(sized.quality * 100)}% to reach ${limitMinKb} KB.`);
+        if (underMin) {
+          const reason = sized.quality >= 1
+            ? "Quality is already at its maximum for this picture."
+            : "Your browser's next quality step jumps from below the minimum to above your maximum, so no quality setting lands inside the range.";
+          notes.push(`The file is ${formatBytes(blob.size)}, below your ${limitMinKb} KB minimum, so the requested minimum was not reached. ${reason} A small or simple picture can stay small; use a larger original or a larger pixel size if the form allows it, or try WebP if the form accepts it. The file was not padded or altered to inflate its size.`);
+        }
       } else {
         blob = await encodeCanvas(final, format, quality);
       }
@@ -355,10 +379,10 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
 
       const suffix = isPreset ? `${variant}-${target.w}x${target.h}` : `edited-${area.w}x${area.h}`;
       const name = `${baseName(file.name)}-${suffix}.${EXT[format]}`;
-      const out: Exported = { url: URL.createObjectURL(blob), blob, name, w: final.width, h: final.height, format, notes, overLimit };
+      const out: Exported = { url: URL.createObjectURL(blob), blob, name, w: final.width, h: final.height, format, notes, overLimit, underMin };
       resultRef.current = out;
       setResult(out);
-      src.setStatus("Done. Your image is ready.");
+      src.setStatus(overLimit || underMin ? "Finished, but the file size is outside your requested range. See the warning below." : "Done. Your image is ready.");
     } catch (caught) {
       src.setStatus("");
       src.setErrors([caught instanceof Error && caught.message ? caught.message : "The image could not be exported."]);
@@ -387,7 +411,7 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
         accept={IMAGE_ACCEPT}
         multiple={false}
         busy={busy}
-        ariaLabel={`${variant === "crop" ? "Crop, rotate and flip" : variant === "passport" ? "Passport photo" : "Signature"} drop area`}
+        ariaLabel={`${variant === "crop" ? "Crop, rotate and flip" : variant === "passport" ? "Passport photo" : isGov ? "Application photo or signature" : "Signature"} drop area`}
         onFiles={(files) => void src.load(files)}
       />
       <p className="ic-hint">Your image stays on this device and is never uploaded. The original file is not changed.</p>
@@ -403,6 +427,7 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
           {isPreset && (
             <>
               <div className="ic-controls">
+                {!isGov && (
                 <div className="ic-field">
                   <label htmlFor="cr-preset">{variant === "passport" ? "Photo size" : "Signature size"}</label>
                   <select id="cr-preset" value={presetId} disabled={busy} onChange={(e) => setPresetId(e.target.value)}>
@@ -418,6 +443,7 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
                     <option value="custom">Custom size…</option>
                   </select>
                 </div>
+                )}
                 {presetId === "custom" && (
                   <>
                     <div className="ic-field ic-field-unit">
@@ -430,11 +456,22 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
                     </div>
                   </>
                 )}
+                {isGov && (
+                  <div className="ic-field ic-field-unit">
+                    <label htmlFor="cr-minkb">Min size (KB)</label>
+                    <input id="cr-minkb" type="number" inputMode="decimal" min={0} step="any" placeholder="optional" value={minKb} disabled={busy} onChange={(e) => { clearResult(); setMinKb(e.target.value); }} />
+                  </div>
+                )}
                 <div className="ic-field ic-field-unit">
                   <label htmlFor="cr-kb">Max size (KB)</label>
-                  <input id="cr-kb" type="number" inputMode="numeric" min={1} placeholder="optional" value={maxKb} disabled={busy} onChange={(e) => { clearResult(); setMaxKb(e.target.value); }} />
+                  <input id="cr-kb" type="number" inputMode="decimal" min={0} step="any" placeholder="optional" value={maxKb} disabled={busy} onChange={(e) => { clearResult(); setMaxKb(e.target.value); }} />
                 </div>
               </div>
+              {isGov && (
+                <p className="st-note">
+                  File sizes use 1 KB = 1,024 bytes, the same unit shown in the result. Enter the width, height and file-size range exactly as your application notice states them. This page has no built-in exam presets because requirements change with each notification.
+                </p>
+              )}
               {preset && presetId !== "custom" && (
                 <p className="st-note">
                   <strong>{preset.region}:</strong> {preset.w} × {preset.h} px{preset.physical ? ` (${preset.physical})` : ""}. {preset.note}
@@ -545,8 +582,8 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
       {result && (
         <ResultPanel
           ariaLabel="Result"
-          tone={result.overLimit ? "warning" : "success"}
-          title={result.overLimit ? "Your image is ready, but over your size limit" : "Your image is ready"}
+          tone={result.overLimit || result.underMin ? "warning" : "success"}
+          title={result.overLimit ? "Your image is ready, but over your size limit" : result.underMin ? "Your image is ready, but under your minimum size" : "Your image is ready"}
           fileName={result.name}
           details={[
             { label: "Dimensions", value: `${result.w} × ${result.h}`, hint: "pixels" },

@@ -30,9 +30,23 @@ const mm = (id: string, label: string, region: string, wMm: number, hMm: number,
 
 const PASSPORT_NOTE = "Printed size commonly published for this document. Rules for head size, background, lighting and file type are separate and can change, so confirm with the issuing authority.";
 
+/** GOV.UK digital-photo rules for online passport applications. Source and date are shown on /uk-passport-photo-digital/. */
+export const UK_DIGITAL = {
+  minW: 600,
+  minH: 750,
+  minKb: 50,
+  maxMb: 10,
+  sourceUrl: "https://www.gov.uk/photos-for-passports",
+  printedUrl: "https://www.gov.uk/photos-for-passports/photo-requirements",
+  verified: "10 October 2026",
+} as const;
+
+const UK_PRINT_NOTE =
+  "PRINT SIZE ONLY (35 × 45 mm printed photo). This 413 × 531 px output is below the 600 × 750 px minimum GOV.UK sets for digital photos uploaded online, and GOV.UK says not to crop a digital photo yourself. For an online application, use the UK digital passport photo checker instead.";
+
 export const passportPresets: SizePreset[] = [
   mm("us", "United States passport and visa — 2 × 2 in", "United States", 50.8, 50.8, PASSPORT_NOTE),
-  mm("uk", "United Kingdom passport — 35 × 45 mm", "United Kingdom", 35, 45, PASSPORT_NOTE),
+  mm("uk", "United Kingdom printed photo — 35 × 45 mm (print size only)", "United Kingdom", 35, 45, UK_PRINT_NOTE),
   mm("eu", "EU / Schengen ID and visa — 35 × 45 mm", "European Union / Schengen", 35, 45, PASSPORT_NOTE),
   mm("au", "Australia passport — 35 × 45 mm", "Australia", 35, 45, PASSPORT_NOTE),
   mm("ca", "Canada passport — 50 × 70 mm", "Canada", 50, 70, PASSPORT_NOTE),
