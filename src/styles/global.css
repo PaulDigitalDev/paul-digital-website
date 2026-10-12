@@ -1653,6 +1653,24 @@ main {
   margin-top: 0.4rem;
 }
 
+.faq-item summary {
+  color: var(--navy);
+  font-size: 1rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.faq-item summary:focus-visible {
+  outline: 2px solid var(--blue-text);
+  outline-offset: 3px;
+}
+
+.jp-heading {
+  margin: 0.5rem 0 0;
+  color: var(--navy);
+  font-size: 1.1rem;
+}
+
 .ic-preview {
   display: block;
   width: auto;

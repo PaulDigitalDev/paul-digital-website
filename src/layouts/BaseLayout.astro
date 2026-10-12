@@ -11,6 +11,8 @@ interface Props {
   canonicalUrl?: string;
   image?: string;
   type?: "website" | "article";
+  /** Document language (BCP 47). Defaults to English; Open Graph locale follows it. */
+  lang?: string;
 }
 
 const {
@@ -19,13 +21,17 @@ const {
   canonicalUrl: canonicalUrlOverride,
   image = "/social-card.svg",
   type = "website",
+  lang = "en",
 } = Astro.props;
+const ogLocale = lang.replace("-", "_");
+// The shared header, footer and skip link are English, so they are labelled as such on pages in another language.
+const chromeLang = lang === "en" ? undefined : "en";
 const canonical = new URL(canonicalUrlOverride ?? Astro.url.pathname, Astro.site);
 const socialImage = new URL(image, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -36,6 +42,7 @@ const socialImage = new URL(image, Astro.site);
     <link rel="apple-touch-icon" href={BRAND_LOGO} />
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content="Paul Digital" />
+    {lang !== "en" && <meta property="og:locale" content={ogLocale} />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -51,12 +58,12 @@ const socialImage = new URL(image, Astro.site);
     <slot name="head" />
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <SiteHeader currentPath={Astro.url.pathname} />
+    <a class="skip-link" href="#main-content" lang={chromeLang}>Skip to content</a>
+    {chromeLang ? <div lang={chromeLang} style="display: contents"><SiteHeader currentPath={Astro.url.pathname} /></div> : <SiteHeader currentPath={Astro.url.pathname} />}
     <main id="main-content">
       <slot />
     </main>
-    <SiteFooter />
+    {chromeLang ? <div lang={chromeLang} style="display: contents"><SiteFooter /></div> : <SiteFooter />}
     <Analytics />
   </body>
 </html>

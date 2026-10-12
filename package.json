@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node --test tests/sizeRange.test.mjs",
+    "test": "node --test tests/*.test.mjs",
     "prebuild": "node scripts/copy-ocr-assets.mjs",
     "predev": "node scripts/copy-ocr-assets.mjs"
   },
@@ -17,6 +17,7 @@
     "@types/react-dom": "^19.3.0",
     "astro": "^7.3.5",
     "heic2any": "^0.0.4",
+    "pdf-lib": "^1.17.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "tesseract.js": "^7.0.0"

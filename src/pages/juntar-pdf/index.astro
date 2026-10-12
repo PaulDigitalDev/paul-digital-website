@@ -1,0 +1,160 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import MergePdf from "../../components/tools/MergePdf";
+
+const path = "/juntar-pdf/";
+const title = "Juntar PDF Online — Grátis e Privado | Paul Digital";
+const description =
+  "Juntar PDF online e grátis: una vários arquivos PDF em um só, reordene e baixe. Tudo é feito no seu navegador, sem enviar seus arquivos a um servidor.";
+const h1 = "Juntar PDF";
+const intro =
+  "Junte vários arquivos PDF em um só documento, de forma rápida, gratuita e sem sair do navegador.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Clique em “Selecionar arquivos PDF” ou arraste os arquivos para a área de seleção. Você pode selecionar vários de uma vez.",
+  "Confira a lista: cada PDF mostra o número de páginas e o tamanho. Use as setas para mudar a ordem e “Remover” para tirar um arquivo.",
+  "Clique em “Juntar PDFs”. As páginas são unidas na ordem da lista, do primeiro ao último arquivo.",
+  "Baixe o arquivo juntar-pdf.pdf. Se quiser unir outros arquivos, use “Limpar arquivos”.",
+];
+
+const faqs = [
+  {
+    q: "Como juntar arquivos PDF?",
+    a: "Adicione os PDFs na ferramenta, ajuste a ordem com as setas e clique em “Juntar PDFs”. O novo arquivo reúne todas as páginas, na ordem da lista, e fica pronto para baixar em instantes.",
+  },
+  {
+    q: "É grátis juntar PDFs?",
+    a: "Sim. Esta ferramenta é gratuita e não exige cadastro nem instalação.",
+  },
+  {
+    q: "Meus arquivos são enviados para um servidor?",
+    a: "Não. A união é feita inteiramente no seu navegador, no seu próprio dispositivo. Nada é enviado ao Paul Digital nem a terceiros, e nada fica guardado quando você fecha a página.",
+  },
+  {
+    q: "Posso alterar a ordem dos PDFs?",
+    a: "Sim. Use as setas para cima e para baixo ao lado de cada arquivo. As páginas do arquivo que está no topo da lista aparecem primeiro no PDF final.",
+  },
+  {
+    q: "O PDF final mantém todas as páginas?",
+    a: "Sim. Todas as páginas de cada arquivo são copiadas como estão, sem recompressão: texto, imagens e links continuam como no original. Marcadores e formulários interativos podem não ser mantidos no arquivo final.",
+  },
+  {
+    q: "Por que meu PDF não foi aceito?",
+    a: "A ferramenta recusa arquivos que não são PDFs, que estão vazios, corrompidos ou protegidos por senha. Para juntar um PDF protegido, remova a senha antes, com o programa que você usa para abri-lo.",
+  },
+  {
+    q: "Existe limite de tamanho ou de quantidade?",
+    a: "Para manter o navegador estável, você pode juntar até 30 arquivos de até 100 MB cada, com no máximo 300 MB no total. Como tudo é processado na memória do seu dispositivo, arquivos muito grandes podem ser lentos em celulares mais simples.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "pt-BR",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Início", item: site("/") },
+    { "@type": "ListItem", position: 2, name: "Ferramentas PDF" },
+    { "@type": "ListItem", position: 3, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "pt-BR",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Qualquer (navegador)",
+  browserRequirements: "Requer JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "BRL" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="pt-BR">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Trilha de navegação">
+        <ol>
+          <li><a href="/">Início</a></li>
+          <li>Ferramentas PDF</li>
+          <li aria-current="page">{h1}</li>
+        </ol>
+      </nav>
+      <h1>{h1}</h1>
+      <p>{intro}</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container">
+      <MergePdf client:load />
+    </div>
+  </section>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Como juntar PDFs</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Sobre esta ferramenta</h2>
+      <p>
+        O Juntar PDF permite unir PDFs online: você escolhe os arquivos, define a ordem e combina tudo em um único documento,
+        sem instalar nada. Serve para juntar arquivos PDF e combinar PDFs de contratos, comprovantes,
+        currículos, trabalhos escolares, notas fiscais ou qualquer conjunto de documentos que precise ser enviado de uma só vez.
+      </p>
+      <p>
+        As páginas são copiadas sem alteração, na ordem exibida na lista. A ferramenta não comprime nem modifica o conteúdo
+        das páginas; ela apenas as reúne em um novo arquivo.
+      </p>
+
+      <h2>Formatos e limites</h2>
+      <p>
+        <strong>Aceita:</strong> arquivos .pdf sem senha. Você pode adicionar até 30 arquivos, com até 100 MB cada e 300 MB no
+        total. PDFs protegidos por senha, corrompidos ou de outros formatos são recusados com uma mensagem explicando o motivo.
+      </p>
+      <p>
+        O processamento usa a memória do seu dispositivo. Em celulares com pouca memória, prefira juntar menos arquivos por vez.
+      </p>
+
+      <h2>Perguntas frequentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Ferramentas relacionadas</h2>
+      <ul class="ic-links">
+        <li><a href="/jpg-to-pdf/" hreflang="en">JPG to PDF (em inglês): transforme imagens em PDF</a></li>
+        <li><a href="/tools/" hreflang="en">All tools (em inglês): veja todas as ferramentas do site</a></li>
+      </ul>
+
+      <h2>Privacidade</h2>
+      <p>
+        Seus arquivos são processados inteiramente no navegador, no seu dispositivo. Eles não são enviados ao Paul Digital nem a
+        qualquer outro servidor, e nada é armazenado depois que você fecha a página.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
