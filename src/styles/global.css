@@ -3045,3 +3045,28 @@ main {
     font-size: 0.92rem;
   }
 }
+
+.jp-thumb {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--white);
+  object-fit: cover;
+}
+
+.button.jp-convert {
+  border-color: #d45500;
+  background: #d45500;
+}
+
+.button.jp-convert:hover:not(:disabled) {
+  border-color: #a64400;
+  background: #a64400;
+}
+
+.button.jp-convert:disabled {
+  border-color: #e8b48c;
+  background: #e8b48c;
+}
