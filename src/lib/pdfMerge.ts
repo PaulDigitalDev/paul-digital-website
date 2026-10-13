@@ -62,7 +62,11 @@ export function formatBytesPt(bytes: number): string {
 
 /** File size with locale-specific decimals, e.g. "1,4 MB". */
 export function formatBytes(bytes: number, locale: string): string {
-  const units = locale.startsWith("ru") ? ["байт", "КБ", "МБ", "ГБ"] : ["bytes", "KB", "MB", "GB"];
+  const units = locale.startsWith("ru")
+    ? ["байт", "КБ", "МБ", "ГБ"]
+    : locale.startsWith("ar")
+      ? ["بايت", "ك.ب", "م.ب", "ج.ب"]
+      : ["bytes", "KB", "MB", "GB"];
   let value = bytes;
   let unit = 0;
   while (value >= 1024 && unit < units.length - 1) {

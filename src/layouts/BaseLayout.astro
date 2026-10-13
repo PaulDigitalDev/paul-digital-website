@@ -13,6 +13,8 @@ interface Props {
   type?: "website" | "article";
   /** Document language (BCP 47). Defaults to English; Open Graph locale follows it. */
   lang?: string;
+  /** Text direction of the page content. The shared English header and footer always stay left-to-right. */
+  dir?: "ltr" | "rtl";
 }
 
 const {
@@ -22,6 +24,7 @@ const {
   image = "/social-card.svg",
   type = "website",
   lang = "en",
+  dir,
 } = Astro.props;
 const ogLocale = lang.replace("-", "_");
 // The shared header, footer and skip link are English, so they are labelled as such on pages in another language.
@@ -31,7 +34,7 @@ const socialImage = new URL(image, Astro.site);
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} dir={dir}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -58,12 +61,12 @@ const socialImage = new URL(image, Astro.site);
     <slot name="head" />
   </head>
   <body>
-    <a class="skip-link" href="#main-content" lang={chromeLang}>Skip to content</a>
-    {chromeLang ? <div lang={chromeLang} style="display: contents"><SiteHeader currentPath={Astro.url.pathname} /></div> : <SiteHeader currentPath={Astro.url.pathname} />}
+    <a class="skip-link" href="#main-content" lang={chromeLang} dir={dir ? "ltr" : undefined}>Skip to content</a>
+    {chromeLang ? <div lang={chromeLang} dir={dir ? "ltr" : undefined} style="display: contents"><SiteHeader currentPath={Astro.url.pathname} /></div> : <SiteHeader currentPath={Astro.url.pathname} />}
     <main id="main-content">
       <slot />
     </main>
-    {chromeLang ? <div lang={chromeLang} style="display: contents"><SiteFooter /></div> : <SiteFooter />}
+    {chromeLang ? <div lang={chromeLang} dir={dir ? "ltr" : undefined} style="display: contents"><SiteFooter /></div> : <SiteFooter />}
     <Analytics />
   </body>
 </html>

@@ -16,17 +16,23 @@ const W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
 
 const escapeXml = (value: string) => value.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c] as string);
 
-function runXml(run: Run): string {
+function runXml(run: Run, rtl = false): string {
   if (!run.text) return "";
-  const props = (run.bold ? "<w:b/>" : "") + (run.italic ? "<w:i/>" : "");
+  const props =
+    (rtl ? "<w:rtl/>" : "") +
+    (run.bold ? (rtl ? "<w:b/><w:bCs/>" : "<w:b/>") : "") +
+    (run.italic ? (rtl ? "<w:i/><w:iCs/>" : "<w:i/>") : "");
   return `<w:r>${props ? `<w:rPr>${props}</w:rPr>` : ""}<w:t xml:space="preserve">${escapeXml(run.text)}</w:t></w:r>`;
 }
 
 function blockXml(block: Block): string {
-  const runs = block.runs.map(runXml).join("");
-  if (block.kind === "heading") return `<w:p><w:pPr><w:pStyle w:val="Heading${block.level}"/></w:pPr>${runs}</w:p>`;
-  const jc = block.align === "center" ? `<w:pPr><w:jc w:val="center"/></w:pPr>` : "";
-  return `<w:p>${jc}${runs}</w:p>`;
+  const rtl = block.rtl === true;
+  const runs = block.runs.map((run) => runXml(run, rtl)).join("");
+  // Right-to-left paragraphs are marked <w:bidi/> so Word aligns them to the right and orders mixed text correctly.
+  const bidi = rtl ? "<w:bidi/>" : "";
+  if (block.kind === "heading") return `<w:p><w:pPr><w:pStyle w:val="Heading${block.level}"/>${bidi}</w:pPr>${runs}</w:p>`;
+  const jc = block.align === "center" ? `<w:jc w:val="center"/>` : "";
+  return `<w:p>${bidi || jc ? `<w:pPr>${bidi}${jc}</w:pPr>` : ""}${runs}</w:p>`;
 }
 
 export function buildTextDocx(blocks: Block[], page: TextDocxPage = "a4", title = ""): Blob {
@@ -44,10 +50,10 @@ export function buildTextDocx(blocks: Block[], page: TextDocxPage = "a4", title 
   const heading = (level: number, sizeHalfPts: number) =>
     `<w:style w:type="paragraph" w:styleId="Heading${level}"><w:name w:val="heading ${level}"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/>` +
     `<w:pPr><w:keepNext/><w:spacing w:before="${level === 1 ? 360 : 240}" w:after="120"/><w:outlineLvl w:val="${level - 1}"/></w:pPr>` +
-    `<w:rPr><w:b/><w:sz w:val="${sizeHalfPts}"/></w:rPr></w:style>`;
+    `<w:rPr><w:b/><w:bCs/><w:sz w:val="${sizeHalfPts}"/><w:szCs w:val="${sizeHalfPts}"/></w:rPr></w:style>`;
   const styles =
     `${XML_HEAD}<w:styles xmlns:w="${W_NS}">` +
-    `<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Calibri"/><w:sz w:val="22"/></w:rPr></w:rPrDefault>` +
+    `<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Arial"/><w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr></w:rPrDefault>` +
     `<w:pPrDefault><w:pPr><w:spacing w:after="160" w:line="264" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>` +
     `<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>` +
     heading(1, 36) +

@@ -1,0 +1,151 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import Tool from "../../components/tools/TaqsimPdf";
+
+const path = "/taqsim-pdf/";
+const title = "تقسيم ملفات PDF مجانًا — استخراج صفحات من PDF | Paul Digital";
+const description =
+  "استخرج صفحات محددة من ملف PDF مجانًا بإدخال أرقام أو نطاقات مثل 1-3, 5, 8-10. تتم المعالجة داخل المتصفح دون رفع الملف إلى خادم.";
+const h1 = "تقسيم ملفات PDF";
+const intro =
+  "استخرج من ملف PDF الصفحات التي تحتاجها: اخترها أو أدخل نطاقًا، مجانًا وداخل المتصفح مباشرة.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "اضغط «اختيار ملف PDF» أو اسحب الملف وأفلته في المنطقة المحددة. سيظهر إجمالي عدد الصفحات.",
+  "اختر طريقة التقسيم وحدّد الصفحات: اضغط على الأرقام أو اكتب مثلًا «1-3, 5, 8-10». يبدأ الترقيم من 1.",
+  "اضغط «تقسيم PDF». ستنشئ الأداة ملفات PDF جديدة تحتوي الصفحات المحددة.",
+  "نزّل النتيجة بزر «تنزيل ملف PDF». إذا نتج أكثر من ملف فيمكنك تنزيلها في أرشيف ZIP أو كل ملف على حدة.",
+];
+
+const faqs = [
+  {
+    q: "كيف أستخرج صفحات من ملف PDF؟",
+    a: "اختر الملف، ثم اضغط أرقام الصفحات أو اكتب نطاقًا (مثل 1-3, 5, 8-10) واضغط «تقسيم PDF». يُنشأ ملف جديد من الصفحات المحددة.",
+  },
+  {
+    q: "من أي رقم يبدأ ترقيم الصفحات؟",
+    a: "الصفحة الأولى رقمها 1. إذا أدخلت رقمًا غير موجود في المستند (مثل 15 في مستند من 12 صفحة) أو نطاقًا معكوسًا أو بصيغة خاطئة فستعرض الأداة رسالة خطأ ولن تُنشئ أي ملف.",
+  },
+  {
+    q: "ما طرق التقسيم المتاحة؟",
+    a: "ثلاث: استخراج كل الصفحات المحددة في ملف واحد، أو التقسيم بحسب النطاقات (كل نطاق في ملف مستقل)، أو حفظ كل صفحة في ملف مستقل. إذا نتجت عدة ملفات فيمكن تنزيلها في أرشيف ZIP واحد.",
+  },
+  {
+    q: "هل يمكنني تغيير ترتيب الصفحات؟",
+    a: "نعم. بشكل افتراضي تُستخرج الصفحات بالترتيب الذي كتبته (مثلًا «5, 1-2» تعطي الصفحة 5 ثم 1 و2). ويمكنك اختيار الترتيب بحسب المستند الأصلي.",
+  },
+  {
+    q: "هل يمكن حفظ كل صفحة في ملف مستقل؟",
+    a: "نعم، بخيار «حفظ كل صفحة في ملف PDF مستقل»، وهو متاح للمستندات حتى 200 صفحة؛ للمستندات الأطول اختر نطاقًا من الصفحات.",
+  },
+  {
+    q: "هل يتغير ملفي الأصلي؟",
+    a: "لا. يبقى الملف الأصلي كما هو، وتُنسخ الصفحات المحددة إلى ملفات جديدة.",
+  },
+  {
+    q: "هل يتم رفع ملفي إلى خادم؟",
+    a: "لا. يتم التقسيم كله داخل متصفحك وعلى جهازك. لا يُرسل أي شيء إلى Paul Digital أو إلى أطراف أخرى، ولا يُحفظ شيء بعد إغلاق الصفحة.",
+  },
+  {
+    q: "لماذا لا يُقبل ملف PDF الخاص بي؟",
+    a: "ترفض الأداة الملفات التي ليست PDF، والملفات الفارغة أو التالفة، وملفات PDF المحمية بكلمة مرور. الحدود هي 100 ميغابايت و1000 صفحة لكل ملف.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "ar",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "الرئيسية", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "ar",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "أي نظام (داخل المتصفح)",
+  browserRequirements: "يتطلب JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="ar" dir="rtl">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "الرئيسية", href: "/" }, { label: h1 }]} breadcrumbLabel="مسار التنقل">
+    <Tool client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>طريقة الاستخدام</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>عن هذه الأداة</h2>
+      <p>
+        تنشئ أداة «تقسيم PDF» ملفات PDF جديدة من الصفحات التي تحددها. يمكنك جمع الصفحات المطلوبة في ملف واحد، أو تقسيم المستند بحسب النطاقات، أو حفظ كل صفحة على حدة.
+      </p>
+      <p>
+        تُنسخ الصفحات إلى الملفات الجديدة دون تغيير وبلا إعادة ضغط، ولا يتأثر الملف الأصلي.
+      </p>
+
+      <h2>حدود الأداة</h2>
+      <ul>
+        <li><strong>الإشارات المرجعية والنماذج:</strong> قد لا تُحفظ الإشارات المرجعية وحقول النماذج التفاعلية في الملفات الجديدة.</li>
+        <li><strong>التوقيعات الرقمية:</strong> تفقد التوقيعات الرقمية صلاحيتها في الصفحات المستخرجة.</li>
+        <li><strong>الملفات المحمية:</strong> تُرفض ملفات PDF المحمية بكلمة مرور؛ ولا تزيل الأداة الحماية.</li>
+        <li><strong>عدد الملفات:</strong> يمكن إنشاء 200 ملف كحد أقصى في العملية الواحدة.</li>
+      </ul>
+
+      <h2>الصيغ والحدود</h2>
+      <p>
+        <strong>المدعوم:</strong> ملفات .pdf بلا كلمة مرور، بحد أقصى 100 ميغابايت و1000 صفحة. تُرفض الملفات المحمية أو التالفة أو الفارغة أو بصيغ أخرى مع توضيح السبب.
+      </p>
+
+      <h2>الأسئلة الشائعة</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>أدوات أخرى</h2>
+      <ul class="ic-links">
+        <li><a href="/damj-pdf/">دمج PDF: اجمع عدة ملفات PDF في ملف واحد</a></li>
+        <li><a href="/daght-pdf/">ضغط PDF: قلّل حجم ملف PDF</a></li>
+        <li><a href="/tahwil-pdf-ila-word/">تحويل PDF إلى Word: حوّل ملف PDF يحتوي على نص إلى مستند DOCX</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (بالإنجليزية): جميع أدوات الموقع</a></li>
+      </ul>
+
+      <h2>الخصوصية</h2>
+      <p>
+        تتم معالجة ملفاتك بالكامل داخل المتصفح وعلى جهازك. لا تُرسل إلى Paul Digital ولا إلى أي خادم آخر، ولا يُحفظ شيء بعد إغلاق الصفحة.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

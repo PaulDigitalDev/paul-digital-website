@@ -31,8 +31,8 @@ export interface Run {
 }
 
 export type Block =
-  | { kind: "heading"; level: 1 | 2 | 3; runs: Run[] }
-  | { kind: "paragraph"; runs: Run[]; align: "left" | "center" };
+  | { kind: "heading"; level: 1 | 2 | 3; runs: Run[]; rtl?: boolean }
+  | { kind: "paragraph"; runs: Run[]; align: "left" | "center"; rtl?: boolean };
 
 interface Line {
   runs: Run[];
@@ -41,6 +41,7 @@ interface Line {
   y: number;
   size: number;
   allBold: boolean;
+  rtl: boolean;
 }
 
 const GAP_SPACE_EM = 0.12; // horizontal gap that counts as a space between fragments
@@ -50,11 +51,22 @@ const BULLET = /^(?:[•◦▪■●○‣·\-–—*]|\d{1,3}[.)]|[a-zA-Z][.)])
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
+const RTL_CHAR = /[֐-ࣿיִ-﷿ﹰ-﻿]/g;
+const LATIN_OR_RTL_LETTER = /[A-Za-zÀ-ɏ֐-ࣿיִ-﷿ﹰ-﻿]/g;
+
+/** True when most letters in the text are from a right-to-left script (Arabic, Hebrew, ...). */
+export function isRtlText(text: string): boolean {
+  const letters = text.match(LATIN_OR_RTL_LETTER)?.length ?? 0;
+  if (letters === 0) return false;
+  return (text.match(RTL_CHAR)?.length ?? 0) / letters > 0.5;
+}
+
 /** Removes characters that are not allowed in XML 1.0 (control codes, lone surrogates, noncharacters). */
 export function cleanText(text: string): string {
   return text
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g, "")
     .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "")
+    .replace(/[ﭐ-﷿ﹰ-﻿]+/g, (m) => m.normalize("NFKC")) // Arabic presentation forms -> base letters
     .replace(/­/g, "")
     .replace(/[   ]/g, " ");
 }
@@ -94,7 +106,9 @@ function buildLines(page: PageText): Line[] {
 
   const lines: Line[] = [];
   for (const group of groups) {
-    const items = group.items.sort((a, b) => a.x - b.x);
+    const rtl = isRtlText(group.items.map((f) => f.text).join(" "));
+    // Right-to-left lines read from the rightmost fragment to the leftmost.
+    const items = group.items.sort((a, b) => (rtl ? b.x - a.x : a.x - b.x));
     // Dominant size/baseline: weighted by character count, so superscripts do not shift the line.
     const weight = new Map<number, { chars: number; y: number }>();
     for (const item of items) {
@@ -120,26 +134,28 @@ function buildLines(page: PageText): Line[] {
     for (const item of items) {
       let text = item.text;
       if (prevEnd !== null) {
-        const gap = item.x - prevEnd;
+        const gap = rtl ? prevEnd - (item.x + item.width) : item.x - prevEnd;
         const spaced = prevText.endsWith(" ") || text.startsWith(" ");
         if (gap > GAP_SPACE_EM * Math.min(item.size, size) && !spaced) text = ` ${text}`;
       }
       runs.push({ text, bold: item.bold, italic: item.italic });
-      prevEnd = item.x + item.width;
+      prevEnd = rtl ? item.x : item.x + item.width;
       prevText = item.text;
     }
     const merged = mergeRuns(runs);
     if (merged.length === 0) continue;
     merged[0].text = merged[0].text.trimStart();
     merged[merged.length - 1].text = merged[merged.length - 1].text.trimEnd();
-    const last = items[items.length - 1];
+    const xs = items.map((item) => item.x);
+    const rights = items.map((item) => item.x + item.width);
     lines.push({
       runs: merged,
-      x: items[0].x,
-      right: last.x + last.width,
+      x: Math.min(...xs),
+      right: Math.max(...rights),
       y,
       size,
       allBold: merged.every((r) => r.bold || !r.text.trim()),
+      rtl,
     });
   }
   return lines.sort((a, b) => b.y - a.y);
@@ -165,8 +181,10 @@ function groupParagraphs(lines: Line[]): Para[] {
       const gap = prev.y - line.y;
       const sizeChange = Math.abs(line.size - prev.size) > 0.1 * Math.max(line.size, prev.size);
       const prevShort = prev.right - prev.x < SHORT_LINE_RATIO * textWidth;
-      const indented = line.x - current.lines[0].x > 0.8 * line.size && line.x - prev.x > 0.8 * line.size;
-      const outdented = prev.x - line.x > 0.8 * line.size && current.lines.length > 1;
+      // Indentation is measured from the start edge: the right edge for right-to-left lines.
+      const start = (l: Line) => (l.rtl ? -l.right : l.x);
+      const indented = start(line) - start(current.lines[0]) > 0.8 * line.size && start(line) - start(prev) > 0.8 * line.size;
+      const outdented = start(prev) - start(line) > 0.8 * line.size && current.lines.length > 1;
       split =
         gap > PARAGRAPH_GAP_EM * Math.max(prev.size, line.size) ||
         sizeChange ||
@@ -232,13 +250,14 @@ export function layoutPages(pages: PageText[]): Block[] {
       const text = runs.map((r) => r.text).join("");
       const size = Math.max(...para.lines.map((l) => l.size));
       const allBold = para.lines.every((l) => l.allBold);
+      const rtl = para.lines.filter((l) => l.rtl).length > para.lines.length / 2;
       const short = para.lines.length <= 3 && text.length <= 200;
 
       const ratio = size / body;
       if (short && (ratio >= 1.15 || (allBold && ratio >= 0.95 && para.lines.length === 1 && text.length <= 100))) {
         const level = ratio >= 1.7 ? 1 : ratio >= 1.35 ? 2 : 3;
         // Heading style already supplies bold; keep only italic (and bold from partial emphasis is dropped).
-        blocks.push({ kind: "heading", level, runs: runs.map((r) => ({ ...r, bold: false })) });
+        blocks.push({ kind: "heading", level, runs: runs.map((r) => ({ ...r, bold: false })), ...(rtl ? { rtl } : {}) });
         continue;
       }
 
@@ -247,7 +266,7 @@ export function layoutPages(pages: PageText[]): Block[] {
       const center = (first.x + first.right) / 2;
       const centered =
         para.lines.length === 1 && Math.abs(center - page.width / 2) < 0.03 * page.width && first.x > 0.12 * page.width;
-      blocks.push({ kind: "paragraph", runs, align: centered ? "center" : "left" });
+      blocks.push({ kind: "paragraph", runs, align: centered ? "center" : "left", ...(rtl ? { rtl } : {}) });
     }
   });
   return blocks;

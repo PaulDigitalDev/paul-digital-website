@@ -17,7 +17,18 @@ export interface DropAreaProps {
   busy: boolean;
   ariaLabel: string;
   onFiles: (files: File[]) => void;
+  /** Optional decorative icon shown above the title. */
+  icon?: ReactNode;
 }
+
+/** Simple document icon for drop areas. */
+export const DocumentIcon = () => (
+  <svg className="ic-drop-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+    <path d="M14 3v5h5" />
+    <path d="M9 13h6M9 17h4" />
+  </svg>
+);
 
 export function DropArea(props: DropAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -49,6 +60,7 @@ export function DropArea(props: DropAreaProps) {
       role="group"
       aria-label={props.ariaLabel}
     >
+      {props.icon}
       <p className="ic-drop-title">{props.hasFiles ? props.title : props.emptyTitle}</p>
       <p className="ic-drop-sub">{props.hasFiles ? props.filledSub : props.emptySub}</p>
       <button type="button" className="button" onClick={() => inputRef.current?.click()} disabled={props.busy}>

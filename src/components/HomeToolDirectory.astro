@@ -26,7 +26,7 @@ const icons: Record<DirectoryIcon, string> = {
     <div class="td-directory">
       {
         groups.map((group) => (
-          <section class="td-group" aria-labelledby={`td-${group.id}`}>
+          <section class="td-group" aria-labelledby={`td-${group.id}`} lang={group.lang} dir={group.dir}>
             <h2 id={`td-${group.id}`}>{group.title}</h2>
             <ul class="td-list">
               {group.tools.map((tool) => (

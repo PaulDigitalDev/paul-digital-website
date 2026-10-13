@@ -3222,3 +3222,29 @@ a.td-item:focus-visible {
   color: var(--blue-text);
   font-weight: 700;
 }
+
+/* Right-to-left pages (Arabic tools): mirror the few rules that use physical left/right values. */
+[dir="rtl"] .prose ul,
+[dir="rtl"] .prose ol {
+  padding-right: 1.4rem;
+  padding-left: 0;
+}
+
+[dir="rtl"] .ic-notes,
+[dir="rtl"] .rp-notes {
+  padding-right: 1.1rem;
+  padding-left: 0;
+}
+
+[dir="rtl"] .breadcrumb li + li::before {
+  margin-right: 0;
+  margin-left: 0.35rem;
+}
+
+[dir="rtl"] .ic input[dir="ltr"] {
+  text-align: right;
+}
+
+.ic-drop-icon {
+  color: var(--blue-text);
+}

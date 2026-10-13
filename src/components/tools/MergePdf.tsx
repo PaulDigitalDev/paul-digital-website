@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { AR_LOCALE, arabicPlural, isolate } from "../../lib/arabic";
 import { formatBytes, inspectPdf, mergePdfs } from "../../lib/pdfMerge";
 import { DropArea, ResultPanel } from "./shared";
 
@@ -6,9 +7,13 @@ const MAX_FILES = 30;
 const MAX_FILE_BYTES = 100 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
 
-type Locale = "pt-BR" | "es" | "id" | "tr" | "fr" | "de" | "it" | "ru";
-/** Two forms (singular, plural) or three Russian forms (1, 2–4, 5+). */
-type Forms = readonly [string, string] | readonly [string, string, string];
+type Locale = "pt-BR" | "es" | "id" | "tr" | "fr" | "de" | "it" | "ru" | "ar";
+/** Two forms (singular, plural), three Russian forms (1, 2–4, 5+) or six Arabic forms (zero, one, two, few, many, other; "{n}" is the count). */
+type Forms = readonly [string, string] | readonly [string, string, string] | readonly [string, string, string, string, string, string];
+
+/** Arabic text keeps Latin digits; file names are isolated so punctuation inside them cannot reorder the sentence. */
+const NUMBER_LOCALE: Partial<Record<Locale, string>> = { ar: AR_LOCALE };
+const iso = isolate;
 
 interface Strings {
   outputName: string;
@@ -435,6 +440,53 @@ const TEXT: Record<Locale, Strings> = {
     download: "Скачать PDF",
     reset: "Очистить список",
   },
+  ar: {
+    outputName: "damj-pdf.pdf",
+    cleared: "تم مسح القائمة. اختر ملفات PDF جديدة للبدء من جديد.",
+    reading: (name) => `جارٍ قراءة ${iso(name)}…`,
+    limitFiles: (name, max) => `${iso(name)}: لم تتم إضافته. الحد الأقصى ${max} ملفًا.`,
+    empty: (name) => `${iso(name)}: الملف فارغ.`,
+    tooBig: (name, size, max) => `${iso(name)}: حجمه ${size} ويتجاوز الحد المسموح لكل ملف (${max}).`,
+    totalExceeded: (name, max) => `${iso(name)}: لم تتم إضافته لأن الحجم الإجمالي سيتجاوز ${max}.`,
+    encrypted: (name) => `${iso(name)}: ملف PDF هذا محمي بكلمة مرور. أزل الحماية ثم حاول مرة أخرى.`,
+    invalid: (name) => `${iso(name)}: هذا ليس ملف PDF صالحًا. اختر ملفًا صحيحًا.`,
+    unreadable: (name) => `${iso(name)}: تعذّرت قراءة ملف PDF هذا. ربما يكون الملف تالفًا.`,
+    added: ["لم تتم إضافة ملفات", "تمت إضافة ملف PDF واحد", "تمت إضافة ملفَّي PDF", "تمت إضافة {n} ملفات PDF", "تمت إضافة {n} ملف PDF", "تمت إضافة {n} ملف PDF"],
+    moved: (name, pos, total) => `${iso(name)}: الموضع ${pos} من ${total}.`,
+    fallbackName: "الملف",
+    removed: (name) => `تمت إزالة ${iso(name)} من القائمة.`,
+    needTwo: "أضف ملفَّي PDF على الأقل لدمجهما.",
+    mergingFile: (done, total) => `جارٍ دمج الملف ${done + 1} من ${total}…`,
+    finalizing: "جارٍ إنهاء ملف PDF…",
+    success: "ملف PDF المدموج جاهز!",
+    failure: "تعذّر دمج ملفات PDF. تحقق من الملفات أو حاول دمج عدد أقل منها.",
+    selected: ["لم يتم اختيار ملفات", "تم اختيار ملف PDF واحد", "تم اختيار ملفَّي PDF", "تم اختيار {n} ملفات PDF", "تم اختيار {n} ملف PDF", "تم اختيار {n} ملف PDF"],
+    page: ["بلا صفحات", "صفحة واحدة", "صفحتان", "{n} صفحات", "{n} صفحة", "{n} صفحة"],
+    emptyTitle: "اسحب ملفات PDF وأفلتها هنا",
+    emptySub: (max) => `اختر ملفَّي PDF على الأقل. الحد الأقصى ${max} لكل ملف.`,
+    filledSub: (pages, size) => `${pages} · الإجمالي ${size} · يمكنك إضافة المزيد من الملفات`,
+    select: "إضافة ملفات",
+    dropAria: "منطقة سحب وإفلات ملفات PDF",
+    privacy: "تتم معالجة الملفات على جهازك ولا يتم إرسالها إلى أي خادم.",
+    listHeading: (n) => `الملفات المختارة (${n})`,
+    orderHint: "رتّب الملفات بالترتيب الذي تريده.",
+    listAria: "الملفات المختارة بترتيب الدمج",
+    up: (name) => `نقل ${iso(name)} إلى أعلى`,
+    down: (name) => `نقل ${iso(name)} إلى أسفل`,
+    removeAria: (name) => `إزالة ${iso(name)}`,
+    remove: "إزالة الملف",
+    merging: "جارٍ دمج ملفات PDF…",
+    submit: "دمج ملفات PDF",
+    needOneMore: "أضف ملف PDF آخر لتتمكن من الدمج. ",
+    listHint: "يتم دمج الصفحات بحسب ترتيب القائمة. استخدم الأسهم لتغيير الترتيب وزر «إزالة الملف» لحذف ملف من القائمة.",
+    result: "النتيجة",
+    format: "الصيغة",
+    size: "الحجم",
+    pages: "الصفحات",
+    merged: "الملفات المدموجة",
+    download: "تنزيل ملف PDF",
+    reset: "مسح القائمة",
+  },
 };
 
 interface Item {
@@ -451,6 +503,9 @@ interface Result {
 }
 
 const plural = (n: number, forms: Forms) => {
+  if (forms.length === 6) {
+    return arabicPlural(n, forms);
+  }
   if (forms.length === 3) {
     const last = n % 10;
     const teen = n % 100 >= 11 && n % 100 <= 14;
@@ -461,7 +516,7 @@ const plural = (n: number, forms: Forms) => {
 
 export default function MergePdf({ locale = "pt-BR" }: { locale?: Locale }) {
   const t = TEXT[locale];
-  const fmt = (bytes: number) => formatBytes(bytes, locale);
+  const fmt = (bytes: number) => formatBytes(bytes, NUMBER_LOCALE[locale] ?? locale);
   const OUTPUT_NAME = t.outputName;
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
@@ -595,7 +650,7 @@ export default function MergePdf({ locale = "pt-BR" }: { locale?: Locale }) {
   const totalPages = items.reduce((sum, item) => sum + item.pages, 0);
 
   return (
-    <div className="ic" lang={locale}>
+    <div className="ic" lang={locale} dir={locale === "ar" ? "rtl" : undefined}>
       <DropArea
         title={plural(items.length, t.selected)}
         hasFiles={items.length > 0}
@@ -622,7 +677,7 @@ export default function MergePdf({ locale = "pt-BR" }: { locale?: Locale }) {
                 {index + 1}
               </span>
               <span className="jp-name">
-                {item.file.name}
+                <bdi>{item.file.name}</bdi>
                 <small>
                   {plural(item.pages, t.page)} · {fmt(item.file.size)}
                 </small>

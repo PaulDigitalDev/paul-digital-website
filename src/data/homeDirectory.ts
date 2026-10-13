@@ -12,6 +12,8 @@ export interface DirectoryGroup {
   title: string;
   icon: DirectoryIcon;
   tools: DirectoryEntry[];
+  lang?: string;
+  dir?: "rtl";
 }
 
 interface GroupSpec {
@@ -22,6 +24,9 @@ interface GroupSpec {
   ids: string[];
   /** Working tools that live outside the registry (localized pages), shown after the registry tools. */
   extra?: DirectoryEntry[];
+  /** Language and direction of a localized group, when it differs from the page. */
+  lang?: string;
+  dir?: "rtl";
 }
 
 /**
@@ -184,6 +189,20 @@ const specs: GroupSpec[] = [
     ],
   },
   {
+    id: "arabic",
+    title: "أدوات PDF باللغة العربية",
+    icon: "pdf",
+    lang: "ar",
+    dir: "rtl",
+    ids: [],
+    extra: [
+      { name: "تحويل PDF إلى Word", href: "/tahwil-pdf-ila-word/" },
+      { name: "ضغط PDF", href: "/daght-pdf/" },
+      { name: "دمج PDF", href: "/damj-pdf/" },
+      { name: "تقسيم PDF", href: "/taqsim-pdf/" },
+    ],
+  },
+  {
     id: "turkish",
     title: "Türkçe PDF Araçları",
     icon: "pdf",
@@ -225,7 +244,7 @@ export function buildDirectory(): DirectoryGroup[] {
       if (hrefs.has(entry.href)) throw new Error(`Home directory: duplicate link ${entry.href}`);
       hrefs.add(entry.href);
     }
-    return { id: spec.id, title: spec.title, icon: spec.icon, tools };
+    return { id: spec.id, title: spec.title, icon: spec.icon, tools, lang: spec.lang, dir: spec.dir };
   });
   const missing = availableTools.filter((tool) => !placed.has(tool.id)).map((tool) => tool.id);
   if (missing.length) throw new Error(`Home directory: registry tools missing from the homepage: ${missing.join(", ")}`);

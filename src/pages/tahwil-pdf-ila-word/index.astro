@@ -1,0 +1,147 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import Tool from "../../components/tools/PdfIlaWord";
+
+const path = "/tahwil-pdf-ila-word/";
+const title = "تحويل PDF إلى Word مجانًا — تحويل PDF إلى DOCX | Paul Digital";
+const description =
+  "حوّل ملف PDF الذي يحتوي على نص إلى مستند Word (DOCX) مجانًا. تتم المعالجة داخل المتصفح دون رفع الملف إلى خادم. المستندات الممسوحة ضوئيًا تحتاج إلى OCR وهو غير مدعوم.";
+const h1 = "تحويل PDF إلى Word مجانًا";
+const intro =
+  "حوّل ملف PDF الذي يحتوي على نص إلى مستند Word (DOCX) مجانًا وداخل المتصفح مباشرة، دون رفع الملف إلى أي خادم.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "اضغط «اختيار ملف PDF» أو اسحب الملف وأفلته في المنطقة المحددة. يبدأ التحويل فور اختيار الملف.",
+  "انتظر حتى تنتهي المعالجة؛ سيظهر لك المرحلة التي وصل إليها التحويل.",
+  "عند ظهور رسالة «اكتمل التحويل» اضغط «تنزيل ملف Word» واحفظ ملف DOCX.",
+  "افتح المستند في Word وراجع النتيجة، فقد يتغير التنسيق والجداول والصور.",
+];
+
+const faqs = [
+  {
+    q: "كيف أحوّل PDF إلى Word؟",
+    a: "اختر ملف PDF يحتوي على نص، وانتظر اكتمال التحويل، ثم اضغط «تنزيل ملف Word». تستخرج الأداة النص وتنشئ مستند DOCX جديدًا.",
+  },
+  {
+    q: "هل الأداة مجانية؟",
+    a: "نعم، الأداة مجانية ولا تتطلب إنشاء حساب أو تثبيت برنامج.",
+  },
+  {
+    q: "هل يتم رفع ملفي إلى خادم؟",
+    a: "لا. يتم التحويل داخل متصفحك وعلى جهازك. لا يُرسل أي شيء إلى Paul Digital أو إلى أطراف أخرى، ولا يُحفظ شيء بعد إغلاق الصفحة.",
+  },
+  {
+    q: "هل يُحفظ التنسيق الأصلي؟",
+    a: "ليس بالكامل. تستخرج الأداة النص وتبني مستند Word مبسطًا: تُحفظ الفقرات والعناوين غالبًا، أما الخطوط والأعمدة والجداول والصور والتخطيط الدقيق فقد تتغير. راجع النتيجة دائمًا.",
+  },
+  {
+    q: "هل تدعم الأداة النص العربي؟",
+    a: "تحاول الأداة استخراج النص العربي وإنشاء فقرات من اليمين إلى اليسار في المستند. تعتمد جودة النتيجة على طريقة تضمين النص في ملف PDF؛ فبعض الملفات تخزّن الحروف بترتيب أو شكل يصعب استعادته. تحقق من ترتيب الكلمات والأرقام بعد التحويل.",
+  },
+  {
+    q: "هل يمكن تحويل ملف PDF ممسوح ضوئيًا؟",
+    a: "لا. المستندات الممسوحة ضوئيًا عبارة عن صور للصفحات، والتعرّف الضوئي على الحروف (OCR) غير مدعوم في هذه الأداة. إذا لم يكن في الملف نص قابل للتحديد فستظهر رسالة توضح ذلك ولن يُنشأ مستند فارغ.",
+  },
+  {
+    q: "لماذا لا يُقبل ملف PDF الخاص بي؟",
+    a: "ترفض الأداة الملفات التي ليست PDF، والملفات الفارغة أو التالفة، وملفات PDF المحمية بكلمة مرور، والمستندات التي تزيد على 500 صفحة أو 50 ميغابايت. لتحويل ملف محمي أزل كلمة المرور أولًا في البرنامج الذي تفتحه به.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "ar",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "الرئيسية", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "ar",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "أي نظام (داخل المتصفح)",
+  browserRequirements: "يتطلب JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="ar" dir="rtl">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "الرئيسية", href: "/" }, { label: h1 }]} breadcrumbLabel="مسار التنقل">
+    <Tool client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>طريقة الاستخدام</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>عن هذه الأداة</h2>
+      <p>
+        تستخرج أداة «تحويل PDF إلى Word» النص من ملفات PDF التي تحتوي على طبقة نصية حقيقية، وتعيد بناءه في مستند Word جديد بصيغة DOCX يمكنك تحريره.
+      </p>
+      <p>
+        تُنشأ العناوين والفقرات بحسب حجم الخط والمسافات بين الأسطر. تُعالَج الملفات كلها محليًا في المتصفح.
+      </p>
+
+      <h2>حدود الأداة</h2>
+      <ul>
+        <li><strong>التنسيق:</strong> قد لا تُحفظ الجداول والأعمدة والصور والخطوط والتخطيط الدقيق للصفحة.</li>
+        <li><strong>المستندات الممسوحة ضوئيًا:</strong> لا يوجد OCR؛ الصفحات التي تتكون من صور فقط لا تُضاف إلى المستند.</li>
+        <li><strong>النص العربي:</strong> قد يختلف ترتيب الكلمات أو الأرقام عن الأصل في بعض الملفات. راجع النتيجة في Word.</li>
+        <li><strong>الملفات المحمية:</strong> تُرفض ملفات PDF المحمية بكلمة مرور؛ ولا تزيل الأداة الحماية.</li>
+      </ul>
+
+      <h2>الصيغ والحدود</h2>
+      <p>
+        <strong>المدعوم:</strong> ملفات .pdf بلا كلمة مرور وتحتوي على نص قابل للتحديد، بحد أقصى 50 ميغابايت و500 صفحة. تُرفض الملفات المحمية أو التالفة أو الفارغة أو بصيغ أخرى مع توضيح السبب.
+      </p>
+
+      <h2>الأسئلة الشائعة</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>أدوات أخرى</h2>
+      <ul class="ic-links">
+        <li><a href="/daght-pdf/">ضغط PDF: قلّل حجم ملف PDF</a></li>
+        <li><a href="/damj-pdf/">دمج PDF: اجمع عدة ملفات PDF في ملف واحد</a></li>
+        <li><a href="/taqsim-pdf/">تقسيم PDF: استخرج صفحات محددة من ملف PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (بالإنجليزية): جميع أدوات الموقع</a></li>
+      </ul>
+
+      <h2>الخصوصية</h2>
+      <p>
+        تتم معالجة ملفاتك بالكامل داخل المتصفح وعلى جهازك. لا تُرسل إلى Paul Digital ولا إلى أي خادم آخر، ولا يُحفظ شيء بعد إغلاق الصفحة.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
