@@ -3,11 +3,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import JpgParaPdf from "../../components/tools/JpgParaPdf";
 
 const path = "/jpg-para-pdf/";
-const title = "JPG para PDF Online — Grátis e Privado | Paul Digital";
+const title = "JPG para PDF e Imagem para PDF Online Grátis | Paul Digital";
 const description =
-  "JPG para PDF online e grátis: converta uma ou várias imagens JPG em um único PDF, reordene as páginas e baixe. Tudo é feito no seu navegador, sem enviar suas imagens a um servidor.";
+  "Imagem para PDF online e grátis: converta uma ou várias imagens JPG/JPEG em um único PDF, reordene as páginas e baixe. Tudo é feito no seu navegador, sem enviar suas imagens a um servidor.";
 const h1 = "JPG para PDF";
-const intro = "Converta suas imagens JPG em um único arquivo PDF, de forma rápida e gratuita.";
+const intro = "Converta imagem em PDF de forma rápida e gratuita: transforme suas fotos JPG em um único arquivo PDF. Esta ferramenta aceita apenas imagens JPG/JPEG.";
 
 const site = (p: string) => new URL(p, Astro.site).href;
 const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
@@ -23,6 +23,10 @@ const faqs = [
   {
     q: "Como converter JPG em PDF?",
     a: "Adicione suas imagens JPG na ferramenta, ajuste a ordem com as setas e clique em “Converter para PDF”. Cada imagem vira uma página do arquivo, que fica pronto para baixar em instantes.",
+  },
+  {
+    q: "Como converter uma imagem JPG em PDF?",
+    a: "Clique em “Selecionar imagens JPG”, escolha a imagem (ou arraste o arquivo para a área de seleção), defina o tamanho da página e clique em “Converter para PDF”. Depois é só baixar o PDF. A ferramenta aceita apenas imagens JPG/JPEG.",
   },
   {
     q: "Como converter várias imagens em PDF?",
@@ -115,9 +119,10 @@ const appSchema = {
 
       <h2>Sobre esta ferramenta</h2>
       <p>
-        O JPG para PDF permite converter JPG em PDF online: você escolhe as imagens, define a ordem e gera um único documento,
-        sem instalar nada. Serve para transformar imagem JPG em PDF e converter várias imagens em PDF, como fotos de documentos,
-        comprovantes, trabalhos escolares, receitas ou digitalizações feitas com o celular.
+        O JPG para PDF é uma ferramenta de imagem para PDF: você escolhe as imagens JPG, define a ordem e gera um único documento,
+        sem instalar nada. Serve para converter imagem em PDF, transformar imagem JPG em PDF, converter fotos JPG em PDF e criar
+        PDF a partir de imagens JPG, como fotos de documentos, comprovantes, trabalhos escolares, receitas ou digitalizações
+        feitas com o celular. Para isso, as imagens precisam estar em JPG ou JPEG.
       </p>
       <p>
         Cada imagem ocupa uma página, na ordem exibida na lista. Imagens na horizontal geram páginas na horizontal e imagens na
@@ -145,13 +150,14 @@ const appSchema = {
       <h2>Ferramentas relacionadas</h2>
       <ul class="ic-links">
         <li><a href="/juntar-pdf/">Juntar PDF: una vários PDFs em um só arquivo</a></li>
+        <li><a href="/imagem-para-pdf/">Imagem para PDF: organize imagens JPG e gere um PDF</a></li>
         <li><a href="/jpg-to-pdf/" lang="en" hreflang="en">JPG to PDF (em inglês): converta e limite o tamanho do PDF</a></li>
         <li><a href="/tools/" lang="en" hreflang="en">All tools (em inglês): veja todas as ferramentas do site</a></li>
       </ul>
 
       <h2>Privacidade</h2>
       <p>
-        Suas imagens são processadas inteiramente no navegador, no seu dispositivo. Eles não são enviados ao Paul Digital nem a
+        Suas imagens são processadas inteiramente no navegador, no seu dispositivo. Elas não são enviadas ao Paul Digital nem a
         qualquer outro servidor, e nada é armazenado depois que você fecha a página.
       </p>
     </div>

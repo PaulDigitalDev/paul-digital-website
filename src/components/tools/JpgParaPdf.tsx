@@ -52,7 +52,8 @@ async function reencode(file: File): Promise<PdfImage> {
   }
 }
 
-export default function JpgParaPdf() {
+export default function JpgParaPdf({ variant = "classic" }: { variant?: "classic" | "minimal" }) {
+  const minimal = variant === "minimal";
   const [items, setItems] = useState<Item[]>([]);
   const [pageSize, setPageSize] = useState<PageSizeChoice>("a4");
   const [busy, setBusy] = useState(false);
@@ -222,23 +223,23 @@ export default function JpgParaPdf() {
   const totalSize = items.reduce((sum, item) => sum + item.file.size, 0);
 
   return (
-    <div className="ic" lang="pt-BR">
-      <h2 className="jp-heading">Converter JPG para PDF</h2>
+    <div className={minimal ? "ic ic-minimal" : "ic"} lang="pt-BR">
+      {!minimal && <h2 className="jp-heading">Converter JPG para PDF</h2>}
       <DropArea
         title={plural(items.length, "imagem selecionada", "imagens selecionadas")}
         hasFiles={items.length > 0}
         emptyTitle="Arraste e solte suas imagens aqui"
-        emptySub="Selecione uma ou mais imagens JPG para começar."
+        emptySub={minimal ? "ou arraste as imagens JPG aqui" : "Selecione uma ou mais imagens JPG para começar."}
         filledSub={`${formatBytesPt(totalSize)} no total · adicione mais quando quiser`}
-        buttonLabel="Selecionar imagens JPG"
-        moreLabel="Selecionar imagens JPG"
+        buttonLabel={minimal ? "Selecionar imagens" : "Selecionar imagens JPG"}
+        moreLabel={minimal ? "Selecionar imagens" : "Selecionar imagens JPG"}
         accept="image/jpeg,.jpg,.jpeg"
         multiple
         busy={busy}
         ariaLabel="Área para soltar imagens JPG"
         onFiles={(files) => void addFiles(files)}
       />
-      <p className="ic-hint">Suas imagens são processadas no seu dispositivo e não são enviadas para um servidor.</p>
+      {!minimal && <p className="ic-hint">Suas imagens são processadas no seu dispositivo e não são enviadas para um servidor.</p>}
 
       {items.length > 0 && (
         <>
@@ -279,6 +280,7 @@ export default function JpgParaPdf() {
         </>
       )}
 
+      {(!minimal || items.length > 0) && (
       <form
         className="ic-controls"
         onSubmit={(event) => {
@@ -304,9 +306,12 @@ export default function JpgParaPdf() {
           {busy ? "Convertendo imagens..." : "Converter para PDF"}
         </button>
       </form>
-      <p className="ic-hint">
-        Imagens na horizontal geram páginas na horizontal, e as na vertical geram páginas na vertical. A ordem do PDF é a da lista.
-      </p>
+      )}
+      {(!minimal || items.length > 0) && (
+        <p className="ic-hint">
+          Imagens na horizontal geram páginas na horizontal, e as na vertical geram páginas na vertical. A ordem do PDF é a da lista.
+        </p>
+      )}
 
       <div className="ic-status" role="status" aria-live="polite">
         {busy ? <span className="ic-spinner" aria-hidden="true" /> : null}

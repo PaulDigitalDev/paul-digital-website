@@ -3070,3 +3070,92 @@ main {
   border-color: #e8b48c;
   background: #e8b48c;
 }
+
+/* Minimal Imagem para PDF landing: converter first, content below */
+.im-top {
+  padding: clamp(1.25rem, 5vw, 3rem) 0 clamp(1.5rem, 5vw, 3rem);
+  background: var(--background);
+}
+
+.im-top .breadcrumb {
+  margin-bottom: clamp(1rem, 4vw, 2.5rem);
+}
+
+.im-head {
+  margin-bottom: clamp(1.25rem, 4vw, 2rem);
+  text-align: center;
+}
+
+.im-head h1 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(2rem, 6vw, 3.1rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.im-head p {
+  max-width: 36rem;
+  margin: 0.85rem auto 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+}
+
+.ic-minimal {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.ic-minimal .ic-drop:not(.has-file) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  padding: clamp(1rem, 4vw, 2rem) 0;
+  border: 0;
+  background: transparent;
+}
+
+.ic-minimal .ic-drop:not(.has-file) .ic-drop-title {
+  display: none;
+}
+
+.ic-minimal .ic-drop:not(.has-file) .button {
+  order: 1;
+  min-height: 3.5rem;
+  padding-inline: 2.25rem;
+  border-color: #c84b00;
+  border-radius: 0.6rem;
+  background: #c84b00;
+  color: var(--white);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.ic-minimal .ic-drop:not(.has-file) .button:hover:not(:disabled) {
+  border-color: #a64400;
+  background: #a64400;
+}
+
+.ic-minimal .ic-drop:not(.has-file) .button:disabled {
+  border-color: #e8b48c;
+  background: #e8b48c;
+}
+
+.ic-minimal .ic-drop:not(.has-file) .ic-drop-sub {
+  order: 2;
+  font-size: 0.95rem;
+}
+
+.ic-minimal .ic-drop:not(.has-file).is-dragging {
+  border: 2px dashed var(--blue);
+  border-radius: 0.75rem;
+  background: #f1f7ff;
+}
+
+.ic-minimal .ic-drop:not(.has-file):focus-visible {
+  border-radius: 0.75rem;
+}

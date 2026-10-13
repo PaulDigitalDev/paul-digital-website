@@ -1,0 +1,152 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import JpgParaPdf from "../../components/tools/JpgParaPdf";
+
+const path = "/imagem-para-pdf/";
+const title = "Imagem para PDF Grátis Online | Paul Digital";
+const description =
+  "Converta imagens JPG/JPEG em PDF grátis: organize a ordem das páginas, escolha o tamanho do documento e baixe o arquivo. Tudo é feito no seu navegador.";
+const h1 = "Imagem para PDF";
+const intro = "Converta suas imagens em PDF em segundos. Organize as páginas e ajuste o tamanho do documento.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Selecione as imagens: clique em “Selecionar imagens” ou arraste os arquivos para a área indicada. Você pode escolher várias de uma vez.",
+  "Organize a ordem: cada imagem será uma página. Use as setas para mover uma imagem e “Remover” para tirar as que não quiser.",
+  "Escolha o tamanho da página e clique em “Converter para PDF”.",
+  "Baixe o resultado com “Baixar PDF”. O arquivo é salvo no seu dispositivo.",
+];
+
+const faqs = [
+  {
+    q: "Quais tipos de imagem posso transformar em PDF aqui?",
+    a: "Por enquanto, apenas JPG e JPEG (são o mesmo formato). Arquivos PNG, WebP, HEIC ou de outros formatos não são aceitos por esta ferramenta e são recusados com uma mensagem explicando o motivo.",
+  },
+  {
+    q: "A ordem das imagens no PDF pode ser alterada?",
+    a: "Sim. Antes de converter, mova cada imagem para cima ou para baixo na lista. A primeira da lista vira a primeira página do PDF.",
+  },
+  {
+    q: "Dá para criar um PDF com apenas uma imagem?",
+    a: "Dá. Basta selecionar uma única imagem JPG; o PDF terá uma página.",
+  },
+  {
+    q: "Preciso criar conta ou instalar um programa?",
+    a: "Não. A ferramenta é gratuita e funciona direto no navegador, no computador ou no celular.",
+  },
+  {
+    q: "Minhas imagens ficam guardadas em algum lugar?",
+    a: "Não. O PDF é gerado no próprio navegador, no seu dispositivo. As imagens não são enviadas ao Paul Digital nem a terceiros, e nada fica armazenado quando você fecha a página.",
+  },
+  {
+    q: "Qual a diferença entre as opções de tamanho de página?",
+    a: "Com A4, cada imagem é encaixada em uma página A4 com pequena margem, na vertical ou na horizontal conforme a imagem. Com “Tamanho da imagem”, a página segue a proporção da própria imagem, sem margens.",
+  },
+  {
+    q: "Existe limite de arquivos?",
+    a: "Sim: até 50 imagens de até 50 MB cada, com no máximo 300 MB no total, para manter o navegador estável.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "pt-BR",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Início", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "pt-BR",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Qualquer (navegador)",
+  browserRequirements: "Requer JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "BRL" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="pt-BR">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <section class="im-top">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Trilha de navegação">
+        <ol>
+          <li><a href="/">Início</a></li>
+          <li aria-current="page">{h1}</li>
+        </ol>
+      </nav>
+      <div class="im-head">
+        <h1>{h1}</h1>
+        <p>{intro}</p>
+      </div>
+      <JpgParaPdf client:load variant="minimal" />
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container prose">
+      <h2>Como funciona a conversão de imagem em PDF</h2>
+      <p>
+        Converter imagens em PDF significa reunir uma ou mais fotos em um único documento, com uma imagem por página. É útil para
+        enviar fotos de documentos, comprovantes ou trabalhos como um só arquivo, que abre em qualquer aparelho.
+      </p>
+      <p>
+        <strong>Formato aceito: somente JPG/JPEG.</strong> Esta ferramenta não aceita PNG, WebP, HEIC ou outros formatos; arquivos
+        assim são recusados com uma mensagem explicando o motivo.
+      </p>
+
+      <h2>Como converter imagens em PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Tamanho da página e ordem das imagens</h2>
+      <ul>
+        <li><strong>A4:</strong> a imagem é ajustada dentro de uma página A4 com pequena margem, sem esticar. A página fica na vertical ou na horizontal conforme a imagem.</li>
+        <li><strong>Tamanho da imagem:</strong> a página tem a mesma proporção da imagem, sem margens. Imagens muito grandes são reduzidas para um tamanho de página prático.</li>
+        <li><strong>Ordem:</strong> a primeira imagem da lista vira a primeira página. Use as setas para reorganizar antes de converter.</li>
+      </ul>
+
+      <h2>Privacidade</h2>
+      <p>
+        O processamento acontece localmente no seu navegador. Suas imagens não saem do seu dispositivo, não são enviadas a um
+        servidor e nada é guardado depois que você fecha a página.
+      </p>
+
+      <h2>Ferramentas relacionadas</h2>
+      <ul class="ic-links">
+        <li><a href="/jpg-para-pdf/">JPG para PDF: converta fotos JPG em um único PDF</a></li>
+        <li><a href="/juntar-pdf/">Juntar PDF: una vários PDFs em um só arquivo</a></li>
+      </ul>
+
+      <h2>Perguntas frequentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
