@@ -102,6 +102,7 @@ const specs: GroupSpec[] = [
       { name: "Juntar PDF", href: "/juntar-pdf/" },
       { name: "JPG para PDF", href: "/jpg-para-pdf/" },
       { name: "Imagem para PDF", href: "/imagem-para-pdf/" },
+      { name: "PDF para Word", href: "/pdf-para-word/" },
     ],
   },
 ];

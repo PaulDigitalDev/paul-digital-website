@@ -1,0 +1,150 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PdfParaWord from "../../components/tools/PdfParaWord";
+
+const path = "/pdf-para-word/";
+const title = "PDF para Word Online — Grátis e Privado | Paul Digital";
+const description =
+  "Converta PDF em Word (DOCX) online e grátis. Funciona com PDFs que têm texto, direto no navegador, sem enviar seu arquivo a um servidor. Não faz OCR.";
+const h1 = "PDF para Word";
+const intro =
+  "Converta um PDF com texto em um documento Word editável (.docx), de forma gratuita e sem sair do navegador.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Clique em “Selecionar arquivo PDF” ou arraste o arquivo para a área de seleção.",
+  "Aguarde enquanto o texto é extraído página por página. O progresso aparece na tela.",
+  "Quando terminar, confira o resumo e clique em “Baixar DOCX”.",
+  "Abra o arquivo no Word e revise o resultado, principalmente se o PDF tinha tabelas, colunas ou imagens.",
+];
+
+const faqs = [
+  {
+    q: "Como converter PDF em Word?",
+    a: "Selecione o PDF na ferramenta e aguarde a conversão. O texto é extraído, os títulos e parágrafos são reconstruídos e você baixa um arquivo .docx que pode ser editado no Word, no LibreOffice ou no Google Docs.",
+  },
+  {
+    q: "É grátis converter PDF para Word aqui?",
+    a: "Sim. A ferramenta é gratuita e não exige cadastro nem instalação.",
+  },
+  {
+    q: "Meu PDF é enviado para um servidor?",
+    a: "Não. A conversão é feita inteiramente no seu navegador, no seu próprio dispositivo. Nada é enviado ao Paul Digital nem a terceiros, e nada fica guardado quando você fecha a página.",
+  },
+  {
+    q: "A ferramenta funciona com PDF digitalizado?",
+    a: "Não nesta primeira versão. PDFs digitalizados são feitos de imagens das páginas, sem texto selecionável, e exigem OCR (reconhecimento de caracteres), que ainda não é suportado aqui. A ferramenta detecta esses arquivos e avisa. Para um arquivo com texto em uma imagem, veja a ferramenta Imagem para Word, em inglês.",
+  },
+  {
+    q: "O que é mantido e o que se perde na conversão?",
+    a: "São mantidos o texto, a separação em parágrafos, os títulos (reconhecidos pelo tamanho e pelo negrito) e o negrito e o itálico, quando identificados com segurança. Tabelas, colunas, imagens, cabeçalhos e rodapés, cores, fontes originais e a paginação exata podem não ser preservados.",
+  },
+  {
+    q: "Por que meu PDF não foi aceito?",
+    a: "A ferramenta recusa arquivos que não são PDFs, que estão vazios, corrompidos, protegidos por senha ou sem texto selecionável. Para converter um PDF protegido, remova a senha antes, com o programa que você usa para abri-lo.",
+  },
+  {
+    q: "Existe limite de tamanho?",
+    a: "Para manter o navegador estável, o limite é de 50 MB e 500 páginas por arquivo. Como tudo é processado na memória do seu dispositivo, arquivos grandes podem ser lentos em celulares mais simples.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "pt-BR",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Início", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "pt-BR",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Qualquer (navegador)",
+  browserRequirements: "Requer JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "BRL" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="pt-BR">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Início", href: "/" }, { label: h1 }]} breadcrumbLabel="Trilha de navegação">
+    <PdfParaWord client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Como converter PDF em Word</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Sobre esta ferramenta</h2>
+      <p>
+        O PDF para Word extrai o texto de um PDF e o reorganiza em um documento .docx editável. A ferramenta usa a posição
+        de cada trecho de texto na página para juntar linhas em parágrafos e reconhecer títulos, e mantém o negrito e o
+        itálico quando consegue identificá-los. Serve para reaproveitar o texto de contratos, relatórios, artigos,
+        currículos e trabalhos escolares.
+      </p>
+
+      <h2>Limitações desta versão</h2>
+      <ul>
+        <li><strong>Sem OCR:</strong> só funciona com PDFs que têm texto selecionável. PDFs digitalizados são detectados e recusados com um aviso.</li>
+        <li><strong>Layout simplificado:</strong> tabelas, colunas, imagens, gráficos, cabeçalhos, rodapés e a paginação exata podem não ser preservados. O resultado é um texto corrido, com títulos e parágrafos.</li>
+        <li><strong>Fontes e cores:</strong> o documento usa a fonte padrão do Word. Apenas negrito e itálico são mantidos.</li>
+        <li><strong>Idiomas:</strong> alfabetos que exigem tabelas de caracteres especiais (por exemplo chinês, japonês e coreano) podem não ser extraídos corretamente.</li>
+        <li>Revise sempre o resultado antes de usá-lo em um documento importante.</li>
+      </ul>
+
+      <h2>Formatos e limites</h2>
+      <p>
+        <strong>Aceita:</strong> um arquivo .pdf por vez, sem senha, com até 50 MB e 500 páginas. Arquivos corrompidos, protegidos
+        por senha ou de outros formatos são recusados com uma mensagem explicando o motivo.
+      </p>
+
+      <h2>Perguntas frequentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Ferramentas relacionadas</h2>
+      <ul class="ic-links">
+        <li><a href="/juntar-pdf/">Juntar PDF: una vários PDFs em um só</a></li>
+        <li><a href="/jpg-para-pdf/">JPG para PDF: converta imagens JPG em um único PDF</a></li>
+        <li><a href="/image-to-word/" hreflang="en">Image to Word (em inglês): coloque imagens em um documento Word</a></li>
+        <li><a href="/tools/" hreflang="en">All tools (em inglês): veja todas as ferramentas do site</a></li>
+      </ul>
+
+      <h2>Privacidade</h2>
+      <p>
+        Seu arquivo é processado inteiramente no navegador, no seu dispositivo. Ele não é enviado ao Paul Digital nem a
+        qualquer outro servidor, e nada é armazenado depois que você fecha a página.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
