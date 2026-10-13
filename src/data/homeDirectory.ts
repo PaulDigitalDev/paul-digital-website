@@ -27,8 +27,9 @@ interface GroupSpec {
 /**
  * Homepage grouping. Every available registry tool must appear in exactly one group;
  * the build fails otherwise, so a new tool cannot silently go missing from the homepage.
- * Target-size landing pages (compress-*, jpg-to-pdf-under-*, ...) share
- * an engine with a listed tool and are reached from that tool, so they are not listed again.
+ * Target-size landing pages (compress-*, ...) share an engine with a listed tool and are reached
+ * from that tool, so they are not listed again. The jpg-to-pdf-under-* pages are the exception:
+ * they are listed explicitly under PDF Tools.
  */
 const specs: GroupSpec[] = [
   {
@@ -36,6 +37,18 @@ const specs: GroupSpec[] = [
     title: "PDF Tools",
     icon: "pdf",
     ids: ["jpg-to-pdf"],
+    extra: [
+      { name: "JPG to PDF Under 50KB", href: "/jpg-to-pdf-under-50kb/" },
+      { name: "JPG to PDF Under 100KB", href: "/jpg-to-pdf-under-100kb/" },
+      { name: "JPG to PDF Under 150KB", href: "/jpg-to-pdf-under-150kb/" },
+      { name: "JPEG to PDF Under 200KB", href: "/jpeg-to-pdf-under-200kb/" },
+      { name: "JPG to PDF Under 250KB", href: "/jpg-to-pdf-under-250kb/" },
+      { name: "JPG to PDF Under 300KB", href: "/jpg-to-pdf-under-300kb/" },
+      { name: "JPG to PDF Under 400KB", href: "/jpg-to-pdf-under-400kb/" },
+      { name: "JPG to PDF Under 500KB", href: "/jpg-to-pdf-under-500kb/" },
+      { name: "JPG to PDF Under 1MB", href: "/jpg-to-pdf-under-1mb/" },
+      { name: "JPG to PDF Under 2MB", href: "/jpg-to-pdf-under-2mb/" },
+    ],
   },
   {
     id: "portuguese",
