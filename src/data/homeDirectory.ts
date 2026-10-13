@@ -105,6 +105,13 @@ const specs: GroupSpec[] = [
       { name: "PDF para Word", href: "/pdf-para-word/" },
     ],
   },
+  {
+    id: "spanish",
+    title: "Herramientas en Español",
+    icon: "pdf",
+    ids: [],
+    extra: [{ name: "JPG a PDF", href: "/jpg-a-pdf/" }],
+  },
 ];
 
 /** Shorter labels where the registry heading is too long for a compact row. */

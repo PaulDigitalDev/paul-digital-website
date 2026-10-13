@@ -1,0 +1,145 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import JpgAPdf from "../../components/tools/JpgAPdf";
+
+const path = "/jpg-a-pdf/";
+const title = "JPG a PDF: convierte imágenes JPG en PDF gratis y online | Paul Digital";
+const description =
+  "Convierte una o varias imágenes JPG/JPEG en un único PDF, cambia el orden de las páginas y descárgalo. Todo se hace en tu navegador, sin subir tus imágenes a ningún servidor.";
+const h1 = "JPG a PDF";
+const intro = "Convierte tus fotos JPG en un único archivo PDF de forma rápida y gratuita. Esta herramienta solo acepta imágenes JPG/JPEG.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Haz clic en “Seleccionar imágenes” o arrastra tus imágenes JPG a la zona de selección. Puedes elegir varias a la vez.",
+  "Revisa la lista: cada imagen muestra una miniatura, sus dimensiones y su tamaño. Usa las flechas para cambiar el orden y “Eliminar” para quitar una imagen.",
+  "Elige el tamaño de página (A4 o el tamaño de la propia imagen) y haz clic en “Convertir a PDF”. Cada imagen se convierte en una página, en el orden de la lista.",
+  "Haz clic en “Descargar PDF” para guardar el archivo jpg-a-pdf.pdf. Para convertir otras imágenes, usa “Vaciar imágenes”.",
+];
+
+const faqs = [
+  {
+    q: "¿Cómo convertir JPG a PDF?",
+    a: "Añade tus imágenes JPG a la herramienta, ajusta el orden con las flechas y haz clic en “Convertir a PDF”. Cada imagen se convierte en una página del archivo, que estará listo para descargar en unos instantes.",
+  },
+  {
+    q: "¿Cómo convertir varias imágenes en un solo PDF?",
+    a: "Selecciona varias imágenes JPG a la vez o añade más después. El PDF final las reúne todas en un único archivo, en el orden que muestra la lista, con una imagen por página.",
+  },
+  {
+    q: "¿Es gratis convertir imágenes JPG a PDF?",
+    a: "Sí. Esta herramienta es gratuita y no requiere registro ni instalación.",
+  },
+  {
+    q: "¿Mis imágenes se suben a un servidor?",
+    a: "No. La conversión se realiza por completo en tu navegador, en tu propio dispositivo. No se envía nada a Paul Digital ni a terceros, y no se guarda nada cuando cierras la página.",
+  },
+  {
+    q: "¿La imagen se deforma o pierde calidad?",
+    a: "No se deforma: siempre se mantiene la proporción original y la imagen se ajusta a la página sin estirarse. Cuando el JPG se puede usar directamente, se inserta en el PDF sin recomprimirlo. Las imágenes con rotación guardada por la cámara o con modos de color que el PDF no admite se vuelven a codificar con alta calidad.",
+  },
+  {
+    q: "¿Qué tamaño de página debo elegir?",
+    a: "Con A4, cada imagen se ajusta dentro de una página A4 con un pequeño margen, en vertical o en horizontal según la imagen. Con “Tamaño de la imagen”, la página tiene la proporción de la imagen, sin márgenes, y las imágenes muy grandes se reducen a un tamaño de página práctico.",
+  },
+  {
+    q: "¿Puedo convertir PNG, WebP o HEIC?",
+    a: "No. Esta herramienta solo acepta JPG/JPEG. Los demás formatos se rechazan con un mensaje que explica el motivo.",
+  },
+  {
+    q: "¿Hay un límite de tamaño o de cantidad?",
+    a: "Para mantener estable el navegador, puedes convertir hasta 50 imágenes de hasta 50 MB cada una, con un máximo de 300 MB en total. Como todo se procesa en la memoria de tu dispositivo, muchas imágenes grandes pueden ir lentas en móviles sencillos.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "es",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Inicio", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "es",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Cualquiera (navegador)",
+  browserRequirements: "Requiere JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="es">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Inicio", href: "/" }, { label: h1 }]} breadcrumbLabel="Ruta de navegación">
+    <JpgAPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cómo convertir JPG a PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Sobre esta herramienta</h2>
+      <p>
+        JPG a PDF te permite elegir tus imágenes JPG, definir el orden y generar un único documento sin instalar nada. Sirve para
+        convertir fotos de documentos, comprobantes, trabajos escolares, recetas o digitalizaciones hechas con el móvil. Para ello,
+        las imágenes deben estar en formato JPG o JPEG.
+      </p>
+      <p>
+        Cada imagen ocupa una página, en el orden que muestra la lista. Las imágenes horizontales generan páginas horizontales y las
+        verticales, páginas verticales, siempre con la proporción original.
+      </p>
+
+      <h2>Formatos y límites</h2>
+      <p>
+        <strong>Acepta:</strong> imágenes .jpg y .jpeg. Puedes añadir hasta 50 imágenes, de hasta 50 MB cada una y 300 MB en total.
+        Los archivos en otros formatos, vacíos o dañados se rechazan con un mensaje que explica el motivo.
+      </p>
+
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Herramientas relacionadas</h2>
+      <ul class="ic-links">
+        <li><a href="/jpg-to-pdf/" lang="en" hreflang="en">JPG to PDF (en inglés): convierte y limita el tamaño del PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (en inglés): todas las herramientas del sitio</a></li>
+      </ul>
+
+      <h2>Privacidad</h2>
+      <p>
+        Tus imágenes se procesan por completo en el navegador, en tu dispositivo. No se envían a Paul Digital ni a ningún otro
+        servidor, y no se guarda nada cuando cierras la página.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -29,7 +29,7 @@ interface Result {
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
-async function reencode(file: File): Promise<PdfImage> {
+export async function reencode(file: File): Promise<PdfImage> {
   const bitmap = await createImageBitmap(file);
   try {
     const canvas = document.createElement("canvas");
