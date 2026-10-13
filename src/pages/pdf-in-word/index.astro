@@ -1,0 +1,141 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PdfInWord from "../../components/tools/PdfInWord";
+
+const path = "/pdf-in-word/";
+const title = "PDF in Word umwandeln – Kostenloser PDF-zu-Word-Konverter | Paul Digital";
+const description =
+  "Wandeln Sie ein PDF mit Text kostenlos in ein bearbeitbares Word-Dokument (DOCX) um – direkt im Browser, ohne Upload auf einen Server. Ohne Texterkennung (OCR).";
+const h1 = "PDF in Word umwandeln";
+const intro =
+  "Wandeln Sie ein PDF mit Text in ein bearbeitbares Word-Dokument (.docx) um – kostenlos und direkt in Ihrem Browser.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = ["Klicken Sie auf „PDF-Datei auswählen“ oder ziehen Sie Ihre Datei in den Ablagebereich. Die Umwandlung startet sofort.", "Warten Sie, während der Text Seite für Seite extrahiert wird. Der Fortschritt wird auf dem Bildschirm angezeigt.", "Prüfen Sie nach der Umwandlung die Zusammenfassung und die Hinweise und klicken Sie dann auf „Word-Datei herunterladen“.", "Öffnen Sie die Datei in Word und kontrollieren Sie das Ergebnis, besonders wenn Ihr PDF Tabellen, Spalten oder Bilder enthält."];
+
+const faqs = [
+  {
+    q: "Wie wandle ich ein PDF in Word um?",
+    a: "Wählen Sie Ihr PDF in diesem Tool aus und warten Sie, bis die Umwandlung abgeschlossen ist. Der Text wird extrahiert, Überschriften und Absätze werden rekonstruiert, und Sie können anschließend eine .docx-Datei herunterladen, die sich in Word, LibreOffice oder Google Docs bearbeiten lässt.",
+  },
+  {
+    q: "Ist die Umwandlung von PDF in Word kostenlos?",
+    a: "Ja. Das Tool ist kostenlos, ohne Anmeldung und ohne Installation nutzbar.",
+  },
+  {
+    q: "Wird mein PDF auf einen Server hochgeladen?",
+    a: "Nein. Die gesamte Umwandlung findet in Ihrem Browser auf Ihrem Gerät statt. Es wird nichts an Paul Digital oder Dritte gesendet, und beim Schließen der Seite wird nichts gespeichert.",
+  },
+  {
+    q: "Funktioniert das auch mit eingescannten PDFs?",
+    a: "Nein. Ein eingescanntes PDF besteht aus Seitenbildern ohne markierbaren Text und würde Texterkennung (OCR) erfordern, die in diesem Tool nicht verfügbar ist. Solche Dateien werden erkannt und Sie erhalten einen Hinweis, statt ein leeres Dokument zu bekommen.",
+  },
+  {
+    q: "Was bleibt bei der Umwandlung erhalten und was geht verloren?",
+    a: "Erhalten bleiben der Text, die Gliederung in Absätze, Überschriften (erkannt anhand von Größe und Schriftstärke) sowie Fett und Kursiv, sofern sie sicher erkannt werden. Tabellen, Spalten, Bilder, Kopf- und Fußzeilen, Farben, Originalschriften und exakte Seitenumbrüche bleiben nicht zwingend erhalten.",
+  },
+  {
+    q: "Warum wird mein PDF abgelehnt?",
+    a: "Das Tool lehnt Dateien ab, die kein PDF sind, leere oder beschädigte Dateien, passwortgeschützte PDFs und PDFs ohne markierbaren Text. Um ein geschütztes PDF umzuwandeln, entfernen Sie zuerst das Passwort in der Anwendung, mit der Sie es öffnen.",
+  },
+  {
+    q: "Gibt es eine Größenbeschränkung?",
+    a: "Damit der Browser stabil bleibt, liegt das Limit bei 50 MB und 500 Seiten pro Datei. Da alles im Arbeitsspeicher Ihres Geräts verarbeitet wird, können große Dateien auf einfachen Smartphones langsam sein.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "de",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Startseite", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "de",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Alle (Browser)",
+  browserRequirements: "JavaScript erforderlich",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="de">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Startseite", href: "/" }, { label: h1 }]} breadcrumbLabel="Brotkrumennavigation">
+    <PdfInWord client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>So wandeln Sie ein PDF in Word um</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Über dieses Tool</h2>
+      <p>
+        PDF in Word liest den Text eines PDFs aus und baut daraus ein bearbeitbares .docx-Dokument auf. Das Tool nutzt die Position der einzelnen Textfragmente auf der Seite, um Zeilen zu Absätzen zusammenzufassen und Überschriften zu erkennen; Fett- und Kursivschrift bleiben erhalten, wenn sie sicher erkannt werden. Das eignet sich, um Texte aus Verträgen, Berichten, Artikeln, Lebensläufen oder Hausarbeiten weiterzuverwenden.
+      </p>
+
+      <h2>Grenzen dieses Tools</h2>
+      <ul>
+        <li><strong>Keine Texterkennung (OCR):</strong> Es funktionieren nur PDFs mit markierbarem Text. Eingescannte PDFs werden erkannt und mit einer erklärenden Meldung abgelehnt, statt ein leeres Dokument zu erzeugen.</li>
+        <li><strong>Vereinfachtes Layout:</strong> Tabellen, Spalten, Bilder, Diagramme, Kopf- und Fußzeilen sowie exakte Seitenumbrüche bleiben nicht zwingend erhalten. Das Ergebnis ist ein fortlaufender Text mit Überschriften und Absätzen.</li>
+        <li><strong>Schriften und Farben:</strong> Das Dokument verwendet die Standardschriften von Word. Nur Fett und Kursiv werden übernommen.</li>
+        <li><strong>Schriftsysteme:</strong> Schriften, die spezielle Zeichentabellen benötigen (Chinesisch, Japanisch, Koreanisch …), werden möglicherweise nicht korrekt extrahiert.</li>
+        <li>Prüfen Sie das Ergebnis immer, bevor Sie es für ein wichtiges Dokument verwenden.</li>
+      </ul>
+
+      <h2>Formate und Limits</h2>
+      <p>
+        <strong>Unterstützt:</strong> eine .pdf-Datei pro Umwandlung, ohne Passwort, bis 50 MB und 500 Seiten. Beschädigte, passwortgeschützte oder anders formatierte Dateien werden mit einer Meldung abgelehnt, die den Grund erklärt.
+      </p>
+
+      <h2>Häufige Fragen</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Weitere Tools</h2>
+      <ul class="ic-links">
+        <li><a href="/word-in-pdf/">Word in PDF: Word-Dokument in PDF umwandeln</a></li>
+        <li><a href="/pdf-komprimieren/">PDF komprimieren: PDF-Datei verkleinern</a></li>
+        <li><a href="/pdf-zusammenfugen/">PDF zusammenfügen: mehrere PDF-Dateien zu einer kombinieren</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (auf Englisch): alle Tools der Website</a></li>
+      </ul>
+
+      <h2>Datenschutz</h2>
+      <p>
+        Ihre Dateien werden vollständig in Ihrem Browser auf Ihrem Gerät verarbeitet. Sie werden weder an Paul Digital noch an
+        einen anderen Server gesendet, und beim Schließen der Seite wird nichts gespeichert.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

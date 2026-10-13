@@ -1,0 +1,142 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import MergePdf from "../../components/tools/MergePdf";
+
+const path = "/pdf-zusammenfugen/";
+const title = "PDF zusammenfügen – Mehrere PDF-Dateien kostenlos kombinieren | Paul Digital";
+const description =
+  "Fügen Sie mehrere PDF-Dateien kostenlos zu einem Dokument zusammen, ordnen Sie sie neu an und laden Sie das Ergebnis herunter – direkt im Browser, ohne Upload.";
+const h1 = "PDF-Dateien zusammenfügen";
+const intro =
+  "Kombinieren Sie mehrere PDF-Dateien zu einem Dokument – schnell, kostenlos und direkt in Ihrem Browser.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = ["Klicken Sie auf „Dateien hinzufügen“ oder ziehen Sie Ihre Dateien in den Ablagebereich. Sie können mehrere Dateien gleichzeitig auswählen.", "Prüfen Sie die Liste: Jedes PDF zeigt Seitenzahl und Größe. Mit den Pfeilen ändern Sie die Reihenfolge, mit „Datei entfernen“ löschen Sie eine Datei.", "Klicken Sie auf „Dateien zusammenfügen“. Die Seiten werden in der Reihenfolge der Liste vom ersten bis zum letzten PDF zusammengesetzt.", "Klicken Sie auf „PDF herunterladen“, um pdf-dateien-zusammengefuegt.pdf zu speichern. Für neue Dateien nutzen Sie „Liste leeren“."];
+
+const faqs = [
+  {
+    q: "Wie füge ich PDF-Dateien zusammen?",
+    a: "Fügen Sie Ihre PDFs zum Tool hinzu, bringen Sie sie mit den Pfeilen in die gewünschte Reihenfolge und klicken Sie auf „Dateien zusammenfügen“. Die neue Datei enthält alle Seiten in der Reihenfolge der Liste und lässt sich in wenigen Sekunden herunterladen.",
+  },
+  {
+    q: "Ist das Zusammenfügen von PDFs kostenlos?",
+    a: "Ja. Das Tool ist kostenlos, ohne Anmeldung und ohne Installation nutzbar.",
+  },
+  {
+    q: "Werden meine Dateien auf einen Server hochgeladen?",
+    a: "Nein. Das Zusammenfügen findet vollständig in Ihrem Browser auf Ihrem Gerät statt. Es wird nichts an Paul Digital oder Dritte gesendet, und beim Schließen der Seite wird nichts gespeichert.",
+  },
+  {
+    q: "Kann ich die Reihenfolge der PDFs ändern?",
+    a: "Ja. Verwenden Sie die Pfeile nach oben und unten neben jeder Datei. Die Seiten der obersten Datei erscheinen im fertigen PDF zuerst. Einzelne Dateien können Sie mit „Datei entfernen“ aus der Liste löschen.",
+  },
+  {
+    q: "Bleiben alle Seiten erhalten?",
+    a: "Ja. Alle Seiten jeder Datei werden unverändert und ohne erneute Komprimierung kopiert: Text, Bilder und Links bleiben wie im Original. Lesezeichen und interaktive Formulare bleiben im Ergebnis möglicherweise nicht erhalten.",
+  },
+  {
+    q: "Warum wird mein PDF abgelehnt?",
+    a: "Das Tool lehnt Dateien ab, die kein PDF sind, leere oder beschädigte Dateien und passwortgeschützte PDFs. Die betroffene Datei wird in der Meldungsliste genannt, die übrigen Dateien bleiben in der Liste. Um ein geschütztes PDF zusammenzufügen, entfernen Sie zuerst das Passwort in der Anwendung, mit der Sie es öffnen.",
+  },
+  {
+    q: "Gibt es Beschränkungen bei Größe oder Dateianzahl?",
+    a: "Damit der Browser stabil bleibt, können Sie bis zu 30 Dateien mit höchstens 100 MB pro Datei und insgesamt 300 MB zusammenfügen. Da alles im Arbeitsspeicher Ihres Geräts verarbeitet wird, können sehr große Dateien auf einfachen Smartphones langsam sein.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "de",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Startseite", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "de",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Alle (Browser)",
+  browserRequirements: "JavaScript erforderlich",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="de">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Startseite", href: "/" }, { label: h1 }]} breadcrumbLabel="Brotkrumennavigation">
+    <MergePdf client:load locale="de" />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>So fügen Sie PDF-Dateien zusammen</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Über dieses Tool</h2>
+      <p>
+        PDF zusammenfügen vereint mehrere PDF-Dateien in einem Dokument: Dateien auswählen, Reihenfolge festlegen und zu einem PDF zusammensetzen – ohne Installation. Praktisch für Verträge, Belege, Lebensläufe, Hausarbeiten, Rechnungen und andere Unterlagen, die Sie gesammelt versenden möchten.
+      </p>
+      <p>
+        Die Seiten werden unverändert in der Reihenfolge der Liste kopiert. Das Tool komprimiert oder verändert den Seiteninhalt nicht, sondern fügt die Seiten lediglich in einer neuen Datei zusammen.
+      </p>
+
+      <h2>Grenzen dieses Tools</h2>
+      <ul>
+        <li><strong>Lesezeichen und Formulare:</strong> Lesezeichen und interaktive Formularfelder bleiben in der zusammengefügten Datei möglicherweise nicht erhalten.</li>
+        <li><strong>Digitale Signaturen:</strong> Eine digitale Signatur bleibt in einem zusammengefügten Dokument nicht gültig.</li>
+        <li><strong>Geschützte Dateien:</strong> Passwortgeschützte PDFs werden abgelehnt; das Tool entfernt keine Schutzmechanismen. Fehlerhafte Dateien werden nicht stillschweigend übersprungen, sondern in der Meldungsliste benannt, damit Sie die Auswahl korrigieren können.</li>
+      </ul>
+
+      <h2>Formate und Limits</h2>
+      <p>
+        <strong>Unterstützt:</strong> .pdf-Dateien ohne Passwort, bis zu 30 Dateien, jeweils höchstens 100 MB und insgesamt höchstens 300 MB. Passwortgeschützte, beschädigte oder anders formatierte Dateien werden mit einer Meldung abgelehnt, die den Grund erklärt.
+      </p>
+
+      <h2>Häufige Fragen</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Weitere Tools</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-komprimieren/">PDF komprimieren: PDF-Datei verkleinern</a></li>
+        <li><a href="/pdf-in-word/">PDF in Word: PDF mit Text in ein bearbeitbares Dokument umwandeln</a></li>
+        <li><a href="/word-in-pdf/">Word in PDF: Word-Dokument in PDF umwandeln</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (auf Englisch): alle Tools der Website</a></li>
+      </ul>
+
+      <h2>Datenschutz</h2>
+      <p>
+        Ihre Dateien werden vollständig in Ihrem Browser auf Ihrem Gerät verarbeitet. Sie werden weder an Paul Digital noch an
+        einen anderen Server gesendet, und beim Schließen der Seite wird nichts gespeichert.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

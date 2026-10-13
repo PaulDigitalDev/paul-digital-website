@@ -6,7 +6,7 @@ const MAX_FILES = 30;
 const MAX_FILE_BYTES = 100 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
 
-type Locale = "pt-BR" | "es" | "id" | "tr" | "fr";
+type Locale = "pt-BR" | "es" | "id" | "tr" | "fr" | "de";
 type Forms = readonly [string, string];
 
 interface Strings {
@@ -292,6 +292,53 @@ const TEXT: Record<Locale, Strings> = {
     merged: "Fichiers fusionnés",
     download: "Télécharger le PDF fusionné",
     reset: "Vider la liste",
+  },
+  de: {
+    outputName: "pdf-dateien-zusammengefuegt.pdf",
+    cleared: "Liste geleert. Wählen Sie neue PDF-Dateien aus, um von vorn zu beginnen.",
+    reading: (name) => `${name} wird gelesen …`,
+    limitFiles: (name, max) => `${name}: nicht hinzugefügt. Das Limit liegt bei ${max} Dateien.`,
+    empty: (name) => `${name}: Die Datei ist leer.`,
+    tooBig: (name, size, max) => `${name}: ${size} – das überschreitet das Limit von ${max} pro Datei.`,
+    totalExceeded: (name, max) => `${name}: nicht hinzugefügt, da die Gesamtgröße ${max} überschreiten würde.`,
+    encrypted: (name) => `${name}: Dieses PDF ist passwortgeschützt. Entfernen Sie den Schutz und versuchen Sie es erneut.`,
+    invalid: (name) => `${name}: Diese Datei ist kein PDF. Bitte wählen Sie eine gültige Datei aus.`,
+    unreadable: (name) => `${name}: Dieses PDF kann nicht gelesen werden. Die Datei ist möglicherweise beschädigt.`,
+    added: ["PDF-Datei hinzugefügt", "PDF-Dateien hinzugefügt"],
+    moved: (name, pos, total) => `${name} an Position ${pos} von ${total} verschoben.`,
+    fallbackName: "Datei",
+    removed: (name) => `${name} entfernt.`,
+    needTwo: "Fügen Sie mindestens zwei PDF-Dateien zum Zusammenfügen hinzu.",
+    mergingFile: (done, total) => `Datei ${done + 1} von ${total} wird zusammengefügt …`,
+    finalizing: "PDF wird fertiggestellt …",
+    success: "Das PDF wurde erstellt!",
+    failure: "Die PDF-Dateien konnten nicht zusammengefügt werden. Prüfen Sie Ihre Dateien oder versuchen Sie es mit weniger Dateien erneut.",
+    selected: ["PDF-Datei ausgewählt", "PDF-Dateien ausgewählt"],
+    page: ["Seite", "Seiten"],
+    emptyTitle: "PDF-Dateien hierher ziehen und ablegen",
+    emptySub: (max) => `Wählen Sie mindestens zwei PDF-Dateien aus. Bis zu ${max} pro Datei.`,
+    filledSub: (pages, size) => `${pages} · insgesamt ${size} · Sie können weitere Dateien hinzufügen`,
+    select: "Dateien hinzufügen",
+    dropAria: "Ablagebereich für PDF-Dateien",
+    privacy: "Ihre Dateien werden auf Ihrem Gerät verarbeitet und an keinen Server gesendet.",
+    listHeading: (n) => `Ausgewählte Dateien (${n})`,
+    orderHint: "Bringen Sie die Dateien in die gewünschte Reihenfolge.",
+    listAria: "Ausgewählte Dateien in der Reihenfolge des Zusammenfügens",
+    up: (name) => `${name} nach oben verschieben`,
+    down: (name) => `${name} nach unten verschieben`,
+    removeAria: (name) => `${name} entfernen`,
+    remove: "Datei entfernen",
+    merging: "PDF-Dateien werden zusammengefügt …",
+    submit: "Dateien zusammenfügen",
+    needOneMore: "Fügen Sie noch eine PDF-Datei hinzu, um zusammenzufügen. ",
+    listHint: "Die Seiten werden in der Reihenfolge der Liste zusammengefügt. Mit den Pfeilen ändern Sie die Reihenfolge, mit „Datei entfernen“ löschen Sie eine Datei aus der Liste.",
+    result: "Ergebnis",
+    format: "Format",
+    size: "Größe",
+    pages: "Seiten",
+    merged: "Zusammengefügte Dateien",
+    download: "PDF herunterladen",
+    reset: "Liste leeren",
   },
 };
 

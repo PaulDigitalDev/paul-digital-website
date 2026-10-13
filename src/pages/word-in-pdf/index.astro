@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import WordInPdf from "../../components/tools/WordInPdf";
+
+const path = "/word-in-pdf/";
+const title = "Word in PDF umwandeln – Kostenloser DOCX-zu-PDF-Konverter | Paul Digital";
+const description =
+  "Wandeln Sie ein Word-Dokument (.docx) kostenlos in PDF um – direkt im Browser, ohne Upload auf einen Server. Mit Absätzen, Listen, Tabellen und Bildern im Textfluss.";
+const h1 = "Word in PDF umwandeln";
+const intro =
+  "Wandeln Sie ein Word-Dokument (.docx) in ein PDF um – kostenlos und direkt in Ihrem Browser.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = ["Klicken Sie auf „Word-Datei auswählen“ oder ziehen Sie Ihr .docx-Dokument in den Ablagebereich. Die Umwandlung startet sofort.", "Warten Sie, während das Dokument gelesen und gesetzt wird. Der Fortschritt wird angezeigt.", "Prüfen Sie die Zusammenfassung und die Hinweise und klicken Sie auf „PDF herunterladen“.", "Öffnen Sie das PDF und kontrollieren Sie Zeilen- und Seitenumbrüche, bevor Sie es weitergeben."];
+
+const faqs = [
+  {
+    q: "Wie wandle ich ein Word-Dokument in PDF um?",
+    a: "Wählen Sie Ihre .docx-Datei in diesem Tool aus und warten Sie, bis die Umwandlung abgeschlossen ist. Danach können Sie das PDF herunterladen.",
+  },
+  {
+    q: "Ist die Umwandlung von Word in PDF kostenlos?",
+    a: "Ja. Das Tool ist kostenlos, ohne Anmeldung und ohne Installation nutzbar.",
+  },
+  {
+    q: "Wird mein Dokument auf einen Server hochgeladen?",
+    a: "Nein. Die gesamte Umwandlung findet in Ihrem Browser auf Ihrem Gerät statt. Es wird nichts an Paul Digital oder Dritte gesendet, und beim Schließen der Seite wird nichts gespeichert.",
+  },
+  {
+    q: "Sieht das PDF genauso aus wie das Word-Dokument?",
+    a: "Nicht unbedingt. Text, Grundformatierung, Listen, Tabellen und Bilder im Textfluss werden übernommen, aber das PDF verwendet Standardschriften statt der Dokumentschriften. Zeilen- und Seitenumbrüche können deshalb von Word abweichen.",
+  },
+  {
+    q: "Welche Inhalte werden nicht übernommen?",
+    a: "Kopf- und Fußzeilen, Seitenzahlen, Fuß- und Endnoten, Textfelder, Formen, Diagramme, Formeln und eingebettete Objekte werden nicht übernommen. Das Tool zeigt nach der Umwandlung an, welche dieser Elemente in Ihrem Dokument erkannt wurden.",
+  },
+  {
+    q: "Warum wird meine Datei abgelehnt?",
+    a: "Das Tool lehnt Dateien ab, die kein gültiges .docx-Dokument sind, leere oder beschädigte Dateien, ältere .doc-Dateien und passwortgeschützte Dokumente. Öffnen Sie solche Dateien in Word und speichern Sie sie ohne Passwort als .docx.",
+  },
+  {
+    q: "Gibt es eine Größenbeschränkung?",
+    a: "Damit der Browser stabil bleibt, liegt das Limit bei 25 MB und 300 Seiten pro Datei.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "de",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Startseite", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "de",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Alle (Browser)",
+  browserRequirements: "JavaScript erforderlich",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="de">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Startseite", href: "/" }, { label: h1 }]} breadcrumbLabel="Brotkrumennavigation">
+    <WordInPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>So wandeln Sie Word in PDF um</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Über dieses Tool</h2>
+      <p>
+        Word in PDF liest ein .docx-Dokument direkt im Browser und erzeugt daraus ein PDF. Unterstützt werden Absätze, Überschriften, Fett und Kursiv, Listen, Tabellen, Bilder im Textfluss und Seitenumbrüche. Es wird keine Datei auf einen Server hochgeladen.
+      </p>
+      <p>
+        Die Umwandlung ist eine Annäherung an das Layout von Word und kein exakter Ersatz: Das PDF verwendet Standardschriften statt der Schriften Ihres Dokuments, daher können Zeilen- und Seitenumbrüche abweichen.
+      </p>
+
+      <h2>Grenzen dieses Tools</h2>
+      <ul>
+        <li><strong>Nur .docx:</strong> Ältere .doc-Dateien und passwortgeschützte Dokumente werden abgelehnt. Speichern Sie sie in Word als .docx.</li>
+        <li><strong>Nicht übernommen:</strong> Kopf- und Fußzeilen, Seitenzahlen, Fuß- und Endnoten, Textfelder, Formen, Diagramme, Formeln und eingebettete Objekte. Werden solche Elemente erkannt, weist das Tool nach der Umwandlung darauf hin.</li>
+        <li><strong>Schriften:</strong> Es werden Standardschriften des PDF-Formats verwendet. Zeichen, die dort fehlen (z. B. Emojis oder nicht lateinische Schriften), werden durch „?“ ersetzt.</li>
+        <li><strong>Bilder:</strong> Frei positionierte Bilder werden in den Textfluss eingefügt, ihre Position kann sich daher ändern.</li>
+        <li>Prüfen Sie das PDF immer, bevor Sie es für ein wichtiges Dokument verwenden.</li>
+      </ul>
+
+      <h2>Formate und Limits</h2>
+      <p>
+        <strong>Unterstützt:</strong> eine .docx-Datei pro Umwandlung, ohne Passwort, bis 25 MB und 300 Seiten. Beschädigte, passwortgeschützte oder anders formatierte Dateien werden mit einer Meldung abgelehnt, die den Grund erklärt.
+      </p>
+
+      <h2>Häufige Fragen</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Weitere Tools</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-in-word/">PDF in Word: PDF mit Text in ein bearbeitbares Dokument umwandeln</a></li>
+        <li><a href="/pdf-komprimieren/">PDF komprimieren: PDF-Datei verkleinern</a></li>
+        <li><a href="/pdf-zusammenfugen/">PDF zusammenfügen: mehrere PDF-Dateien zu einer kombinieren</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (auf Englisch): alle Tools der Website</a></li>
+      </ul>
+
+      <h2>Datenschutz</h2>
+      <p>
+        Ihre Dateien werden vollständig in Ihrem Browser auf Ihrem Gerät verarbeitet. Sie werden weder an Paul Digital noch an
+        einen anderen Server gesendet, und beim Schließen der Seite wird nichts gespeichert.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PdfKomprimieren from "../../components/tools/PdfKomprimieren";
+
+const path = "/pdf-komprimieren/";
+const title = "PDF komprimieren – PDF-Datei kostenlos verkleinern | Paul Digital";
+const description =
+  "Verkleinern Sie PDF-Dateien kostenlos im Browser – in drei Stufen, mit echter Größenanzeige vorher und nachher. Ihre Datei wird nicht auf einen Server hochgeladen.";
+const h1 = "PDF komprimieren";
+const intro =
+  "Verkleinern Sie eine PDF-Datei, um sie leichter zu versenden oder hochzuladen – kostenlos und direkt in Ihrem Browser.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = ["Klicken Sie auf „PDF-Datei auswählen“ oder ziehen Sie Ihre Datei in den Ablagebereich. Die ursprüngliche Dateigröße wird angezeigt.", "Wählen Sie eine Komprimierungsstufe: leicht, mittel oder stark. Optional können Sie die Dokument-Metadaten entfernen.", "Klicken Sie auf „Komprimierung starten“ und warten Sie, bis die Verarbeitung abgeschlossen ist.", "Vergleichen Sie die echten Größen vorher und nachher und laden Sie das PDF herunter. Ist das Ergebnis nicht kleiner, wird es nicht angeboten – behalten Sie dann die Originaldatei."];
+
+const faqs = [
+  {
+    q: "Wie kann ich ein PDF verkleinern?",
+    a: "Wählen Sie Ihr PDF in diesem Tool aus, wählen Sie eine Komprimierungsstufe und klicken Sie auf „Komprimierung starten“. Anschließend sehen Sie die tatsächliche Größe vor und nach der Verarbeitung und können das Ergebnis herunterladen, sofern es kleiner ist.",
+  },
+  {
+    q: "Ist das Komprimieren von PDFs kostenlos?",
+    a: "Ja. Das Tool ist kostenlos, ohne Anmeldung und ohne Installation nutzbar.",
+  },
+  {
+    q: "Wird mein PDF auf einen Server hochgeladen?",
+    a: "Nein. Die Komprimierung findet in Ihrem Browser auf Ihrem Gerät statt. Es wird nichts an Paul Digital oder Dritte gesendet, und beim Schließen der Seite wird nichts gespeichert.",
+  },
+  {
+    q: "Wie stark wird das PDF verkleinert?",
+    a: "Das hängt vom Inhalt ab. Enthält das PDF viele JPEG-Bilder, kann die Verkleinerung deutlich ausfallen; bei reinen Textdokumenten oder bereits optimierten Dateien oft kaum. Das Tool zeigt die tatsächliche Verringerung in Prozent und garantiert keine bestimmte Zielgröße.",
+  },
+  {
+    q: "Was passiert, wenn das Ergebnis nicht kleiner ist?",
+    a: "Dann wird das Ergebnis nicht zum Download angeboten. Das Tool weist Sie darauf hin und Sie können die Originaldatei behalten oder eine andere Komprimierungsstufe probieren.",
+  },
+  {
+    q: "Bleibt die digitale Signatur erhalten?",
+    a: "Nein. Wird ein signiertes PDF verändert, ist die digitale Signatur in der neuen Datei nicht mehr gültig. Verwenden Sie für signierte Dokumente die Originaldatei.",
+  },
+  {
+    q: "Warum wird mein PDF abgelehnt?",
+    a: "Das Tool lehnt Dateien ab, die kein PDF sind, leere oder beschädigte Dateien und passwortgeschützte PDFs. Um ein geschütztes PDF zu komprimieren, entfernen Sie zuerst das Passwort in der Anwendung, mit der Sie es öffnen.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "de",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Startseite", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "de",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Alle (Browser)",
+  browserRequirements: "JavaScript erforderlich",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="de">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Startseite", href: "/" }, { label: h1 }]} breadcrumbLabel="Brotkrumennavigation">
+    <PdfKomprimieren client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>So komprimieren Sie ein PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Über dieses Tool</h2>
+      <p>
+        PDF komprimieren verkleinert eine PDF-Datei, damit sie sich leichter per E-Mail versenden, in ein Formular hochladen oder ablegen lässt. Alles geschieht im Browser: Sie wählen Datei und Stufe und erhalten nur dann ein neues PDF, wenn es tatsächlich kleiner ist.
+      </p>
+      <p>
+        Das Ergebnis hängt vom Inhalt des Dokuments ab. Dokumente mit vielen Fotos oder als JPEG gespeicherten Scans lassen sich besser verkleinern als reine Textdokumente, und eine bereits von einer anderen Anwendung optimierte Datei verändert sich unter Umständen kaum. Das Tool zeigt immer die tatsächliche Größe vor und nach der Verarbeitung, nie eine Schätzung.
+      </p>
+
+      <h2>Was das Tool kann und was nicht</h2>
+      <ul>
+        <li><strong>Leichte Komprimierung:</strong> entfernt ungenutzte Daten, komprimiert unkomprimierte Inhalte und ordnet die Dateistruktur neu. Bilder werden nicht verändert.</li>
+        <li><strong>Mittlere und starke Komprimierung:</strong> verkleinern zusätzlich farbige JPEG-Bilder (mittlere Stufe: höchstens 2.000 Pixel pro Seite, starke Stufe: höchstens 1.400 Pixel und geringere Qualität). Bilder in anderen Formaten, Schriften und Vektorgrafiken werden nicht verändert.</li>
+        <li><strong>Nicht möglich:</strong> Texterkennung (OCR), Passwörter entfernen, Text bearbeiten oder eine bestimmte Zielgröße erreichen. Eine bestimmte Verkleinerung kann nicht garantiert werden.</li>
+        <li><strong>Digitale Signaturen:</strong> Enthält das PDF eine digitale Signatur, ist diese in der komprimierten Datei nicht mehr gültig.</li>
+        <li><strong>Metadaten:</strong> Auf Wunsch werden Titel, Autor und Ursprungsanwendung entfernt. Das allein verkleinert die Datei in der Regel nur geringfügig.</li>
+      </ul>
+
+      <h2>Formate und Limits</h2>
+      <p>
+        <strong>Unterstützt:</strong> eine .pdf-Datei ohne Passwort, bis 100 MB. Beschädigte, passwortgeschützte oder anders formatierte Dateien werden mit einer Meldung abgelehnt, die den Grund erklärt.
+      </p>
+
+      <h2>Häufige Fragen</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Weitere Tools</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-zusammenfugen/">PDF zusammenfügen: mehrere PDF-Dateien zu einer kombinieren</a></li>
+        <li><a href="/pdf-in-word/">PDF in Word: PDF mit Text in ein bearbeitbares Dokument umwandeln</a></li>
+        <li><a href="/word-in-pdf/">Word in PDF: Word-Dokument in PDF umwandeln</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (auf Englisch): alle Tools der Website</a></li>
+      </ul>
+
+      <h2>Datenschutz</h2>
+      <p>
+        Ihre Dateien werden vollständig in Ihrem Browser auf Ihrem Gerät verarbeitet. Sie werden weder an Paul Digital noch an
+        einen anderen Server gesendet, und beim Schließen der Seite wird nichts gespeichert.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
