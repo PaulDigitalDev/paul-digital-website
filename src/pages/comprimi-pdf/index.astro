@@ -1,0 +1,149 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import ComprimiPdf from "../../components/tools/ComprimiPdf";
+
+const path = "/comprimi-pdf/";
+const title = "Comprimi PDF Gratis – Riduci le Dimensioni | Paul Digital";
+const description =
+  "Comprimi un PDF gratis nel browser: tre livelli, dimensioni reali prima e dopo e nessun caricamento su server. Il risultato dipende dal contenuto del file.";
+const h1 = "Comprimi PDF";
+const intro =
+  "Riduci le dimensioni di un PDF per inviarlo o caricarlo più facilmente: gratis e direttamente nel tuo browser.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Fai clic su «Seleziona un file PDF» oppure trascina il file nell'area indicata. Viene mostrata la dimensione originale.",
+  "Scegli un livello: compressione leggera, bilanciata o elevata. In via facoltativa puoi rimuovere i metadati del documento.",
+  "Fai clic su «Avvia la compressione» e attendi la fine dell'elaborazione.",
+  "Confronta la dimensione originale con quella finale e scarica il PDF compresso, se è più piccolo."
+];
+
+const faqs = [
+  {
+    q: "Come posso ridurre le dimensioni di un PDF?",
+    a: "Seleziona il PDF, scegli un livello di compressione e fai clic su «Avvia la compressione». Vedrai la dimensione reale prima e dopo e potrai scaricare il risultato se è più piccolo.",
+  },
+  {
+    q: "Comprimere un PDF è gratuito?",
+    a: "Sì. Lo strumento è gratuito, senza registrazione e senza installazione.",
+  },
+  {
+    q: "Il mio PDF viene caricato su un server?",
+    a: "No. La compressione avviene nel tuo browser, sul tuo dispositivo. Nulla viene inviato a Paul Digital o a terzi e, chiudendo la pagina, non viene conservato nulla.",
+  },
+  {
+    q: "Di quanto si riduce il PDF?",
+    a: "Dipende dal contenuto. Se il PDF contiene molte immagini JPEG la riduzione può essere significativa; per documenti di solo testo o già ottimizzati spesso è minima. Lo strumento mostra la percentuale reale e non garantisce una dimensione finale.",
+  },
+  {
+    q: "Cosa succede se il risultato non è più piccolo?",
+    a: "In quel caso il file generato non viene proposto per il download. Lo strumento te lo segnala e puoi tenere il file originale o provare un altro livello.",
+  },
+  {
+    q: "La firma digitale viene mantenuta?",
+    a: "No. Se modifichi un PDF firmato, la firma digitale nel nuovo file non è più valida. Per i documenti firmati usa il file originale.",
+  },
+  {
+    q: "Perché il mio PDF viene rifiutato?",
+    a: "Lo strumento rifiuta file che non sono PDF, file vuoti o danneggiati e PDF protetti da password. Per comprimere un PDF protetto, rimuovi prima la password con l'applicazione che usi per aprirlo.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "it",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "it",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Tutti (browser)",
+  browserRequirements: "È necessario JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="it">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Home", href: "/" }, { label: h1 }]} breadcrumbLabel="Percorso di navigazione">
+    <ComprimiPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Come comprimere un PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Informazioni su questo strumento</h2>
+      <p>
+        Comprimi PDF riorganizza la struttura del file e comprime i blocchi di contenuto; ai livelli bilanciato ed elevato riduce anche le immagini JPEG incorporate. Le dimensioni indicate sono quelle reali del file generato. Se il risultato non è più piccolo dell'originale, non viene proposto per il download e puoi tenere il file originale.
+      </p>
+      <p>
+        I livelli differiscono solo per le immagini JPEG: la compressione leggera non le modifica, quella bilanciata le riduce a qualità da media ad alta (massimo 2.000 pixel per lato), quella elevata a qualità media (massimo 1.400 pixel per lato). Se il PDF non contiene immagini JPEG, i tre livelli danno risultati simili.
+      </p>
+
+      <h2>Limiti di questo strumento</h2>
+      <ul>
+        <li><strong>Risultato variabile:</strong> la riduzione dipende dal contenuto. I PDF con molte immagini JPEG possono ridursi molto; i documenti di solo testo o già ottimizzati spesso quasi per nulla. Non si può garantire una dimensione finale.</li>
+        <li><strong>Solo alcune parti:</strong> lo strumento non riduce font, grafica vettoriale o immagini in altri formati e non garantisce una compressione completa di tutto il file.</li>
+        <li><strong>Qualità:</strong> la compressione elevata può rendere visibile la perdita di qualità in fotografie e documenti scansionati.</li>
+        <li><strong>Firme digitali:</strong> se il PDF contiene una firma digitale, questa non sarà più valida nel file modificato. Per i documenti firmati usa il file originale.</li>
+        <li><strong>Metadati:</strong> rimuovere i metadati (titolo, autore, applicazione di origine) di solito riduce di poco le dimensioni.</li>
+      </ul>
+
+      <h2>Formati e limiti</h2>
+      <p>
+        <strong>Supportato:</strong> un file .pdf per volta, senza password, fino a 100 MB. I file danneggiati, protetti da password o in altri formati vengono rifiutati con un messaggio che ne spiega il motivo.
+      </p>
+
+      <h2>Domande frequenti</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Altri strumenti</h2>
+      <ul class="ic-links">
+        <li><a href="/unisci-pdf/">Unisci PDF: combina più file PDF in uno solo</a></li>
+        <li><a href="/convertire-pdf-in-word/">Convertire PDF in Word: trasforma un PDF con testo in un documento modificabile</a></li>
+        <li><a href="/convertire-word-in-pdf/">Convertire Word in PDF: trasforma un documento .docx in PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (in inglese): tutti gli strumenti del sito</a></li>
+      </ul>
+
+      <h2>Privacy</h2>
+      <p>
+        I tuoi file vengono elaborati interamente nel browser, sul tuo dispositivo. Non vengono inviati a Paul Digital né a
+        nessun altro server e, chiudendo la pagina, non viene conservato nulla.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

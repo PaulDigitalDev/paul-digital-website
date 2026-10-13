@@ -6,7 +6,7 @@ const MAX_FILES = 30;
 const MAX_FILE_BYTES = 100 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
 
-type Locale = "pt-BR" | "es" | "id" | "tr" | "fr" | "de";
+type Locale = "pt-BR" | "es" | "id" | "tr" | "fr" | "de" | "it";
 type Forms = readonly [string, string];
 
 interface Strings {
@@ -339,6 +339,53 @@ const TEXT: Record<Locale, Strings> = {
     merged: "Zusammengefügte Dateien",
     download: "PDF herunterladen",
     reset: "Liste leeren",
+  },
+  it: {
+    outputName: "pdf-uniti.pdf",
+    cleared: "Elenco svuotato. Seleziona nuovi file PDF per ricominciare.",
+    reading: (name) => `Lettura di ${name}…`,
+    limitFiles: (name, max) => `${name}: non aggiunto. Il limite è di ${max} file.`,
+    empty: (name) => `${name}: il file è vuoto.`,
+    tooBig: (name, size, max) => `${name}: ${size} – supera il limite di ${max} per file.`,
+    totalExceeded: (name, max) => `${name}: non aggiunto perché la dimensione totale supererebbe ${max}.`,
+    encrypted: (name) => `${name}: questo PDF è protetto da password. Rimuovi la protezione e riprova.`,
+    invalid: (name) => `${name}: questo file non è un PDF. Seleziona un file valido.`,
+    unreadable: (name) => `${name}: impossibile leggere questo PDF. Il file potrebbe essere danneggiato.`,
+    added: ["file PDF aggiunto", "file PDF aggiunti"],
+    moved: (name, pos, total) => `${name} spostato in posizione ${pos} di ${total}.`,
+    fallbackName: "File",
+    removed: (name) => `${name} rimosso.`,
+    needTwo: "Aggiungi almeno due file PDF da unire.",
+    mergingFile: (done, total) => `Unione del file ${done + 1} di ${total}…`,
+    finalizing: "Completamento del PDF…",
+    success: "Il PDF è stato creato!",
+    failure: "Impossibile unire i file PDF. Controlla i file oppure riprova con meno file.",
+    selected: ["file PDF selezionato", "file PDF selezionati"],
+    page: ["pagina", "pagine"],
+    emptyTitle: "Trascina qui i file PDF",
+    emptySub: (max) => `Seleziona almeno due file PDF. Fino a ${max} per file.`,
+    filledSub: (pages, size) => `${pages} · ${size} in totale · Puoi aggiungere altri file`,
+    select: "Aggiungi file",
+    dropAria: "Area di rilascio per i file PDF",
+    privacy: "I file vengono elaborati sul tuo dispositivo e non vengono inviati a nessun server.",
+    listHeading: (n) => `File selezionati (${n})`,
+    orderHint: "Metti i file nell'ordine desiderato.",
+    listAria: "File selezionati nell'ordine di unione",
+    up: (name) => `Sposta ${name} in alto`,
+    down: (name) => `Sposta ${name} in basso`,
+    removeAria: (name) => `Rimuovi ${name}`,
+    remove: "Rimuovi",
+    merging: "Unione dei PDF in corso…",
+    submit: "Unisci i PDF",
+    needOneMore: "Aggiungi un altro file PDF per poter unire. ",
+    listHint: "Le pagine vengono unite nell'ordine dell'elenco. Usa le frecce per cambiare l'ordine e «Rimuovi» per eliminare un file dall'elenco.",
+    result: "Risultato",
+    format: "Formato",
+    size: "Dimensione",
+    pages: "Pagine",
+    merged: "File uniti",
+    download: "Scarica il PDF",
+    reset: "Svuota l'elenco",
   },
 };
 

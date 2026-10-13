@@ -1,0 +1,147 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import MergePdf from "../../components/tools/MergePdf";
+
+const path = "/unisci-pdf/";
+const title = "Unire PDF Gratis – Unisci Più File PDF | Paul Digital";
+const description =
+  "Unisci gratis più file PDF in un unico documento: scegli l'ordine, rimuovi i file che non servono e scarica il risultato, direttamente nel browser e senza caricamenti.";
+const h1 = "Unisci PDF";
+const intro =
+  "Combina più file PDF in un unico documento: veloce, gratuito e direttamente nel tuo browser.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Fai clic su «Aggiungi file» oppure trascina i file nell'area indicata. Puoi selezionarne più di uno alla volta.",
+  "Controlla l'elenco: ogni PDF mostra numero di pagine e dimensione. Con le frecce cambi l'ordine, con «Rimuovi» elimini un file.",
+  "Fai clic su «Unisci i PDF». Le pagine vengono composte nell'ordine dell'elenco, dal primo all'ultimo PDF.",
+  "Fai clic su «Scarica il PDF» per salvare pdf-uniti.pdf. Per nuovi file usa «Svuota l'elenco»."
+];
+
+const faqs = [
+  {
+    q: "Come si uniscono i file PDF?",
+    a: "Aggiungi i PDF allo strumento, mettili nell'ordine desiderato con le frecce e fai clic su «Unisci i PDF». Il nuovo file contiene tutte le pagine nell'ordine dell'elenco e si scarica in pochi secondi.",
+  },
+  {
+    q: "Unire i PDF è gratuito?",
+    a: "Sì. Lo strumento è gratuito, senza registrazione e senza installazione.",
+  },
+  {
+    q: "I miei file vengono caricati su un server?",
+    a: "No. L'unione avviene interamente nel tuo browser, sul tuo dispositivo. Nulla viene inviato a Paul Digital o a terzi e, chiudendo la pagina, non viene conservato nulla.",
+  },
+  {
+    q: "Posso cambiare l'ordine dei PDF?",
+    a: "Sì. Usa le frecce su e giù accanto a ogni file. Le pagine del primo file dell'elenco compaiono per prime nel PDF finale. Puoi eliminare singoli file con «Rimuovi».",
+  },
+  {
+    q: "Vengono mantenute tutte le pagine?",
+    a: "Sì. Tutte le pagine di ogni file vengono copiate senza modifiche e senza ricompressione: testo, immagini e link restano come nell'originale. Segnalibri e moduli interattivi potrebbero non essere mantenuti.",
+  },
+  {
+    q: "Perché il mio PDF viene rifiutato?",
+    a: "Lo strumento rifiuta file che non sono PDF, file vuoti o danneggiati e PDF protetti da password. Il file interessato viene indicato nell'elenco dei messaggi e gli altri restano nell'elenco. Per unire un PDF protetto, rimuovi prima la password con l'applicazione che usi per aprirlo.",
+  },
+  {
+    q: "Ci sono limiti di dimensione o di numero di file?",
+    a: "Per mantenere stabile il browser puoi unire fino a 30 file, di al massimo 100 MB ciascuno e 300 MB in totale. Poiché tutto viene elaborato nella memoria del dispositivo, i file molto grandi possono essere lenti su smartphone economici.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "it",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "it",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Tutti (browser)",
+  browserRequirements: "È necessario JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="it">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Home", href: "/" }, { label: h1 }]} breadcrumbLabel="Percorso di navigazione">
+    <MergePdf client:load locale="it" />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Come unire file PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Informazioni su questo strumento</h2>
+      <p>
+        Unisci PDF riunisce più file PDF in un unico documento: scegli i file, stabilisci l'ordine e creane uno solo, senza installare nulla. È comodo per contratti, ricevute, curriculum, tesi, fatture e altri documenti da inviare insieme.
+      </p>
+      <p>
+        Le pagine vengono copiate senza modifiche nell'ordine dell'elenco. Lo strumento non comprime né altera il contenuto delle pagine: le raccoglie semplicemente in un nuovo file.
+      </p>
+
+      <h2>Limiti di questo strumento</h2>
+      <ul>
+        <li><strong>Segnalibri e moduli:</strong> segnalibri e campi di modulo interattivi potrebbero non essere mantenuti nel file unito.</li>
+        <li><strong>Firme digitali:</strong> una firma digitale non resta valida in un documento unito.</li>
+        <li><strong>File protetti:</strong> i PDF protetti da password vengono rifiutati; lo strumento non rimuove le protezioni. I file con problemi non vengono saltati in silenzio: vengono indicati nell'elenco dei messaggi, così puoi correggere la selezione.</li>
+      </ul>
+
+      <h2>Formati e limiti</h2>
+      <p>
+        <strong>Supportato:</strong> file .pdf senza password, fino a 30 file, ciascuno di al massimo 100 MB e 300 MB in totale. I file protetti da password, danneggiati o in altri formati vengono rifiutati con un messaggio che ne spiega il motivo.
+      </p>
+
+      <h2>Domande frequenti</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Altri strumenti</h2>
+      <ul class="ic-links">
+        <li><a href="/comprimi-pdf/">Comprimi PDF: riduci le dimensioni di un file PDF</a></li>
+        <li><a href="/convertire-pdf-in-word/">Convertire PDF in Word: trasforma un PDF con testo in un documento modificabile</a></li>
+        <li><a href="/convertire-word-in-pdf/">Convertire Word in PDF: trasforma un documento .docx in PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (in inglese): tutti gli strumenti del sito</a></li>
+      </ul>
+
+      <h2>Privacy</h2>
+      <p>
+        I tuoi file vengono elaborati interamente nel browser, sul tuo dispositivo. Non vengono inviati a Paul Digital né a
+        nessun altro server e, chiudendo la pagina, non viene conservato nulla.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -159,6 +159,18 @@ const specs: GroupSpec[] = [
     ],
   },
   {
+    id: "italian",
+    title: "Strumenti PDF in Italiano",
+    icon: "pdf",
+    ids: [],
+    extra: [
+      { name: "Convertire PDF in Word", href: "/convertire-pdf-in-word/" },
+      { name: "Convertire Word in PDF", href: "/convertire-word-in-pdf/" },
+      { name: "Comprimi PDF", href: "/comprimi-pdf/" },
+      { name: "Unisci PDF", href: "/unisci-pdf/" },
+    ],
+  },
+  {
     id: "turkish",
     title: "Türkçe PDF Araçları",
     icon: "pdf",
