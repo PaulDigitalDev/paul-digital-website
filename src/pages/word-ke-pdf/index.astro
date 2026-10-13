@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import WordKePdf from "../../components/tools/WordKePdf";
+
+const path = "/word-ke-pdf/";
+const title = "Word ke PDF online: gratis dan privat | Paul Digital";
+const description =
+  "Ubah dokumen Word (.docx) menjadi PDF, gratis dan langsung di browser tanpa mengunggah berkas ke server. Mempertahankan teks, format dasar, daftar, tabel, dan gambar.";
+const h1 = "Word ke PDF";
+const intro =
+  "Ubah dokumen Word (.docx) menjadi berkas PDF, gratis dan tanpa keluar dari browser. Berkas Anda tidak dikirim ke server mana pun.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Klik “Pilih File Word” atau tarik berkas .docx ke area yang tersedia.",
+  "Tunggu beberapa detik selagi dokumen dibaca dan PDF dibuat. Kemajuan proses ditampilkan di layar.",
+  "Setelah selesai, periksa ringkasan dan pemberitahuannya, lalu klik “Unduh PDF”.",
+  "Buka PDF dan periksa hasilnya sebelum dikirim atau dicetak, terutama jika dokumen memiliki tata letak yang rumit.",
+];
+
+const faqs = [
+  {
+    q: "Bagaimana cara mengubah Word ke PDF?",
+    a: "Pilih berkas .docx di alat ini dan tunggu hingga selesai. Browser membaca dokumen, menata teks, tabel, dan gambar ke dalam halaman, lalu membuat PDF yang dapat Anda unduh.",
+  },
+  {
+    q: "Apakah mengonversi Word ke PDF di sini gratis?",
+    a: "Ya. Alat ini gratis, tanpa pendaftaran, dan tidak perlu dipasang.",
+  },
+  {
+    q: "Apakah dokumen saya diunggah ke server?",
+    a: "Tidak. Seluruh konversi berlangsung di browser, pada perangkat Anda sendiri. Tidak ada yang dikirim ke Paul Digital atau pihak ketiga, dan tidak ada yang disimpan setelah Anda menutup halaman.",
+  },
+  {
+    q: "Apakah hasilnya akan sama persis dengan di Word?",
+    a: "Tidak selalu. Alat ini tidak memakai mesin Word: dokumen disusun ulang dengan font standar PDF (Helvetica, Times, dan Courier), sehingga pemotongan baris dan halaman bisa berubah. Untuk dokumen yang harus persis, seperti formulir atau tata letak rumit, gunakan fitur “Simpan sebagai PDF” atau “Ekspor” di Word.",
+  },
+  {
+    q: "Apa saja yang dipertahankan di PDF?",
+    a: "Teks dengan tanda baca bahasa Indonesia, paragraf, judul, huruf tebal, miring, garis bawah, warna teks, perataan, indentasi, daftar berpoin atau bernomor, tabel dengan garis tepi dan warna latar, gambar PNG dan JPEG yang sejajar dengan teks, pemisah halaman, serta ukuran dan margin halaman.",
+  },
+  {
+    q: "Apa yang tidak disertakan?",
+    a: "Header, footer, nomor halaman, catatan kaki, kotak teks, bentuk, grafik, persamaan, kolom, dan komentar tidak disertakan. Gambar mengambang ditempatkan sejajar dengan teks. Font dokumen diganti dengan font standar, dan karakter yang tidak ada di font tersebut (emoji, aksara Tionghoa, Jepang, Arab, dan sebagainya) tampil sebagai “?”.",
+  },
+  {
+    q: "Mengapa berkas saya ditolak?",
+    a: "Alat ini hanya menerima berkas .docx. Berkas .doc lama, berkas yang dilindungi kata sandi, rusak, kosong, atau berformat lain ditolak. Jika berkas Anda .doc, buka di Word lalu simpan sebagai .docx.",
+  },
+  {
+    q: "Apakah ada batas ukuran berkas?",
+    a: "Agar browser tetap stabil, batasnya 25 MB per berkas dan 300 halaman pada PDF. Karena semuanya diproses di memori perangkat Anda, dokumen besar bisa terasa lambat di ponsel sederhana.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "id",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Beranda", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "id",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Apa saja (browser)",
+  browserRequirements: "Memerlukan JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="id">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Beranda", href: "/" }, { label: h1 }]} breadcrumbLabel="Jalur navigasi">
+    <WordKePdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cara mengubah Word ke PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Tentang alat ini</h2>
+      <p>
+        Word ke PDF membaca isi berkas .docx langsung di browser lalu menatanya ke dalam halaman: memotong teks menjadi
+        baris, menerapkan huruf tebal, miring, garis bawah, warna, dan perataan, menomori daftar, menggambar tabel, dan
+        menempatkan gambar. Hasilnya berupa PDF yang dapat diunduh. Cocok untuk surat, CV, laporan, makalah, dan dokumen
+        teks lain saat Word tidak tersedia.
+      </p>
+
+      <h2>Keterbatasan versi ini</h2>
+      <ul>
+        <li><strong>Konversi perkiraan:</strong> ini bukan mesin Word. PDF bisa berbeda dari aslinya dalam pemotongan baris, pemisah halaman, dan spasi.</li>
+        <li><strong>Font diganti:</strong> dipakai Helvetica, Times, dan Courier sesuai jenis font dokumen (misalnya Calibri dan Arial tampil sebagai Helvetica). Font asli tidak disematkan.</li>
+        <li><strong>Karakter khusus:</strong> huruf Latin dengan tanda baca umum didukung. Emoji dan aksara non-Latin (Tionghoa, Jepang, Korea, Arab, Kiril, dan sebagainya) diganti dengan “?”.</li>
+        <li><strong>Konten yang tidak disertakan:</strong> header dan footer, nomor halaman, catatan kaki, kotak teks, bentuk, grafik, persamaan, dan komentar. Alat ini memberi tahu Anda jika mendeteksinya di dokumen.</li>
+        <li><strong>Gambar:</strong> PNG dan JPEG didukung. Format lain hanya dikonversi jika browser Anda dapat membacanya. Gambar mengambang ditempatkan sejajar teks, dan pemotongan atau rotasi tidak diterapkan.</li>
+        <li><strong>Tabel dan tata letak:</strong> tabel mempertahankan garis tepi, lebar, dan warna latar, tetapi sel yang digabung secara vertikal hanya didekati. Kolom teks, garis tepi paragraf, dan bidang yang diperbarui Word (daftar isi, referensi silang) tidak direproduksi.</li>
+        <li>Selalu periksa PDF sebelum dipakai untuk urusan administrasi atau dokumen penting.</li>
+      </ul>
+
+      <h2>Format dan batas</h2>
+      <p>
+        <strong>Diterima:</strong> satu berkas .docx per konversi, tanpa kata sandi, hingga 25 MB dengan hasil maksimal 300
+        halaman. Berkas .doc lama, rusak, dilindungi kata sandi, atau berformat lain ditolak dengan pesan yang menjelaskan
+        alasannya.
+      </p>
+
+      <h2>Pertanyaan yang sering diajukan</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Alat terkait</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-ke-word/">PDF ke Word: ubah PDF berisi teks menjadi dokumen yang dapat diedit</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (dalam bahasa Inggris): semua alat di situs ini</a></li>
+      </ul>
+
+      <h2>Privasi</h2>
+      <p>
+        Berkas Anda diproses sepenuhnya di browser, pada perangkat Anda. Berkas tidak dikirim ke Paul Digital atau server
+        mana pun, dan tidak ada yang disimpan setelah Anda menutup halaman.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

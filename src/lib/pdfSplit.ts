@@ -119,10 +119,14 @@ export function baseName(fileName: string, fallback = "documento"): string {
 }
 
 /** `documento_pagina_5.pdf`, `documento_paginas_1-3.pdf`; very long labels fall back to a short form. */
-export function outputFileName(base: string, group: PageGroup): string {
+export function outputFileName(
+  base: string,
+  group: PageGroup,
+  words: { one: string; many: string } = { one: "pagina", many: "paginas" },
+): string {
   const single = group.pages.length === 1;
-  const label = group.label.length > 40 ? `${group.pages.length}-paginas` : group.label;
-  return `${base}_${single ? "pagina" : "paginas"}_${label}.pdf`;
+  const label = group.label.length > 40 ? `${group.pages.length}-${words.many}` : group.label;
+  return `${base}_${single ? words.one : words.many}_${label}.pdf`;
 }
 
 export interface SplitOutput {
@@ -137,7 +141,7 @@ export interface SplitOutput {
 export async function splitPdf(
   source: Uint8Array,
   groups: PageGroup[],
-  options: { maxOutputBytes?: number; onProgress?: (done: number, total: number) => void } = {},
+  options: { maxOutputBytes?: number; producer?: string; onProgress?: (done: number, total: number) => void } = {},
 ): Promise<SplitOutput[]> {
   const { PDFDocument } = await loadLibrary();
   const doc = await PDFDocument.load(source, { updateMetadata: false });
@@ -154,8 +158,8 @@ export async function splitPdf(
       group.pages.map((page) => page - 1),
     );
     copied.forEach((page) => out.addPage(page));
-    out.setProducer("Paul Digital - Dividir PDF");
-    out.setCreator("Paul Digital - Dividir PDF");
+    out.setProducer(options.producer ?? "Paul Digital - Dividir PDF");
+    out.setCreator(options.producer ?? "Paul Digital - Dividir PDF");
     const bytes = await out.save();
     bytesSoFar += bytes.length;
     if (options.maxOutputBytes !== undefined && bytesSoFar > options.maxOutputBytes) throw new Error("output-too-large");

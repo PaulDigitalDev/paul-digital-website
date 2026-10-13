@@ -1,0 +1,147 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PdfKeWord from "../../components/tools/PdfKeWord";
+
+const path = "/pdf-ke-word/";
+const title = "PDF ke Word online: gratis dan privat | Paul Digital";
+const description =
+  "Ubah PDF berisi teks menjadi dokumen Word (DOCX) yang dapat diedit, gratis dan langsung di browser, tanpa mengunggah berkas ke server. Tanpa OCR.";
+const h1 = "PDF ke Word";
+const intro =
+  "Ubah PDF berisi teks menjadi dokumen Word (.docx) yang dapat diedit, gratis dan tanpa keluar dari browser.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Klik “Pilih berkas PDF” atau tarik berkas ke area yang tersedia.",
+  "Tunggu selagi teks diekstrak halaman demi halaman. Kemajuan proses ditampilkan di layar.",
+  "Setelah selesai, periksa ringkasannya lalu klik “Unduh DOCX”.",
+  "Buka berkas di Word dan periksa hasilnya, terutama jika PDF memuat tabel, kolom, atau gambar.",
+];
+
+const faqs = [
+  {
+    q: "Bagaimana cara mengubah PDF ke Word?",
+    a: "Pilih PDF di alat ini dan tunggu hingga konversi selesai. Teks diekstrak, judul dan paragraf disusun ulang, lalu Anda dapat mengunduh berkas .docx yang bisa diedit di Word, LibreOffice, atau Google Docs.",
+  },
+  {
+    q: "Apakah mengonversi PDF ke Word di sini gratis?",
+    a: "Ya. Alat ini gratis, tanpa pendaftaran, dan tidak perlu dipasang.",
+  },
+  {
+    q: "Apakah PDF saya diunggah ke server?",
+    a: "Tidak. Seluruh konversi berlangsung di browser, pada perangkat Anda sendiri. Tidak ada yang dikirim ke Paul Digital atau pihak ketiga, dan tidak ada yang disimpan setelah Anda menutup halaman.",
+  },
+  {
+    q: "Apakah bisa untuk PDF hasil pindai?",
+    a: "Belum pada versi pertama ini. PDF hasil pindai berupa gambar halaman tanpa teks yang dapat dipilih, sehingga memerlukan OCR (pengenalan karakter) yang belum tersedia di sini. Alat ini akan mendeteksi berkas tersebut dan memberi tahu Anda.",
+  },
+  {
+    q: "Apa yang dipertahankan dan apa yang hilang saat konversi?",
+    a: "Yang dipertahankan: teks, pemisahan paragraf, judul (dideteksi dari ukuran dan huruf tebal), serta huruf tebal dan miring bila terdeteksi dengan yakin. Tabel, kolom, gambar, header dan footer, warna, font asli, dan pembagian halaman yang persis mungkin tidak dipertahankan.",
+  },
+  {
+    q: "Mengapa PDF saya ditolak?",
+    a: "Alat ini menolak berkas yang bukan PDF, kosong, rusak, dilindungi kata sandi, atau tidak memiliki teks yang dapat dipilih. Untuk mengonversi PDF yang dilindungi, hapus dulu kata sandinya melalui aplikasi yang Anda gunakan untuk membukanya.",
+  },
+  {
+    q: "Apakah ada batas ukuran berkas?",
+    a: "Agar browser tetap stabil, batasnya 50 MB dan 500 halaman per berkas. Karena semuanya diproses di memori perangkat Anda, berkas besar bisa terasa lambat di ponsel sederhana.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "id",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Beranda", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "id",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Apa saja (browser)",
+  browserRequirements: "Memerlukan JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="id">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Beranda", href: "/" }, { label: h1 }]} breadcrumbLabel="Jalur navigasi">
+    <PdfKeWord client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cara mengubah PDF ke Word</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Tentang alat ini</h2>
+      <p>
+        PDF ke Word mengekstrak teks dari PDF dan menyusunnya kembali menjadi dokumen .docx yang dapat diedit. Alat ini
+        memakai posisi setiap potongan teks di halaman untuk menggabungkan baris menjadi paragraf dan mengenali judul,
+        serta mempertahankan huruf tebal dan miring bila berhasil terdeteksi. Cocok untuk memakai ulang teks dari
+        kontrak, laporan, artikel, CV, dan tugas sekolah atau kuliah.
+      </p>
+
+      <h2>Keterbatasan versi ini</h2>
+      <ul>
+        <li><strong>Tanpa OCR:</strong> hanya berfungsi untuk PDF yang memiliki teks yang dapat dipilih. PDF hasil pindai terdeteksi dan ditolak disertai pemberitahuan.</li>
+        <li><strong>Tata letak disederhanakan:</strong> tabel, kolom, gambar, grafik, header, footer, dan pembagian halaman yang persis mungkin tidak dipertahankan. Hasilnya berupa teks berkelanjutan dengan judul dan paragraf.</li>
+        <li><strong>Font dan warna:</strong> dokumen memakai font bawaan Word. Hanya huruf tebal dan miring yang dipertahankan.</li>
+        <li><strong>Aksara:</strong> aksara yang memerlukan tabel karakter khusus (misalnya Tionghoa, Jepang, dan Korea) mungkin tidak terekstrak dengan benar.</li>
+        <li>Selalu periksa hasilnya sebelum dipakai pada dokumen penting.</li>
+      </ul>
+
+      <h2>Format dan batas</h2>
+      <p>
+        <strong>Diterima:</strong> satu berkas .pdf per konversi, tanpa kata sandi, hingga 50 MB dan 500 halaman. Berkas
+        yang rusak, dilindungi kata sandi, atau berformat lain ditolak dengan pesan yang menjelaskan alasannya.
+      </p>
+
+      <h2>Pertanyaan yang sering diajukan</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Alat terkait</h2>
+      <ul class="ic-links">
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (dalam bahasa Inggris): semua alat di situs ini</a></li>
+      </ul>
+
+      <h2>Privasi</h2>
+      <p>
+        Berkas Anda diproses sepenuhnya di browser, pada perangkat Anda. Berkas tidak dikirim ke Paul Digital atau server
+        mana pun, dan tidak ada yang disimpan setelah Anda menutup halaman.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

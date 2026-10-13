@@ -144,3 +144,15 @@ test("inspectPdf classifies encrypted, corrupt, empty and non-PDF input", async 
   await assert.rejects(() => splitPdf(encrypted, singlePageGroups(1)));
   await assert.rejects(() => splitPdf(plain.slice(0, 200), singlePageGroups(1)));
 });
+
+test("output names can use Indonesian words and metadata", async () => {
+  const id = { one: "halaman", many: "halaman" };
+  const ranges = parsePageRanges("1-3, 5", 9).groups;
+  assert.equal(outputFileName("dokumen", ranges[0], id), "dokumen_halaman_1-3.pdf");
+  assert.equal(outputFileName("dokumen", ranges[1], id), "dokumen_halaman_5.pdf");
+  const long = combineGroups(Array.from({ length: 30 }, (_, i) => ({ pages: [i * 2 + 1], label: String(i * 2 + 1) })));
+  assert.equal(outputFileName("d", long, id), "d_halaman_30-halaman.pdf");
+  const src = await makePdf(2);
+  const [out] = await splitPdf(src, singlePageGroups(1), { producer: "Paul Digital - Pisah PDF" });
+  assert.equal((await PDFDocument.load(out.bytes, { updateMetadata: false })).getProducer(), "Paul Digital - Pisah PDF");
+});

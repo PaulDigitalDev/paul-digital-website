@@ -120,6 +120,20 @@ const specs: GroupSpec[] = [
       { name: "Dividir PDF", href: "/dividir-pdf/" },
     ],
   },
+  {
+    id: "indonesian",
+    title: "Alat PDF Bahasa Indonesia",
+    icon: "pdf",
+    ids: [],
+    extra: [
+      { name: "JPG ke PDF", href: "/jpg-ke-pdf/" },
+      { name: "PDF ke Word", href: "/pdf-ke-word/" },
+      { name: "Word ke PDF", href: "/word-ke-pdf/" },
+      { name: "Kompres PDF", href: "/kompres-pdf/" },
+      { name: "Gabung PDF", href: "/gabung-pdf/" },
+      { name: "Pisah PDF", href: "/pisah-pdf/" },
+    ],
+  },
 ];
 
 /** Shorter labels where the registry heading is too long for a compact row. */

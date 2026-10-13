@@ -6,7 +6,7 @@ const MAX_FILES = 30;
 const MAX_FILE_BYTES = 100 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
 
-type Locale = "pt-BR" | "es";
+type Locale = "pt-BR" | "es" | "id";
 type Forms = readonly [string, string];
 
 interface Strings {
@@ -151,6 +151,53 @@ const TEXT: Record<Locale, Strings> = {
     merged: "Archivos unidos",
     download: "Descargar PDF",
     reset: "Vaciar archivos",
+  },
+  id: {
+    outputName: "dokumen-gabungan.pdf",
+    cleared: "Daftar berkas dikosongkan. Pilih PDF baru untuk memulai.",
+    reading: (name) => `Membaca ${name}…`,
+    limitFiles: (name, max) => `${name}: tidak ditambahkan. Batasnya ${max} berkas.`,
+    empty: (name) => `${name}: berkas kosong.`,
+    tooBig: (name, size, max) => `${name}: berukuran ${size}, melebihi batas ${max} per berkas.`,
+    totalExceeded: (name, max) => `${name}: tidak ditambahkan karena total ukuran akan melebihi ${max}.`,
+    encrypted: (name) => `${name}: PDF ini dilindungi kata sandi. Hapus perlindungannya lalu coba lagi.`,
+    invalid: (name) => `${name}: berkas ini bukan PDF.`,
+    unreadable: (name) => `${name}: PDF ini tidak dapat dibaca. Berkas mungkin rusak.`,
+    added: ["PDF ditambahkan", "PDF ditambahkan"],
+    moved: (name, pos, total) => `${name} dipindahkan ke posisi ${pos} dari ${total}.`,
+    fallbackName: "Berkas",
+    removed: (name) => `${name} dihapus.`,
+    needTwo: "Tambahkan minimal dua PDF untuk digabungkan.",
+    mergingFile: (done, total) => `Menggabungkan berkas ${done + 1} dari ${total}…`,
+    finalizing: "Menyelesaikan PDF…",
+    success: "PDF berhasil dibuat!",
+    failure: "PDF tidak dapat digabungkan. Periksa berkas Anda atau coba lagi dengan jumlah berkas yang lebih sedikit.",
+    selected: ["PDF dipilih", "PDF dipilih"],
+    page: ["halaman", "halaman"],
+    emptyTitle: "Tarik dan lepas berkas PDF Anda di sini",
+    emptySub: (max) => `Pilih dua berkas PDF atau lebih untuk memulai. Hingga ${max} per berkas.`,
+    filledSub: (pages, size) => `${pages} · total ${size} · tambahkan lagi kapan saja`,
+    select: "Pilih File PDF",
+    dropAria: "Area untuk melepas berkas PDF",
+    privacy: "Berkas Anda diproses di perangkat Anda dan tidak dikirim ke server.",
+    listHeading: (n) => `Berkas yang dipilih (${n})`,
+    orderHint: "Atur berkas sesuai urutan yang diinginkan.",
+    listAria: "Berkas yang dipilih, sesuai urutan penggabungan",
+    up: (name) => `Naikkan ${name}`,
+    down: (name) => `Turunkan ${name}`,
+    removeAria: (name) => `Hapus ${name}`,
+    remove: "Hapus",
+    merging: "Sedang menggabungkan PDF...",
+    submit: "Gabungkan PDF",
+    needOneMore: "Tambahkan satu PDF lagi agar dapat digabungkan. ",
+    listHint: "Halaman digabungkan sesuai urutan daftar. Gunakan tombol panah untuk mengatur ulang dan Hapus untuk mengeluarkan berkas.",
+    result: "Hasil",
+    format: "Format",
+    size: "Ukuran",
+    pages: "Halaman",
+    merged: "Berkas digabungkan",
+    download: "Unduh PDF Gabungan",
+    reset: "Kosongkan berkas",
   },
 };
 

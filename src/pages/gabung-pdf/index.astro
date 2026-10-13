@@ -1,0 +1,148 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import MergePdf from "../../components/tools/MergePdf";
+
+const path = "/gabung-pdf/";
+const title = "Gabung PDF online: gabungkan banyak file PDF | Paul Digital";
+const description =
+  "Gabung PDF online gratis: gabungkan beberapa file PDF menjadi satu, atur urutannya, lalu unduh. Semua diproses di browser tanpa mengunggah berkas ke server.";
+const h1 = "Gabung PDF";
+const intro =
+  "Gabungkan beberapa file PDF menjadi satu dokumen dengan cepat, gratis, dan langsung di browser Anda.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Klik “Pilih File PDF” atau tarik berkas ke area yang tersedia. Anda dapat memilih beberapa berkas sekaligus.",
+  "Periksa daftarnya: setiap PDF menampilkan jumlah halaman dan ukuran. Gunakan tombol panah untuk mengubah urutan dan “Hapus” untuk mengeluarkan berkas.",
+  "Klik “Gabungkan PDF”. Halaman digabungkan sesuai urutan daftar, dari berkas pertama sampai terakhir.",
+  "Klik “Unduh PDF Gabungan” untuk menyimpan dokumen-gabungan.pdf. Untuk menggabungkan berkas lain, gunakan “Kosongkan berkas”.",
+];
+
+const faqs = [
+  {
+    q: "Bagaimana cara menggabungkan file PDF?",
+    a: "Tambahkan PDF ke alat ini, atur urutannya dengan tombol panah, lalu klik “Gabungkan PDF”. Berkas baru berisi semua halaman sesuai urutan daftar dan siap diunduh dalam hitungan detik.",
+  },
+  {
+    q: "Apakah menggabungkan PDF di sini gratis?",
+    a: "Ya. Alat ini gratis dan tidak memerlukan pendaftaran maupun instalasi.",
+  },
+  {
+    q: "Apakah berkas saya diunggah ke server?",
+    a: "Tidak. Penggabungan berjalan sepenuhnya di browser, di perangkat Anda sendiri. Tidak ada yang dikirim ke Paul Digital maupun pihak ketiga, dan tidak ada yang disimpan saat Anda menutup halaman.",
+  },
+  {
+    q: "Bisakah saya mengubah urutan PDF?",
+    a: "Bisa. Gunakan tombol panah atas dan bawah di samping setiap berkas. Halaman dari berkas teratas dalam daftar muncul lebih dulu di PDF akhir.",
+  },
+  {
+    q: "Apakah PDF hasil gabungan mempertahankan semua halaman?",
+    a: "Ya. Semua halaman dari setiap berkas disalin apa adanya tanpa kompresi ulang, sehingga teks, gambar, dan tautan tetap seperti aslinya. Bookmark dan formulir interaktif mungkin tidak dipertahankan di berkas akhir.",
+  },
+  {
+    q: "Mengapa PDF saya ditolak?",
+    a: "Alat ini menolak berkas yang bukan PDF, kosong, rusak, atau dilindungi kata sandi. Untuk menggabungkan PDF yang dilindungi, hapus dulu kata sandinya melalui aplikasi yang Anda gunakan untuk membukanya.",
+  },
+  {
+    q: "Apakah ada batas ukuran atau jumlah berkas?",
+    a: "Agar browser tetap stabil, Anda dapat menggabungkan hingga 30 berkas dengan ukuran maksimal 100 MB per berkas dan total 300 MB. Karena semuanya diproses di memori perangkat, berkas yang sangat besar bisa lambat di ponsel dengan spesifikasi rendah.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "id",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Beranda", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "id",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Semua (browser)",
+  browserRequirements: "Memerlukan JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="id">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Beranda", href: "/" }, { label: h1 }]} breadcrumbLabel="Jalur navigasi">
+    <MergePdf client:load locale="id" />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cara menggabungkan PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Tentang alat ini</h2>
+      <p>
+        Gabung PDF memungkinkan Anda menyatukan beberapa PDF secara online: pilih berkas, tentukan urutan, lalu gabungkan menjadi
+        satu dokumen tanpa menginstal apa pun. Cocok untuk menggabungkan kontrak, bukti pembayaran, CV, tugas kuliah, faktur,
+        atau dokumen apa pun yang perlu dikirim sekaligus.
+      </p>
+      <p>
+        Halaman disalin tanpa perubahan, sesuai urutan yang ditampilkan di daftar. Alat ini tidak mengompres atau mengubah isi
+        halaman; ia hanya menyatukannya dalam satu berkas baru.
+      </p>
+
+      <h2>Format dan batas</h2>
+      <p>
+        <strong>Diterima:</strong> berkas .pdf tanpa kata sandi. Anda dapat menambahkan hingga 30 berkas, masing-masing maksimal
+        100 MB dan total 300 MB. PDF yang dilindungi kata sandi, rusak, atau berformat lain ditolak dengan pesan yang menjelaskan
+        alasannya.
+      </p>
+      <p>
+        Pemrosesan memakai memori perangkat Anda. Pada ponsel dengan memori terbatas, gabungkan lebih sedikit berkas sekaligus.
+      </p>
+
+      <h2>Pertanyaan yang sering diajukan</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Alat terkait</h2>
+      <ul class="ic-links">
+        <li><a href="/kompres-pdf/">Kompres PDF: perkecil ukuran file PDF</a></li>
+        <li><a href="/pdf-ke-word/">PDF ke Word: ubah PDF menjadi dokumen yang dapat diedit</a></li>
+        <li><a href="/word-ke-pdf/">Word ke PDF: ubah dokumen Word menjadi PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (dalam bahasa Inggris): semua alat di situs ini</a></li>
+      </ul>
+
+      <h2>Privasi</h2>
+      <p>
+        Berkas Anda diproses sepenuhnya di browser, di perangkat Anda. Berkas tidak dikirim ke Paul Digital maupun server lain,
+        dan tidak ada yang disimpan saat Anda menutup halaman.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,168 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import KompresPdf from "../../components/tools/KompresPdf";
+
+const path = "/kompres-pdf/";
+const title = "Kompres PDF online: perkecil ukuran file PDF | Paul Digital";
+const description =
+  "Kompres file PDF gratis tanpa mengunggah ke server: gambar dan struktur dioptimalkan langsung di browser, lalu bandingkan ukuran sebelum dan sesudah.";
+const h1 = "Kompres PDF";
+const intro =
+  "Perkecil ukuran PDF langsung di browser dan lihat ukuran sebenarnya sebelum mengunduh. Tanpa pendaftaran dan tanpa mengunggah dokumen.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Klik “Pilih File PDF” atau tarik berkas ke area yang tersedia.",
+  "Pilih tingkat kompresi. “Tanpa penurunan kualitas” hanya mengoptimalkan struktur berkas; dua tingkat lainnya juga memperkecil gambar JPEG.",
+  "Jika perlu, centang “Hapus metadata dokumen” untuk menghilangkan judul, penulis, dan aplikasi pembuat.",
+  "Klik “Kompres PDF” dan tunggu sampai selesai. Anda akan melihat ukuran file asli, ukuran setelah kompresi, dan persentase perubahan yang sebenarnya.",
+  "Unduh PDF hasilnya. Jika ukurannya tidak berkurang, alat ini akan memberi tahu Anda dan menyarankan agar berkas asli tetap dipakai.",
+];
+
+const faqs = [
+  {
+    q: "Bagaimana cara mengompres PDF?",
+    a: "Pilih berkas, tentukan tingkat kompresi, lalu klik “Kompres PDF”. Setelah selesai, Anda akan melihat ukuran sebelum dan sesudah kompresi, dan dapat mengunduh hasilnya jika memang lebih kecil.",
+  },
+  {
+    q: "Apakah berkas saya diunggah ke server?",
+    a: "Tidak. Seluruh proses kompresi berjalan di browser, di perangkat Anda sendiri. Tidak ada yang dikirim ke Paul Digital maupun pihak ketiga, dan tidak ada yang disimpan saat Anda menutup halaman.",
+  },
+  {
+    q: "Seberapa kecil PDF saya akan menjadi?",
+    a: "Tergantung isinya. PDF yang berisi foto atau hasil pindai berformat JPEG biasanya mengecil cukup banyak dengan tingkat “Seimbang” dan “Pengecilan maksimal”. PDF yang hanya berisi teks atau sudah dioptimalkan bisa mengecil sedikit, atau tidak sama sekali. Alat ini tidak menjanjikan ukuran tertentu: ia mengukur hasil sebenarnya dan menampilkannya kepada Anda.",
+  },
+  {
+    q: "Apa yang sebenarnya dilakukan kompresi ini?",
+    a: "Alat ini selalu menghapus data yang tidak terpakai, memampatkan blok konten yang tersimpan tanpa kompresi, dan menata ulang struktur berkas. Pada tingkat “Seimbang” dan “Pengecilan maksimal”, gambar JPEG berwarna juga dikodekan ulang dengan kualitas lebih rendah dan, jika sangat besar, dengan jumlah piksel lebih sedikit. Gambar berformat lain, teks, font, dan grafik vektor tidak diubah.",
+  },
+  {
+    q: "Apakah kualitas akan berkurang?",
+    a: "Dengan “Tanpa penurunan kualitas”, isi dokumen tidak berubah. Dengan dua tingkat lainnya, gambar JPEG kehilangan sebagian detail, lebih banyak pada “Pengecilan maksimal”. Periksa hasilnya sebelum dipakai, terutama untuk dokumen hasil pindai dengan teks kecil.",
+  },
+  {
+    q: "Bagaimana jika hasilnya sama besar atau lebih besar?",
+    a: "Hal ini bisa terjadi, misalnya pada berkas yang sudah sangat dioptimalkan. Alat ini akan menjelaskannya dengan jelas, tidak menawarkan berkas yang lebih besar, dan memungkinkan Anda tetap memakai berkas asli tanpa perubahan.",
+  },
+  {
+    q: "Mengapa PDF saya ditolak?",
+    a: "Alat ini menolak berkas yang bukan PDF, kosong, rusak, atau dilindungi kata sandi. Alat ini tidak menghapus kata sandi: untuk mengompres PDF yang dilindungi, hapus dulu perlindungannya melalui aplikasi yang Anda gunakan untuk membukanya.",
+  },
+  {
+    q: "Bagaimana dengan tanda tangan digital, formulir, atau bookmark?",
+    a: "Formulir, tautan, dan bookmark umumnya tetap ada, tetapi tanda tangan digital tidak lagi valid karena berkas disimpan ulang. Jika Anda perlu mempertahankan tanda tangan, gunakan berkas asli.",
+  },
+  {
+    q: "Apakah alat ini mengenali teks pada dokumen hasil pindai (OCR)?",
+    a: "Tidak. Alat ini tidak melakukan OCR dan tidak mengubah isi teks; ia hanya memperkecil ukuran berkas.",
+  },
+  {
+    q: "Apakah ada batas ukuran berkas?",
+    a: "Anda dapat mengompres PDF hingga 100 MB. Karena semuanya diproses di memori perangkat Anda, berkas yang sangat besar bisa lambat atau gagal di ponsel dengan spesifikasi rendah.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "id",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Beranda", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "id",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Semua (browser)",
+  browserRequirements: "Memerlukan JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="id">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Beranda", href: "/" }, { label: h1 }]} breadcrumbLabel="Jalur navigasi">
+    <KompresPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cara mengompres PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Tentang alat ini</h2>
+      <p>
+        Kompres PDF memperkecil ukuran berkas agar lebih mudah dikirim lewat email, diunggah ke formulir, atau disimpan. Semuanya
+        berjalan di browser: Anda memilih berkas dan tingkat kompresi, lalu mendapatkan PDF baru hanya jika ukurannya benar-benar
+        lebih kecil.
+      </p>
+      <p>
+        Hasilnya bergantung pada isi dokumen. Dokumen dengan banyak foto atau hasil pindai berformat JPEG lebih responsif
+        dibanding dokumen yang hanya berisi teks, dan berkas yang sudah dioptimalkan aplikasi lain mungkin tidak berubah. Alat ini
+        menampilkan ukuran sebenarnya sebelum dan sesudah, bukan perkiraan.
+      </p>
+
+      <h2>Yang bisa dan tidak bisa dilakukan</h2>
+      <p>
+        <strong>Bisa:</strong> menghapus data tak terpakai, memampatkan konten yang tersimpan tanpa kompresi, menata ulang struktur
+        berkas, dan, sesuai tingkat yang dipilih, memperkecil gambar JPEG berwarna. Secara opsional, metadata dokumen dihapus.
+      </p>
+      <p>
+        <strong>Tidak bisa:</strong> mengenali teks (OCR), menghapus kata sandi, memperkecil gambar selain JPEG berwarna, atau
+        mengubah teks, font, dan grafik vektor. Jika berkas tidak bisa diperkecil, Anda akan diberi tahu dan dapat tetap memakai
+        berkas asli.
+      </p>
+
+      <h2>Format dan batas</h2>
+      <p>
+        <strong>Diterima:</strong> satu berkas .pdf tanpa kata sandi, hingga 100 MB. PDF yang dilindungi kata sandi, rusak, atau
+        berformat lain ditolak dengan pesan yang menjelaskan alasannya.
+      </p>
+
+      <h2>Pertanyaan yang sering diajukan</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Alat terkait</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-ke-word/">PDF ke Word: ubah PDF menjadi dokumen yang dapat diedit</a></li>
+        <li><a href="/word-ke-pdf/">Word ke PDF: ubah dokumen Word menjadi PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (dalam bahasa Inggris): semua alat di situs ini</a></li>
+      </ul>
+
+      <h2>Privasi</h2>
+      <p>
+        Berkas Anda diproses sepenuhnya di browser, di perangkat Anda. Berkas tidak dikirim ke Paul Digital maupun server lain,
+        dan tidak ada yang disimpan saat Anda menutup halaman.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

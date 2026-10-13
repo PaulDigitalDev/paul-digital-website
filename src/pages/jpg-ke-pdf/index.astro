@@ -1,0 +1,146 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import JpgKePdf from "../../components/tools/JpgKePdf";
+
+const path = "/jpg-ke-pdf/";
+const title = "JPG ke PDF: ubah gambar JPG menjadi PDF gratis dan online | Paul Digital";
+const description =
+  "Ubah satu atau beberapa gambar JPG/JPEG menjadi satu file PDF, atur urutan halaman, lalu unduh. Semua diproses di browser Anda tanpa mengunggah gambar ke server.";
+const h1 = "JPG ke PDF";
+const intro = "Ubah foto JPG Anda menjadi satu file PDF dengan cepat dan gratis. Alat ini hanya menerima gambar JPG/JPEG.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Klik “Pilih Gambar JPG” atau tarik gambar JPG ke area yang tersedia. Anda dapat memilih beberapa gambar sekaligus.",
+  "Periksa daftarnya: setiap gambar menampilkan pratinjau, dimensi, dan ukuran. Gunakan tombol panah untuk mengubah urutan dan “Hapus” untuk mengeluarkan gambar.",
+  "Pilih ukuran halaman (A4 atau ukuran gambar itu sendiri), lalu klik “Konversi ke PDF”. Setiap gambar menjadi satu halaman sesuai urutan daftar.",
+  "Klik “Unduh PDF” untuk menyimpan file jpg-ke-pdf.pdf. Untuk mengonversi gambar lain, gunakan “Kosongkan gambar”.",
+];
+
+const faqs = [
+  {
+    q: "Bagaimana cara mengubah JPG menjadi PDF?",
+    a: "Tambahkan gambar JPG ke alat ini, atur urutannya dengan tombol panah, lalu klik “Konversi ke PDF”. Setiap gambar menjadi satu halaman dan file siap diunduh dalam hitungan detik.",
+  },
+  {
+    q: "Bagaimana cara menggabungkan beberapa gambar menjadi satu PDF?",
+    a: "Pilih beberapa gambar JPG sekaligus atau tambahkan lagi setelahnya. PDF akhir memuat semuanya dalam satu file, sesuai urutan daftar, satu gambar per halaman.",
+  },
+  {
+    q: "Apakah mengubah JPG menjadi PDF di sini gratis?",
+    a: "Ya. Alat ini gratis, tanpa pendaftaran dan tanpa instalasi.",
+  },
+  {
+    q: "Apakah gambar saya diunggah ke server?",
+    a: "Tidak. Seluruh konversi berlangsung di browser, di perangkat Anda sendiri. Tidak ada yang dikirim ke Paul Digital maupun pihak ketiga, dan tidak ada yang disimpan setelah Anda menutup halaman.",
+  },
+  {
+    q: "Apakah gambar akan melar atau turun kualitasnya?",
+    a: "Tidak melar: proporsi asli selalu dipertahankan dan gambar menyesuaikan halaman tanpa diregangkan. Jika JPG dapat dipakai langsung, gambar dimasukkan ke PDF tanpa dikompres ulang. Gambar dengan rotasi dari kamera atau mode warna yang tidak didukung PDF dikodekan ulang dengan kualitas tinggi.",
+  },
+  {
+    q: "Ukuran halaman apa yang sebaiknya saya pilih?",
+    a: "Dengan A4, setiap gambar disesuaikan ke dalam halaman A4 dengan margin kecil, potret atau lanskap sesuai gambar. Dengan “Ukuran gambar”, halaman mengikuti proporsi gambar tanpa margin, dan gambar yang sangat besar diperkecil ke ukuran halaman yang praktis.",
+  },
+  {
+    q: "Apakah bisa mengonversi PNG, WebP, atau HEIC?",
+    a: "Tidak. Alat ini hanya menerima JPG/JPEG. Format lain ditolak dengan pesan yang menjelaskan alasannya.",
+  },
+  {
+    q: "Apakah ada batas ukuran atau jumlah gambar?",
+    a: "Agar browser tetap stabil, Anda dapat mengonversi hingga 50 gambar, masing-masing maksimal 50 MB dan total maksimal 300 MB. Karena semuanya diproses di memori perangkat, banyak gambar besar dapat terasa lambat di ponsel sederhana.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "id",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Beranda", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "id",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Semua (browser)",
+  browserRequirements: "Memerlukan JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="id">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Beranda", href: "/" }, { label: h1 }]} breadcrumbLabel="Jalur navigasi">
+    <JpgKePdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cara mengubah JPG menjadi PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Tentang alat ini</h2>
+      <p>
+        JPG ke PDF memungkinkan Anda memilih gambar JPG, menentukan urutannya, dan membuat satu dokumen tanpa memasang apa pun.
+        Cocok untuk foto dokumen, bukti pembayaran, tugas sekolah, resep, atau hasil pindai dari ponsel. Gambar harus berformat
+        JPG atau JPEG.
+      </p>
+      <p>
+        Setiap gambar menempati satu halaman sesuai urutan daftar. Gambar lanskap menghasilkan halaman lanskap dan gambar potret
+        menghasilkan halaman potret, selalu dengan proporsi asli.
+      </p>
+
+      <h2>Format dan batas</h2>
+      <p>
+        <strong>Diterima:</strong> gambar .jpg dan .jpeg. Anda dapat menambahkan hingga 50 gambar, masing-masing maksimal 50 MB
+        dan total 300 MB. File berformat lain, kosong, atau rusak ditolak dengan pesan yang menjelaskan alasannya.
+      </p>
+
+      <h2>Pertanyaan yang sering diajukan</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Alat terkait</h2>
+      <ul class="ic-links">
+        <li><a href="/gabung-pdf/">Gabung PDF: gabungkan beberapa file PDF menjadi satu</a></li>
+        <li><a href="/jpg-to-pdf/" lang="en" hreflang="en">JPG to PDF (dalam bahasa Inggris): konversi dan batasi ukuran PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (dalam bahasa Inggris): semua alat di situs ini</a></li>
+      </ul>
+
+      <h2>Privasi</h2>
+      <p>
+        Gambar Anda diproses sepenuhnya di browser, di perangkat Anda. Gambar tidak dikirim ke Paul Digital atau server mana pun,
+        dan tidak ada yang disimpan setelah Anda menutup halaman.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

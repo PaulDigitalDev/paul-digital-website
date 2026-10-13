@@ -1,0 +1,153 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PisahPdf from "../../components/tools/PisahPdf";
+
+const path = "/pisah-pdf/";
+const title = "Pisah PDF online: ambil halaman dari file PDF | Paul Digital";
+const description =
+  "Pisah PDF gratis: ambil satu halaman atau rentang seperti 1-3, 5, 8-10, atau pisahkan setiap halaman menjadi PDF sendiri. Diproses di browser tanpa mengunggah berkas.";
+const h1 = "Pisah PDF";
+const intro =
+  "Ambil halaman atau rentang halaman dari sebuah PDF dan unduh sebagai file baru, dengan cepat, gratis, dan langsung di browser Anda.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Klik “Pilih File PDF” atau tarik berkas ke area yang tersedia. Alat ini langsung menampilkan jumlah halamannya.",
+  "Pilih cara memisahkan: satu PDF untuk setiap rentang, satu PDF berisi halaman terpilih, atau setiap halaman menjadi PDF terpisah.",
+  "Ketik rentang halaman (misalnya 1-3, 5, 8-10) atau klik nomor halaman. Halaman pertama adalah halaman 1. Tentukan juga apakah urutan yang Anda ketik dipertahankan atau mengikuti dokumen asli.",
+  "Klik “Pisahkan PDF”, lalu unduh hasilnya. Jika file yang dibuat lebih dari satu, Anda juga dapat mengunduh semuanya dalam satu ZIP.",
+];
+
+const faqs = [
+  {
+    q: "Bagaimana cara memisahkan halaman PDF?",
+    a: "Pilih PDF, ketik halaman yang ingin diambil (misalnya 1-3, 5, 8-10), lalu klik “Pisahkan PDF”. File baru berisi halaman tersebut akan dibuat dan berkas asli Anda tidak diubah.",
+  },
+  {
+    q: "Bagaimana cara menulis halaman dan rentang?",
+    a: "Pisahkan dengan koma dan gunakan tanda hubung untuk rentang: “1-3, 5, 8-10” berarti halaman 1, 2, dan 3, halaman 5, serta halaman 8 sampai 10. Halaman pertama adalah halaman 1. Rentang harus dari kecil ke besar dan setiap halaman hanya boleh disebut sekali.",
+  },
+  {
+    q: "Bisakah setiap halaman disimpan sebagai PDF terpisah?",
+    a: "Bisa. Pilih “Setiap halaman jadi PDF terpisah”. Alat ini membuat satu PDF per halaman yang dapat diunduh satu per satu atau sekaligus dalam ZIP. Opsi ini mendukung dokumen hingga 200 halaman.",
+  },
+  {
+    q: "Bisakah halaman yang tidak berurutan digabung dalam satu PDF?",
+    a: "Bisa. Pilih “Satu PDF berisi halaman terpilih” lalu ketik, misalnya, 2, 7, 9-11. Anda juga dapat memilih apakah PDF baru mengikuti urutan yang Anda ketik (misalnya 8, 2-3) atau urutan dokumen asli (2-3, 8).",
+  },
+  {
+    q: "Apakah berkas saya diunggah ke server?",
+    a: "Tidak. Pemisahan berjalan sepenuhnya di browser, di perangkat Anda sendiri. Tidak ada yang dikirim ke Paul Digital maupun pihak ketiga, dan tidak ada yang disimpan saat Anda menutup halaman.",
+  },
+  {
+    q: "Apakah PDF asli saya berubah?",
+    a: "Tidak. Alat ini hanya membaca berkas Anda dan membuat file baru. Halaman disalin tanpa dikompres ulang, sehingga teks, gambar, dan tautan pada halaman tersebut tetap seperti aslinya. Bookmark dan formulir interaktif mungkin tidak dipertahankan di file baru.",
+  },
+  {
+    q: "Mengapa PDF saya ditolak?",
+    a: "Alat ini menolak berkas yang bukan PDF, kosong, rusak, tidak memiliki halaman, atau dilindungi kata sandi. Untuk memisahkan PDF yang dilindungi, hapus dulu kata sandinya melalui aplikasi yang Anda gunakan untuk membukanya.",
+  },
+  {
+    q: "Apakah ada batas ukuran atau jumlah halaman?",
+    a: "Agar browser tetap stabil, PDF dapat berukuran maksimal 100 MB dan 1000 halaman. Setiap proses membuat paling banyak 200 file, dan total hasilnya tidak boleh melebihi 500 MB. Karena semuanya diproses di memori perangkat, berkas besar bisa lambat di ponsel berspesifikasi rendah.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "id",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Beranda", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "id",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Semua (browser)",
+  browserRequirements: "Memerlukan JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="id">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Beranda", href: "/" }, { label: h1 }]} breadcrumbLabel="Jalur navigasi">
+    <PisahPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cara memisahkan PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Mode pemisahan</h2>
+      <ul>
+        <li><strong>Satu PDF untuk setiap rentang:</strong> “1-3, 5, 8-10” menghasilkan tiga file, satu untuk setiap bagian.</li>
+        <li><strong>Satu PDF berisi halaman terpilih:</strong> semua halaman yang Anda sebutkan digabung dalam satu dokumen baru.</li>
+        <li><strong>Setiap halaman jadi PDF terpisah:</strong> membuat satu file per halaman dan menyediakannya juga dalam ZIP.</li>
+      </ul>
+      <p>
+        File diberi nama dari berkas asli, misalnya <em>dokumen_halaman_1-3.pdf</em> atau <em>dokumen_halaman_5.pdf</em>. Halaman
+        disalin apa adanya: alat ini tidak mengompres atau mengubah isinya.
+      </p>
+
+      <h2>Format dan batas</h2>
+      <p>
+        <strong>Diterima:</strong> berkas .pdf tanpa kata sandi, maksimal 100 MB dan 1000 halaman. Setiap proses dapat membuat
+        hingga 200 file dengan total hasil hingga 500 MB. PDF yang dilindungi kata sandi, rusak, atau berformat lain ditolak
+        dengan pesan yang menjelaskan alasannya.
+      </p>
+      <p>
+        Pemrosesan memakai memori perangkat Anda. Pada ponsel dengan memori terbatas, ambil lebih sedikit halaman setiap kali.
+      </p>
+
+      <h2>Pertanyaan yang sering diajukan</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Alat terkait</h2>
+      <ul class="ic-links">
+        <li><a href="/gabung-pdf/">Gabung PDF: satukan beberapa file PDF</a></li>
+        <li><a href="/kompres-pdf/">Kompres PDF: perkecil ukuran file PDF</a></li>
+        <li><a href="/pdf-ke-word/">PDF ke Word: ubah PDF menjadi dokumen yang dapat diedit</a></li>
+        <li><a href="/word-ke-pdf/">Word ke PDF: ubah dokumen Word menjadi PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (dalam bahasa Inggris): semua alat di situs ini</a></li>
+      </ul>
+
+      <h2>Privasi</h2>
+      <p>
+        Berkas Anda diproses sepenuhnya di browser, di perangkat Anda. Berkas tidak dikirim ke Paul Digital maupun server lain,
+        dan tidak ada yang disimpan saat Anda menutup halaman.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
