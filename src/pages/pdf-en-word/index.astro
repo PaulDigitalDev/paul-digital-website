@@ -1,0 +1,141 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PdfEnWord from "../../components/tools/PdfEnWord";
+
+const path = "/pdf-en-word/";
+const title = "PDF en Word gratuit — Convertir un PDF en DOCX | Paul Digital";
+const description =
+  "Convertissez un PDF contenant du texte en document Word (DOCX) modifiable, gratuitement et dans votre navigateur, sans envoyer le fichier à un serveur. Sans OCR.";
+const h1 = "PDF en Word";
+const intro =
+  "Convertissez un PDF contenant du texte en document Word (.docx) modifiable, gratuitement et sans quitter votre navigateur.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = ["Cliquez sur « Sélectionner un fichier PDF » ou glissez votre fichier dans la zone prévue. La conversion démarre aussitôt.", "Patientez pendant l'extraction du texte page par page. La progression s'affiche à l'écran.", "Une fois la conversion terminée, consultez le récapitulatif et les avertissements, puis cliquez sur « Télécharger le fichier Word ».", "Ouvrez le fichier dans Word et vérifiez le résultat, surtout si votre PDF contient des tableaux, des colonnes ou des images."];
+
+const faqs = [
+  {
+    q: "Comment convertir un PDF en Word ?",
+    a: "Sélectionnez votre PDF dans cet outil et attendez la fin de la conversion. Le texte est extrait, les titres et les paragraphes sont reconstitués, puis vous pouvez télécharger un fichier .docx modifiable dans Word, LibreOffice ou Google Docs.",
+  },
+  {
+    q: "La conversion de PDF en Word est-elle gratuite ?",
+    a: "Oui. L'outil est gratuit, sans inscription et sans installation.",
+  },
+  {
+    q: "Mon PDF est-il envoyé à un serveur ?",
+    a: "Non. Toute la conversion s'effectue dans votre navigateur, sur votre appareil. Rien n'est envoyé à Paul Digital ni à un tiers, et rien n'est conservé lorsque vous fermez la page.",
+  },
+  {
+    q: "Cela fonctionne-t-il avec un PDF numérisé ?",
+    a: "Non. Un PDF numérisé est composé d'images de pages, sans texte sélectionnable, et nécessiterait une reconnaissance de caractères (OCR) qui n'est pas disponible dans cet outil. Il détecte ces fichiers et vous en informe au lieu de produire un document vide.",
+  },
+  {
+    q: "Que conserve la conversion, et que perd-elle ?",
+    a: "Sont conservés : le texte, la séparation en paragraphes, les titres (détectés d'après la taille et la graisse) ainsi que le gras et l'italique lorsqu'ils sont détectés avec certitude. Les tableaux, colonnes, images, en-têtes et pieds de page, couleurs, polices d'origine et sauts de page exacts ne sont pas forcément conservés.",
+  },
+  {
+    q: "Pourquoi mon PDF est-il refusé ?",
+    a: "L'outil refuse les fichiers qui ne sont pas des PDF, les fichiers vides ou corrompus, les PDF protégés par un mot de passe et les PDF sans texte sélectionnable. Pour convertir un PDF protégé, retirez d'abord le mot de passe avec l'application qui vous sert à l'ouvrir.",
+  },
+  {
+    q: "Y a-t-il une limite de taille ?",
+    a: "Pour que le navigateur reste stable, la limite est de 50 Mo et de 500 pages par fichier. Tout étant traité dans la mémoire de votre appareil, les gros fichiers peuvent être lents sur un téléphone modeste.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "fr",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Accueil", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "fr",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Tous (navigateur)",
+  browserRequirements: "JavaScript requis",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="fr">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Accueil", href: "/" }, { label: h1 }]} breadcrumbLabel="Fil d'Ariane">
+    <PdfEnWord client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Comment convertir un PDF en Word</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>À propos de cet outil</h2>
+      <p>
+        PDF en Word extrait le texte d'un PDF et le reconstitue en document .docx modifiable. L'outil se sert de la position de chaque fragment de texte sur la page pour regrouper les lignes en paragraphes et repérer les titres, et conserve le gras et l'italique lorsqu'ils sont détectés. Il convient pour réutiliser le texte de contrats, rapports, articles, CV ou devoirs.
+      </p>
+
+      <h2>Limites de cet outil</h2>
+      <ul>
+        <li><strong>Pas d'OCR :</strong> seuls les PDF contenant du texte sélectionnable fonctionnent. Les PDF numérisés sont détectés et refusés avec un message explicatif.</li>
+        <li><strong>Mise en page simplifiée :</strong> les tableaux, colonnes, images, graphiques, en-têtes, pieds de page et sauts de page exacts ne sont pas forcément conservés. Le résultat est un texte continu avec titres et paragraphes.</li>
+        <li><strong>Polices et couleurs :</strong> le document utilise les polices par défaut de Word. Seuls le gras et l'italique sont conservés.</li>
+        <li><strong>Écritures :</strong> les écritures qui nécessitent des tables de caractères spéciales (chinois, japonais, coréen…) peuvent ne pas être extraites correctement.</li>
+        <li>Vérifiez toujours le résultat avant de l'utiliser pour un document important.</li>
+      </ul>
+
+      <h2>Formats et limites</h2>
+      <p>
+        <strong>Accepté :</strong> un fichier .pdf par conversion, sans mot de passe, jusqu'à 50 Mo et 500 pages. Les fichiers corrompus, protégés par mot de passe ou dans un autre format sont refusés avec un message qui en explique la raison.
+      </p>
+
+      <h2>Questions fréquentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Outils associés</h2>
+      <ul class="ic-links">
+        <li><a href="/word-en-pdf/">Word en PDF : convertir un document Word en PDF</a></li>
+        <li><a href="/compresser-pdf/">Compresser PDF : réduire la taille d'un fichier PDF</a></li>
+        <li><a href="/fusionner-pdf/">Fusionner PDF : combiner plusieurs PDF en un seul</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (en anglais) : tous les outils du site</a></li>
+      </ul>
+
+      <h2>Confidentialité</h2>
+      <p>
+        Vos fichiers sont traités entièrement dans votre navigateur, sur votre appareil. Ils ne sont envoyés ni à Paul Digital
+        ni à un autre serveur, et rien n'est conservé lorsque vous fermez la page.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

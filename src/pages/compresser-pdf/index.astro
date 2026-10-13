@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import CompresserPdf from "../../components/tools/CompresserPdf";
+
+const path = "/compresser-pdf/";
+const title = "Compresser un PDF gratuitement — Réduire la taille | Paul Digital";
+const description =
+  "Compressez un fichier PDF gratuitement, sans l'envoyer à un serveur : images et structure optimisées dans votre navigateur, avec la taille réelle avant et après.";
+const h1 = "Compresser PDF";
+const intro =
+  "Réduisez la taille d'un PDF directement dans votre navigateur et consultez la taille réelle avant de télécharger. Sans inscription et sans envoi du document.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = ["Cliquez sur « Sélectionner un fichier PDF » ou glissez votre fichier dans la zone prévue.", "Choisissez un niveau de compression. La compression légère ne modifie que la structure du fichier ; les deux autres niveaux réduisent aussi les images JPEG.", "Si vous le souhaitez, cochez « Supprimer les métadonnées du document » pour retirer le titre, l'auteur et l'application source.", "Cliquez sur « Compresser le PDF » et patientez. Vous verrez la taille d'origine, la taille après compression et la variation réelle.", "Téléchargez le PDF obtenu. Si la taille n'a pas diminué, l'outil vous en informe et vous recommande de conserver le fichier d'origine."];
+
+const faqs = [
+  {
+    q: "Comment compresser un PDF ?",
+    a: "Sélectionnez votre fichier, choisissez un niveau de compression, puis cliquez sur « Compresser le PDF ». À la fin, vous voyez la taille avant et après, et vous pouvez télécharger le résultat s'il est réellement plus petit.",
+  },
+  {
+    q: "Mon fichier est-il envoyé à un serveur ?",
+    a: "Non. Toute la compression s'effectue dans votre navigateur, sur votre appareil. Rien n'est envoyé à Paul Digital ni à un tiers, et rien n'est conservé lorsque vous fermez la page.",
+  },
+  {
+    q: "De combien mon PDF sera-t-il réduit ?",
+    a: "Cela dépend de son contenu. Un PDF composé de photos ou de pages numérisées au format JPEG diminue généralement nettement avec les niveaux « équilibrée » et « maximale ». Un PDF contenant uniquement du texte ou déjà optimisé peut ne diminuer que légèrement, voire pas du tout. L'outil ne promet aucune taille précise : il mesure le résultat réel et vous l'affiche.",
+  },
+  {
+    q: "Que fait exactement cette compression ?",
+    a: "L'outil supprime systématiquement les données inutilisées, compresse les blocs de contenu stockés sans compression et réorganise la structure du fichier. Aux niveaux « équilibrée » et « maximale », les images JPEG en couleur sont aussi ré-encodées avec une qualité moindre et, si elles sont très grandes, avec moins de pixels. Les images dans d'autres formats, le texte, les polices et les graphiques vectoriels ne sont pas modifiés.",
+  },
+  {
+    q: "La qualité sera-t-elle dégradée ?",
+    a: "Avec la compression légère, le contenu du document ne change pas. Avec les deux autres niveaux, les images JPEG perdent une partie de leur détail, davantage en compression maximale. Vérifiez le résultat avant de l'utiliser, surtout pour des documents numérisés avec un petit texte.",
+  },
+  {
+    q: "Et si le résultat est aussi gros, voire plus gros ?",
+    a: "Cela peut arriver, par exemple avec un fichier déjà très optimisé. L'outil l'indique clairement, ne propose pas le fichier plus volumineux et vous permet de conserver le fichier d'origine tel quel.",
+  },
+  {
+    q: "Pourquoi mon PDF est-il refusé ?",
+    a: "L'outil refuse les fichiers qui ne sont pas des PDF, les fichiers vides ou corrompus et les PDF protégés par un mot de passe. Il ne retire pas les mots de passe : pour compresser un PDF protégé, retirez d'abord la protection avec l'application qui vous sert à l'ouvrir.",
+  },
+  {
+    q: "Qu'advient-il des signatures numériques, formulaires et signets ?",
+    a: "Les formulaires, liens et signets sont en général conservés, mais une signature numérique n'est plus valide, car le fichier est réenregistré. Si vous devez conserver la signature, utilisez le fichier d'origine.",
+  },
+  {
+    q: "L'outil reconnaît-il le texte des documents numérisés (OCR) ?",
+    a: "Non. L'outil ne fait pas d'OCR et ne modifie pas le texte ; il se contente de réduire la taille du fichier.",
+  },
+  {
+    q: "Y a-t-il une limite de taille ?",
+    a: "Vous pouvez compresser des PDF jusqu'à 100 Mo. Tout étant traité dans la mémoire de votre appareil, les très gros fichiers peuvent être lents, voire échouer, sur un téléphone modeste.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "fr",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Accueil", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "fr",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Tous (navigateur)",
+  browserRequirements: "JavaScript requis",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="fr">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Accueil", href: "/" }, { label: h1 }]} breadcrumbLabel="Fil d'Ariane">
+    <CompresserPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Comment compresser un PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>À propos de cet outil</h2>
+      <p>
+        Compresser PDF réduit la taille d'un fichier pour l'envoyer plus facilement par e-mail, le téléverser dans un formulaire ou le ranger. Tout se passe dans le navigateur : vous choisissez un fichier et un niveau de compression, et vous obtenez un nouveau PDF seulement s'il est réellement plus petit.
+      </p>
+      <p>
+        Le résultat dépend du contenu du document. Un document riche en photos ou en pages numérisées au format JPEG réagit mieux qu'un document de texte seul, et un fichier déjà optimisé par une autre application peut ne pas changer. L'outil affiche la taille réelle avant et après, jamais une estimation.
+      </p>
+
+      <h2>Ce que l'outil fait et ne fait pas</h2>
+      <p>
+        <strong>Il peut :</strong> supprimer les données inutilisées, compresser le contenu stocké sans compression, réorganiser la structure du fichier et, selon le niveau choisi, réduire les images JPEG en couleur. Il peut aussi supprimer les métadonnées du document, en option.
+      </p>
+      <p>
+        <strong>Il ne peut pas :</strong> reconnaître le texte (OCR), retirer un mot de passe, réduire les images dans un autre format que le JPEG en couleur, ni modifier le texte, les polices et les graphiques vectoriels. Il ne permet pas non plus d'atteindre une taille cible précise. Si le fichier ne peut pas être réduit, vous en êtes informé et vous pouvez conserver le fichier d'origine.
+      </p>
+
+      <h2>Formats et limites</h2>
+      <p>
+        <strong>Accepté :</strong> un fichier .pdf sans mot de passe, jusqu'à 100 Mo. Les fichiers corrompus, protégés par mot de passe ou dans un autre format sont refusés avec un message qui en explique la raison.
+      </p>
+
+      <h2>Questions fréquentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Outils associés</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-en-word/">PDF en Word : convertir un PDF contenant du texte en document modifiable</a></li>
+        <li><a href="/word-en-pdf/">Word en PDF : convertir un document Word en PDF</a></li>
+        <li><a href="/fusionner-pdf/">Fusionner PDF : combiner plusieurs PDF en un seul</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (en anglais) : tous les outils du site</a></li>
+      </ul>
+
+      <h2>Confidentialité</h2>
+      <p>
+        Vos fichiers sont traités entièrement dans votre navigateur, sur votre appareil. Ils ne sont envoyés ni à Paul Digital
+        ni à un autre serveur, et rien n'est conservé lorsque vous fermez la page.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

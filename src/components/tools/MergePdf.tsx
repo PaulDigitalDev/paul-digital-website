@@ -6,7 +6,7 @@ const MAX_FILES = 30;
 const MAX_FILE_BYTES = 100 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
 
-type Locale = "pt-BR" | "es" | "id" | "tr";
+type Locale = "pt-BR" | "es" | "id" | "tr" | "fr";
 type Forms = readonly [string, string];
 
 interface Strings {
@@ -245,6 +245,53 @@ const TEXT: Record<Locale, Strings> = {
     merged: "Birleştirilen dosya",
     download: "PDF'yi İndir",
     reset: "Dosyaları temizle",
+  },
+  fr: {
+    outputName: "documents-fusionnes.pdf",
+    cleared: "Liste vidée. Sélectionnez de nouveaux PDF pour recommencer.",
+    reading: (name) => `Lecture de ${name}…`,
+    limitFiles: (name, max) => `${name} : non ajouté. La limite est de ${max} fichiers.`,
+    empty: (name) => `${name} : le fichier est vide.`,
+    tooBig: (name, size, max) => `${name} : ${size}, ce qui dépasse la limite de ${max} par fichier.`,
+    totalExceeded: (name, max) => `${name} : non ajouté, car la taille totale dépasserait ${max}.`,
+    encrypted: (name) => `${name} : ce PDF est protégé par un mot de passe. Retirez la protection, puis réessayez.`,
+    invalid: (name) => `${name} : ce fichier n'est pas un PDF.`,
+    unreadable: (name) => `${name} : ce PDF est illisible. Le fichier est peut-être corrompu.`,
+    added: ["PDF ajouté", "PDF ajoutés"],
+    moved: (name, pos, total) => `${name} déplacé en position ${pos} sur ${total}.`,
+    fallbackName: "Fichier",
+    removed: (name) => `${name} supprimé.`,
+    needTwo: "Ajoutez au moins deux PDF à fusionner.",
+    mergingFile: (done, total) => `Fusion du fichier ${done + 1} sur ${total}…`,
+    finalizing: "Finalisation du PDF…",
+    success: "Le PDF a été créé !",
+    failure: "Les PDF n'ont pas pu être fusionnés. Vérifiez vos fichiers ou réessayez avec moins de fichiers.",
+    selected: ["PDF sélectionné", "PDF sélectionnés"],
+    page: ["page", "pages"],
+    emptyTitle: "Glissez-déposez vos fichiers PDF ici",
+    emptySub: (max) => `Sélectionnez au moins deux PDF pour commencer. Jusqu'à ${max} par fichier.`,
+    filledSub: (pages, size) => `${pages} · ${size} au total · vous pouvez en ajouter d'autres`,
+    select: "Sélectionner des PDF",
+    dropAria: "Zone de dépôt des fichiers PDF",
+    privacy: "Vos fichiers sont traités sur votre appareil et ne sont envoyés à aucun serveur.",
+    listHeading: (n) => `Fichiers sélectionnés (${n})`,
+    orderHint: "Placez les fichiers dans l'ordre souhaité.",
+    listAria: "Fichiers sélectionnés, dans l'ordre de fusion",
+    up: (name) => `Monter ${name}`,
+    down: (name) => `Descendre ${name}`,
+    removeAria: (name) => `Supprimer ${name}`,
+    remove: "Supprimer",
+    merging: "Fusion des PDF en cours…",
+    submit: "Fusionner les PDF",
+    needOneMore: "Ajoutez un PDF de plus pour pouvoir fusionner. ",
+    listHint: "Les pages sont fusionnées dans l'ordre de la liste. Utilisez les flèches pour réorganiser et Supprimer pour retirer un fichier.",
+    result: "Résultat",
+    format: "Format",
+    size: "Taille",
+    pages: "Pages",
+    merged: "Fichiers fusionnés",
+    download: "Télécharger le PDF fusionné",
+    reset: "Vider la liste",
   },
 };
 

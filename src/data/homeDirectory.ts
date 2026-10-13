@@ -135,6 +135,18 @@ const specs: GroupSpec[] = [
     ],
   },
   {
+    id: "french",
+    title: "Outils PDF en français",
+    icon: "pdf",
+    ids: [],
+    extra: [
+      { name: "PDF en Word", href: "/pdf-en-word/" },
+      { name: "Word en PDF", href: "/word-en-pdf/" },
+      { name: "Compresser PDF", href: "/compresser-pdf/" },
+      { name: "Fusionner PDF", href: "/fusionner-pdf/" },
+    ],
+  },
+  {
     id: "turkish",
     title: "Türkçe PDF Araçları",
     icon: "pdf",

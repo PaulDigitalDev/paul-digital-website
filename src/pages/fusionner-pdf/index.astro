@@ -1,0 +1,142 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import MergePdf from "../../components/tools/MergePdf";
+
+const path = "/fusionner-pdf/";
+const title = "Fusionner des PDF gratuitement — Combiner plusieurs fichiers | Paul Digital";
+const description =
+  "Fusionnez plusieurs fichiers PDF en un seul, réorganisez-les, puis téléchargez le résultat. Tout est traité dans votre navigateur, sans envoyer vos fichiers à un serveur.";
+const h1 = "Fusionner PDF";
+const intro =
+  "Combinez plusieurs fichiers PDF en un seul document, rapidement, gratuitement et directement dans votre navigateur.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = ["Cliquez sur « Sélectionner des PDF » ou glissez vos fichiers dans la zone prévue. Vous pouvez en choisir plusieurs à la fois.", "Vérifiez la liste : chaque PDF affiche son nombre de pages et sa taille. Utilisez les flèches pour changer l'ordre et « Supprimer » pour retirer un fichier.", "Cliquez sur « Fusionner les PDF ». Les pages sont assemblées dans l'ordre de la liste, du premier au dernier fichier.", "Cliquez sur « Télécharger le PDF fusionné » pour enregistrer documents-fusionnes.pdf. Pour fusionner d'autres fichiers, utilisez « Vider la liste »."];
+
+const faqs = [
+  {
+    q: "Comment fusionner des fichiers PDF ?",
+    a: "Ajoutez vos PDF à l'outil, placez-les dans l'ordre voulu avec les flèches, puis cliquez sur « Fusionner les PDF ». Le nouveau fichier contient toutes les pages dans l'ordre de la liste et peut être téléchargé en quelques secondes.",
+  },
+  {
+    q: "La fusion de PDF est-elle gratuite ?",
+    a: "Oui. L'outil est gratuit, sans inscription et sans installation.",
+  },
+  {
+    q: "Mes fichiers sont-ils envoyés à un serveur ?",
+    a: "Non. La fusion s'effectue entièrement dans votre navigateur, sur votre appareil. Rien n'est envoyé à Paul Digital ni à un tiers, et rien n'est conservé lorsque vous fermez la page.",
+  },
+  {
+    q: "Puis-je changer l'ordre des PDF ?",
+    a: "Oui. Utilisez les flèches haut et bas à côté de chaque fichier. Les pages du fichier placé en haut de la liste apparaissent en premier dans le PDF final.",
+  },
+  {
+    q: "Le PDF fusionné conserve-t-il toutes les pages ?",
+    a: "Oui. Toutes les pages de chaque fichier sont copiées telles quelles, sans nouvelle compression : le texte, les images et les liens restent comme dans l'original. Les signets et les formulaires interactifs peuvent ne pas être conservés dans le fichier final.",
+  },
+  {
+    q: "Pourquoi mon PDF est-il refusé ?",
+    a: "L'outil refuse les fichiers qui ne sont pas des PDF, les fichiers vides ou corrompus et les PDF protégés par un mot de passe. Le fichier concerné est signalé dans la liste de messages, et les autres restent en place. Pour fusionner un PDF protégé, retirez d'abord le mot de passe avec l'application qui vous sert à l'ouvrir.",
+  },
+  {
+    q: "Y a-t-il une limite de taille ou de nombre de fichiers ?",
+    a: "Pour que le navigateur reste stable, vous pouvez fusionner jusqu'à 30 fichiers, de 100 Mo au maximum chacun et de 300 Mo au total. Tout étant traité dans la mémoire de votre appareil, les très gros fichiers peuvent être lents sur un téléphone modeste.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "fr",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Accueil", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "fr",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Tous (navigateur)",
+  browserRequirements: "JavaScript requis",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="fr">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Accueil", href: "/" }, { label: h1 }]} breadcrumbLabel="Fil d'Ariane">
+    <MergePdf client:load locale="fr" />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Comment fusionner des PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>À propos de cet outil</h2>
+      <p>
+        Fusionner PDF vous permet de réunir plusieurs PDF en ligne : sélectionnez les fichiers, définissez l'ordre, puis assemblez-les en un seul document sans rien installer. Pratique pour regrouper contrats, justificatifs, CV, devoirs, factures ou tout autre document à envoyer en une seule fois.
+      </p>
+      <p>
+        Les pages sont copiées sans modification, dans l'ordre affiché dans la liste. L'outil ne compresse pas et ne modifie pas le contenu des pages ; il les réunit simplement dans un nouveau fichier.
+      </p>
+
+      <h2>Limites de cet outil</h2>
+      <ul>
+        <li><strong>Signets et formulaires :</strong> les signets et les champs de formulaire interactifs peuvent ne pas être conservés dans le fichier fusionné.</li>
+        <li><strong>Signatures numériques :</strong> une signature numérique ne reste pas valide dans un document fusionné.</li>
+        <li><strong>Fichiers protégés :</strong> les PDF protégés par un mot de passe sont refusés ; l'outil ne retire pas les protections.</li>
+      </ul>
+
+      <h2>Formats et limites</h2>
+      <p>
+        <strong>Accepté :</strong> des fichiers .pdf sans mot de passe, jusqu'à 30 fichiers, de 100 Mo au maximum chacun et de 300 Mo au total. Les PDF protégés par mot de passe, corrompus ou dans un autre format sont refusés avec un message qui en explique la raison.
+      </p>
+
+      <h2>Questions fréquentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Outils associés</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-en-word/">PDF en Word : convertir un PDF contenant du texte en document modifiable</a></li>
+        <li><a href="/word-en-pdf/">Word en PDF : convertir un document Word en PDF</a></li>
+        <li><a href="/compresser-pdf/">Compresser PDF : réduire la taille d'un fichier PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (en anglais) : tous les outils du site</a></li>
+      </ul>
+
+      <h2>Confidentialité</h2>
+      <p>
+        Vos fichiers sont traités entièrement dans votre navigateur, sur votre appareil. Ils ne sont envoyés ni à Paul Digital
+        ni à un autre serveur, et rien n'est conservé lorsque vous fermez la page.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

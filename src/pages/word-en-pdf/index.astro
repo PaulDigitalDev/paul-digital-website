@@ -1,0 +1,147 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import WordEnPdf from "../../components/tools/WordEnPdf";
+
+const path = "/word-en-pdf/";
+const title = "Word en PDF gratuit — Convertir DOCX en PDF | Paul Digital";
+const description =
+  "Convertissez un document Word (.docx) en PDF, gratuitement et dans votre navigateur, sans envoyer le fichier à un serveur. Texte, mise en forme de base, listes, tableaux et images.";
+const h1 = "Word en PDF";
+const intro =
+  "Convertissez un document Word (.docx) en fichier PDF, gratuitement et sans quitter votre navigateur. Votre fichier n'est envoyé à aucun serveur.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = ["Cliquez sur « Sélectionner un fichier Word » ou glissez votre fichier .docx dans la zone prévue.", "Patientez quelques secondes pendant la lecture du document et la création du PDF. La progression s'affiche à l'écran.", "Une fois terminé, consultez le récapitulatif et les avertissements, puis cliquez sur « Télécharger le PDF ».", "Ouvrez le PDF et vérifiez le résultat avant de l'envoyer ou de l'imprimer, surtout si la mise en page du document est complexe."];
+
+const faqs = [
+  {
+    q: "Comment convertir un fichier Word en PDF ?",
+    a: "Sélectionnez votre fichier .docx dans cet outil et attendez la fin du traitement. Le navigateur lit le document, met en page le texte, les tableaux et les images, puis crée un PDF que vous pouvez télécharger.",
+  },
+  {
+    q: "La conversion de Word en PDF est-elle gratuite ?",
+    a: "Oui. L'outil est gratuit, sans inscription et sans installation.",
+  },
+  {
+    q: "Mon document est-il envoyé à un serveur ?",
+    a: "Non. Toute la conversion s'effectue dans votre navigateur, sur votre appareil. Rien n'est envoyé à Paul Digital ni à un tiers, et rien n'est conservé lorsque vous fermez la page.",
+  },
+  {
+    q: "Le résultat sera-t-il identique à ce que je vois dans Word ?",
+    a: "Pas toujours. L'outil n'utilise pas le moteur de Word : le document est remis en page avec les polices standard du PDF (Helvetica, Times et Courier), de sorte que les sauts de ligne et de page peuvent changer. Pour un document qui doit être rigoureusement identique, comme un formulaire ou une mise en page complexe, utilisez la fonction « Enregistrer au format PDF » ou « Exporter » de Word.",
+  },
+  {
+    q: "Que conserve le PDF ?",
+    a: "Le texte avec ses accents et signes de ponctuation français, les paragraphes, les titres, le gras, l'italique, le soulignement, la couleur du texte, l'alignement, les retraits, les listes à puces ou numérotées, les tableaux avec bordures et couleurs de fond, les images PNG et JPEG placées au fil du texte, les sauts de page ainsi que la taille et les marges de page.",
+  },
+  {
+    q: "Qu'est-ce qui n'est pas inclus ?",
+    a: "Les en-têtes, pieds de page, numéros de page, notes de bas de page, zones de texte, formes, graphiques, équations, colonnes et commentaires ne sont pas inclus. Les images flottantes sont placées au fil du texte. Les polices du document sont remplacées par les polices standard, et les caractères absents de ces polices (emoji, écritures chinoise, japonaise, arabe, etc.) apparaissent sous la forme « ? ».",
+  },
+  {
+    q: "Pourquoi mon fichier est-il refusé ?",
+    a: "L'outil n'accepte que les fichiers .docx. Les anciens fichiers .doc, les fichiers protégés par mot de passe, corrompus, vides ou dans un autre format sont refusés. Si votre fichier est au format .doc, ouvrez-le dans Word, puis enregistrez-le au format .docx.",
+  },
+  {
+    q: "Y a-t-il une limite de taille ?",
+    a: "Pour que le navigateur reste stable, la limite est de 25 Mo par fichier et de 300 pages pour le PDF. Tout étant traité dans la mémoire de votre appareil, les gros documents peuvent être lents sur un téléphone modeste.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "fr",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Accueil", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "fr",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Tous (navigateur)",
+  browserRequirements: "JavaScript requis",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="fr">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Accueil", href: "/" }, { label: h1 }]} breadcrumbLabel="Fil d'Ariane">
+    <WordEnPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Comment convertir un document Word en PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>À propos de cet outil</h2>
+      <p>
+        Word en PDF lit le contenu d'un fichier .docx directement dans votre navigateur, puis le met en page : découpage du texte en lignes, application du gras, de l'italique, du soulignement, des couleurs et de l'alignement, numérotation des listes, tracé des tableaux et placement des images. Le résultat est un PDF téléchargeable, pratique pour des lettres, CV, rapports ou mémoires lorsque Word n'est pas disponible.
+      </p>
+
+      <h2>Limites de cet outil</h2>
+      <ul>
+        <li><strong>Conversion approximative :</strong> ce n'est pas le moteur de Word. Le PDF peut différer de l'original pour les sauts de ligne, les sauts de page et les espacements.</li>
+        <li><strong>Polices remplacées :</strong> Helvetica, Times et Courier sont utilisées selon le type de police du document (Calibri et Arial apparaissent par exemple en Helvetica). Les polices d'origine ne sont pas incorporées.</li>
+        <li><strong>Caractères spéciaux :</strong> les lettres latines avec les accents courants du français sont prises en charge. Les emoji et les écritures non latines sont remplacés par « ? ».</li>
+        <li><strong>Contenu non inclus :</strong> en-têtes et pieds de page, numéros de page, notes de bas de page, zones de texte, formes, graphiques, équations et commentaires. L'outil vous avertit lorsqu'il en détecte dans le document.</li>
+        <li><strong>Images :</strong> PNG et JPEG pris en charge ; les autres formats ne sont convertis que si votre navigateur sait les lire. Les images flottantes sont placées au fil du texte, sans rognage ni rotation.</li>
+        <li><strong>Tableaux et mise en page :</strong> les tableaux conservent bordures, largeurs et couleurs de fond, mais les cellules fusionnées verticalement ne sont qu'approchées. Les colonnes de texte, les bordures de paragraphe et les champs mis à jour par Word (table des matières, renvois) ne sont pas reproduits.</li>
+        <li>Vérifiez toujours le PDF avant de l'utiliser pour une démarche administrative ou un document important.</li>
+      </ul>
+
+      <h2>Formats et limites</h2>
+      <p>
+        <strong>Accepté :</strong> un fichier .docx par conversion, sans mot de passe, jusqu'à 25 Mo, pour un PDF de 300 pages au maximum. Les anciens fichiers .doc, corrompus, protégés par mot de passe ou dans un autre format sont refusés avec un message qui en explique la raison.
+      </p>
+
+      <h2>Questions fréquentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Outils associés</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-en-word/">PDF en Word : convertir un PDF contenant du texte en document modifiable</a></li>
+        <li><a href="/compresser-pdf/">Compresser PDF : réduire la taille d'un fichier PDF</a></li>
+        <li><a href="/fusionner-pdf/">Fusionner PDF : combiner plusieurs PDF en un seul</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (en anglais) : tous les outils du site</a></li>
+      </ul>
+
+      <h2>Confidentialité</h2>
+      <p>
+        Vos fichiers sont traités entièrement dans votre navigateur, sur votre appareil. Ils ne sont envoyés ni à Paul Digital
+        ni à un autre serveur, et rien n'est conservé lorsque vous fermez la page.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
