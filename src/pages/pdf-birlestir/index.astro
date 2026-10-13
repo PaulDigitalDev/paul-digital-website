@@ -1,0 +1,149 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import MergePdf from "../../components/tools/MergePdf";
+
+const path = "/pdf-birlestir/";
+const title = "PDF Birleştir | PDF Dosyalarını Birleştir";
+const description =
+  "Birden fazla PDF dosyasını çevrimiçi ve ücretsiz tek PDF'de birleştirin. Sırayı düzenleyin ve indirin. Dosyalarınız tarayıcınızda işlenir, sunucuya yüklenmez.";
+const h1 = "PDF Birleştir";
+const intro =
+  "Birden fazla PDF dosyasını tek bir belgede birleştirin; hızlı, ücretsiz ve tarayıcınızdan çıkmadan.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "“PDF Dosyası Seç” düğmesine tıklayın veya dosyaları sayfadaki alana sürükleyin. Birden fazla dosyayı birlikte seçebilirsiniz.",
+  "Listeyi kontrol edin: her PDF için sayfa sayısı ve boyut gösterilir. Sırayı değiştirmek için okları, bir dosyayı çıkarmak için “Kaldır” düğmesini kullanın.",
+  "“PDF'leri Birleştir” düğmesine tıklayın. Sayfalar, ilk dosyadan sonuncuya doğru liste sırasıyla birleştirilir.",
+  "pdf-birlestirilmis.pdf dosyasını kaydetmek için “PDF'yi İndir” düğmesine tıklayın. Başka dosyaları birleştirmek için “Dosyaları temizle” seçeneğini kullanın.",
+];
+
+const faqs = [
+  {
+    q: "PDF dosyaları nasıl birleştirilir?",
+    a: "PDF'leri bu araca ekleyin, okları kullanarak sırayı düzenleyin ve “PDF'leri Birleştir” düğmesine tıklayın. Yeni dosya, liste sırasıyla tüm sayfaları içerir ve birkaç saniye içinde indirmeye hazır olur.",
+  },
+  {
+    q: "PDF birleştirme ücretsiz mi?",
+    a: "Evet. Araç ücretsizdir, kayıt veya kurulum gerektirmez.",
+  },
+  {
+    q: "Dosyalarım bir sunucuya yükleniyor mu?",
+    a: "Hayır. Birleştirme tamamen tarayıcınızda, kendi cihazınızda çalışır. Paul Digital'e veya üçüncü taraflara hiçbir şey gönderilmez; sayfayı kapattığınızda hiçbir şey saklanmaz.",
+  },
+  {
+    q: "PDF sırasını değiştirebilir miyim?",
+    a: "Evet. Her dosyanın yanındaki yukarı ve aşağı oklarını kullanın. Listenin en üstündeki dosyanın sayfaları, son PDF'de en başta yer alır.",
+  },
+  {
+    q: "Birleştirilmiş PDF tüm sayfaları korur mu?",
+    a: "Evet. Her dosyanın tüm sayfaları yeniden sıkıştırılmadan olduğu gibi kopyalanır; metin, görsel ve bağlantılar aynı kalır. Yer imleri ve etkileşimli formlar son dosyada korunmayabilir.",
+  },
+  {
+    q: "PDF dosyam neden reddedildi?",
+    a: "Araç PDF olmayan, boş, bozuk veya parola korumalı dosyaları reddeder. Korumalı PDF'leri birleştirmek için önce dosyayı açtığınız uygulamadan parolayı kaldırın.",
+  },
+  {
+    q: "Dosya boyutu veya sayısı sınırı var mı?",
+    a: "Tarayıcının kararlı kalması için en fazla 30 dosya birleştirebilirsiniz; dosya başına sınır 100 MB, toplam sınır 300 MB'tır. Her şey cihazın belleğinde işlendiğinden, çok büyük dosyalar düşük donanımlı telefonlarda yavaş olabilir.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "tr",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "tr",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Herhangi biri (tarayıcı)",
+  browserRequirements: "JavaScript gerektirir",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="tr">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Ana Sayfa", href: "/" }, { label: h1 }]} breadcrumbLabel="Gezinme yolu">
+    <MergePdf client:load locale="tr" />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>PDF dosyaları nasıl birleştirilir?</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Bu araç hakkında</h2>
+      <p>
+        PDF Birleştir, birden fazla PDF'yi çevrimiçi olarak tek belgede toplamanızı sağlar: dosyaları seçin, sırayı
+        belirleyin ve hiçbir şey kurmadan tek bir belgede birleştirin. Sözleşme, makbuz, özgeçmiş, ödev, fatura veya
+        birlikte göndermeniz gereken her tür belge için uygundur.
+      </p>
+      <p>
+        Sayfalar, listede gösterilen sırayla değiştirilmeden kopyalanır. Araç sayfa içeriğini sıkıştırmaz veya
+        değiştirmez; yalnızca yeni bir dosyada bir araya getirir.
+      </p>
+
+      <h2>Biçim ve sınırlar</h2>
+      <p>
+        <strong>Kabul edilen:</strong> parolasız .pdf dosyaları. En fazla 30 dosya ekleyebilirsiniz; dosya başına en fazla
+        100 MB, toplamda 300 MB. Parola korumalı, bozuk veya farklı biçimdeki dosyalar, nedenini açıklayan bir iletiyle
+        reddedilir.
+      </p>
+      <p>
+        İşlem cihazınızın belleğini kullanır. Belleği sınırlı telefonlarda aynı anda daha az dosya birleştirin.
+      </p>
+
+      <h2>Sık sorulan sorular</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>İlgili araçlar</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-sikistir/">PDF Sıkıştır: PDF dosya boyutunu küçültün</a></li>
+        <li><a href="/pdf-bol/">PDF Böl: PDF sayfalarını ayırın</a></li>
+        <li><a href="/pdf-word-donustur/">PDF'den Word'e Dönüştür: düzenlenebilir belge elde edin</a></li>
+        <li><a href="/jpg-pdf/">JPG'den PDF'ye: görselleri PDF yapın</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (İngilizce): sitedeki tüm araçlar</a></li>
+      </ul>
+
+      <h2>Gizlilik</h2>
+      <p>
+        Dosyalarınız tamamen tarayıcınızda, cihazınızda işlenir. Dosyalar Paul Digital'e veya başka bir sunucuya
+        gönderilmez ve sayfayı kapattığınızda hiçbir şey saklanmaz.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

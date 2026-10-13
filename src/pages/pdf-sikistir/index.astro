@@ -1,0 +1,150 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PdfSikistir from "../../components/tools/PdfSikistir";
+
+const path = "/pdf-sikistir/";
+const title = "PDF Sıkıştır | PDF Dosya Boyutunu Küçült";
+const description =
+  "PDF dosya boyutunu çevrimiçi ve ücretsiz küçültün. Sıkıştırma düzeyini seçin, önce ve sonra boyutları karşılaştırın. Dosyanız tarayıcınızda işlenir, yüklenmez.";
+const h1 = "PDF Sıkıştır";
+const intro =
+  "PDF dosyanızın boyutunu küçültün ve sonucu önce/sonra boyutlarıyla karşılaştırın; ücretsiz ve tarayıcınızda.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "“PDF Dosyası Seç” düğmesine tıklayın veya dosyanızı sayfadaki alana sürükleyin.",
+  "Sıkıştırma düzeyini seçin: kalite kaybı olmadan, dengeli veya maksimum küçültme. İsterseniz belge meta verilerini kaldırmayı işaretleyin.",
+  "“Sıkıştır” düğmesine tıklayın. Araç, orijinal ve sıkıştırılmış boyutu karşılaştırır.",
+  "Sonuç gerçekten daha küçükse “PDF'yi İndir” düğmesiyle kaydedin. Küçülmediyse orijinal dosyayı kullanmanız önerilir.",
+];
+
+const faqs = [
+  {
+    q: "PDF dosyası nasıl sıkıştırılır?",
+    a: "PDF'yi seçin, bir sıkıştırma düzeyi belirleyin ve “Sıkıştır” düğmesine tıklayın. Araç dosya yapısını yeniden düzenler ve sıkıştırır; seçtiğiniz düzeye göre JPEG görselleri de küçültür. Sonuç, orijinal ve yeni boyutla birlikte gösterilir.",
+  },
+  {
+    q: "PDF boyutu ne kadar küçülür?",
+    a: "Bunu önceden bilmek mümkün değil; sonuç PDF'nin içeriğine bağlıdır. Fotoğraf veya tarama içeren dosyalar belirgin biçimde küçülebilir, zaten optimize edilmiş veya yalnızca metinden oluşan dosyalar neredeyse hiç küçülmeyebilir. Belirli bir yüzde veya boyut garanti etmiyoruz.",
+  },
+  {
+    q: "Sıkıştırma dosyayı büyütürse ne olur?",
+    a: "Sonuç orijinalden küçük değilse bunu açıkça belirtiriz, büyümüş dosyayı indirmeye sunmayız ve orijinal dosyayı kaydetmenizi öneririz.",
+  },
+  {
+    q: "PDF dosyam bir sunucuya yükleniyor mu?",
+    a: "Hayır. Sıkıştırma tamamen tarayıcınızda, kendi cihazınızda çalışır. Paul Digital'e veya üçüncü taraflara hiçbir şey gönderilmez; sayfayı kapattığınızda hiçbir şey saklanmaz.",
+  },
+  {
+    q: "Hangi düzeyi seçmeliyim?",
+    a: "“Kalite kaybı olmadan” görsellere dokunmaz. “Dengeli” JPEG görselleri orta-yüksek kaliteyle ve kenar başına en fazla 2000 piksele kadar küçültür. “Maksimum küçültme” daha ileri gider; fotoğraflarda ve taranmış belgelerde kalite farkı görülebilir.",
+  },
+  {
+    q: "Dijital imzalı PDF dosyaları sıkıştırılabilir mi?",
+    a: "Sıkıştırılabilir ancak dosya yeniden yazıldığı için dijital imza geçerliliğini kaybeder. İmzalı belgelerde orijinal dosyayı kullanın.",
+  },
+  {
+    q: "PDF dosyam neden reddedildi?",
+    a: "Araç PDF olmayan, boş, bozuk veya parola korumalı dosyaları reddeder. Korumalı bir PDF'yi sıkıştırmak için önce dosyayı açtığınız uygulamadan parolayı kaldırın. Sınır dosya başına 100 MB'tır.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "tr",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "tr",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Herhangi biri (tarayıcı)",
+  browserRequirements: "JavaScript gerektirir",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="tr">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Ana Sayfa", href: "/" }, { label: h1 }]} breadcrumbLabel="Gezinme yolu">
+    <PdfSikistir client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>PDF nasıl sıkıştırılır?</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Bu araç hakkında</h2>
+      <p>
+        PDF Sıkıştır, dosyayı yeniden yazarak kullanılmayan verileri temizler, içerik bloklarını sıkıştırır ve seçtiğiniz
+        düzeye göre gömülü JPEG görselleri küçültür. E-posta eklerinde, form yüklemelerinde ve boyut sınırı olan
+        başvurularda kullanışlıdır. Sonuç her zaman orijinal boyutla karşılaştırılır; yalnızca gerçekten daha küçük bir
+        dosya indirmeye sunulur.
+      </p>
+
+      <h2>Sınırlamalar</h2>
+      <ul>
+        <li>Boyut azalması PDF içeriğine bağlıdır ve garanti edilmez; bazı dosyalar hiç küçülmez.</li>
+        <li>Yalnızca JPEG görseller küçültülür; diğer biçimlerdeki görsellere dokunulmaz.</li>
+        <li>Dijital imzalar sıkıştırılmış dosyada geçerliliğini kaybeder.</li>
+        <li>Parola korumalı ve bozuk dosyalar reddedilir.</li>
+      </ul>
+
+      <h2>Biçim ve sınırlar</h2>
+      <p>
+        <strong>Kabul edilen:</strong> her seferinde parolasız tek bir .pdf dosyası, en fazla 100 MB. İşlem cihazınızın belleğini
+        kullandığından, çok büyük dosyalar düşük donanımlı telefonlarda yavaş olabilir.
+      </p>
+
+      <h2>Sık sorulan sorular</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>İlgili araçlar</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-birlestir/">PDF Birleştir: birden fazla PDF'yi tek dosyada toplayın</a></li>
+        <li><a href="/pdf-bol/">PDF Böl: PDF sayfalarını ayırın</a></li>
+        <li><a href="/pdf-word-donustur/">PDF'den Word'e Dönüştür: düzenlenebilir belge elde edin</a></li>
+        <li><a href="/jpg-pdf/">JPG'den PDF'ye: görselleri PDF yapın</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (İngilizce): sitedeki tüm araçlar</a></li>
+      </ul>
+
+      <h2>Gizlilik</h2>
+      <p>
+        Dosyanız tamamen tarayıcınızda, cihazınızda işlenir. Dosya Paul Digital'e veya başka bir sunucuya gönderilmez ve
+        sayfayı kapattığınızda hiçbir şey saklanmaz.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -134,6 +134,19 @@ const specs: GroupSpec[] = [
       { name: "Pisah PDF", href: "/pisah-pdf/" },
     ],
   },
+  {
+    id: "turkish",
+    title: "Türkçe PDF Araçları",
+    icon: "pdf",
+    ids: [],
+    extra: [
+      { name: "PDF'den Word'e Dönüştür", href: "/pdf-word-donustur/" },
+      { name: "PDF Sıkıştır", href: "/pdf-sikistir/" },
+      { name: "PDF Birleştir", href: "/pdf-birlestir/" },
+      { name: "PDF Böl", href: "/pdf-bol/" },
+      { name: "JPG'den PDF'ye", href: "/jpg-pdf/" },
+    ],
+  },
 ];
 
 /** Shorter labels where the registry heading is too long for a compact row. */

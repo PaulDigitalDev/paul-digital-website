@@ -6,7 +6,7 @@ const MAX_FILES = 30;
 const MAX_FILE_BYTES = 100 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
 
-type Locale = "pt-BR" | "es" | "id";
+type Locale = "pt-BR" | "es" | "id" | "tr";
 type Forms = readonly [string, string];
 
 interface Strings {
@@ -198,6 +198,53 @@ const TEXT: Record<Locale, Strings> = {
     merged: "Berkas digabungkan",
     download: "Unduh PDF Gabungan",
     reset: "Kosongkan berkas",
+  },
+  tr: {
+    outputName: "pdf-birlestirilmis.pdf",
+    cleared: "Dosya listesi temizlendi. Başlamak için yeni PDF dosyaları seçin.",
+    reading: (name) => `${name} okunuyor…`,
+    limitFiles: (name, max) => `${name}: eklenmedi. Sınır ${max} dosyadır.`,
+    empty: (name) => `${name}: dosya boş.`,
+    tooBig: (name, size, max) => `${name}: boyutu ${size}, dosya başına ${max} sınırını aşıyor.`,
+    totalExceeded: (name, max) => `${name}: toplam boyut ${max} sınırını aşacağı için eklenmedi.`,
+    encrypted: (name) => `${name}: bu PDF parola korumalı. Korumayı kaldırıp tekrar deneyin.`,
+    invalid: (name) => `${name}: bu dosya bir PDF değil.`,
+    unreadable: (name) => `${name}: bu PDF okunamadı. Dosya bozuk olabilir.`,
+    added: ["PDF eklendi", "PDF eklendi"],
+    moved: (name, pos, total) => `${name}, ${total} dosya arasında ${pos}. sıraya taşındı.`,
+    fallbackName: "Dosya",
+    removed: (name) => `${name} kaldırıldı.`,
+    needTwo: "Birleştirmek için en az iki PDF ekleyin.",
+    mergingFile: (done, total) => `${total} dosyadan ${done + 1}. birleştiriliyor…`,
+    finalizing: "PDF tamamlanıyor…",
+    success: "PDF başarıyla oluşturuldu!",
+    failure: "PDF birleştirilemedi. Dosyalarınızı kontrol edin veya daha az dosyayla tekrar deneyin.",
+    selected: ["PDF seçildi", "PDF seçildi"],
+    page: ["sayfa", "sayfa"],
+    emptyTitle: "PDF dosyalarınızı buraya sürükleyip bırakın",
+    emptySub: (max) => `Başlamak için iki veya daha fazla PDF dosyası seçin. Dosya başına en fazla ${max}.`,
+    filledSub: (pages, size) => `${pages} · toplam ${size} · istediğiniz zaman daha fazla ekleyin`,
+    select: "PDF Dosyası Seç",
+    dropAria: "PDF dosyalarını bırakma alanı",
+    privacy: "Dosyalarınız cihazınızda işlenir ve bir sunucuya gönderilmez.",
+    listHeading: (n) => `Seçilen dosyalar (${n})`,
+    orderHint: "Dosyaları istediğiniz sıraya göre düzenleyin.",
+    listAria: "Seçilen dosyalar, birleştirme sırasına göre",
+    up: (name) => `${name} dosyasını yukarı taşı`,
+    down: (name) => `${name} dosyasını aşağı taşı`,
+    removeAria: (name) => `${name} dosyasını kaldır`,
+    remove: "Kaldır",
+    merging: "PDF'ler birleştiriliyor...",
+    submit: "PDF'leri Birleştir",
+    needOneMore: "Birleştirmek için bir PDF daha ekleyin. ",
+    listHint: "Sayfalar listedeki sırayla birleştirilir. Sırayı değiştirmek için okları, bir dosyayı çıkarmak için Kaldır düğmesini kullanın.",
+    result: "Sonuç",
+    format: "Biçim",
+    size: "Dosya boyutu",
+    pages: "Sayfa",
+    merged: "Birleştirilen dosya",
+    download: "PDF'yi İndir",
+    reset: "Dosyaları temizle",
   },
 };
 

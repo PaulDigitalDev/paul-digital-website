@@ -1,0 +1,141 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import JpgPdf from "../../components/tools/JpgPdf";
+
+const path = "/jpg-pdf/";
+const title = "JPG'den PDF'ye Dönüştür | Görselleri PDF Yap";
+const description =
+  "Bir veya birden fazla JPG/JPEG görselini tek bir PDF dosyasına dönüştürün, sırayı düzenleyin ve indirin. Ücretsiz; görselleriniz tarayıcınızda işlenir ve yüklenmez.";
+const h1 = "JPG'den PDF'ye";
+const intro = "JPG fotoğraflarınızı tek bir PDF dosyasına dönüştürün; hızlı ve ücretsiz. Araç yalnızca JPG/JPEG görsellerini kabul eder.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "“JPG Görsellerini Seç” düğmesine tıklayın veya JPG görsellerini sayfadaki alana sürükleyin. Birden fazla görseli birlikte seçebilirsiniz.",
+  "Listeyi kontrol edin: her görsel için önizleme, boyutlar ve dosya boyutu gösterilir. Sırayı değiştirmek için okları, bir görseli çıkarmak için “Kaldır” düğmesini kullanın.",
+  "Sayfa boyutunu seçin (A4 veya görselin kendi boyutu) ve “Dönüştür” düğmesine tıklayın. Her görsel, liste sırasıyla bir sayfa olur.",
+  "jpg-pdf.pdf dosyasını kaydetmek için “PDF'yi İndir” düğmesine tıklayın. Başka görselleri dönüştürmek için “Başka Bir Dosya Seç” seçeneğini kullanın.",
+];
+
+const faqs = [
+  {
+    q: "JPG görsel PDF'ye nasıl dönüştürülür?",
+    a: "JPG görsellerini bu araca ekleyin, okları kullanarak sırayı düzenleyin ve “Dönüştür” düğmesine tıklayın. Her görsel bir sayfa olur ve dosya birkaç saniye içinde indirmeye hazır olur.",
+  },
+  {
+    q: "Birden fazla görsel tek PDF'de nasıl birleştirilir?",
+    a: "Birden fazla JPG görselini birlikte seçin veya sonradan ekleyin. Son PDF hepsini liste sırasıyla, sayfa başına bir görsel olacak şekilde tek dosyada toplar.",
+  },
+  {
+    q: "JPG'den PDF'ye dönüştürme ücretsiz mi?",
+    a: "Evet. Araç ücretsizdir, kayıt veya kurulum gerektirmez.",
+  },
+  {
+    q: "Görsellerim bir sunucuya yükleniyor mu?",
+    a: "Hayır. Dönüştürme tamamen tarayıcınızda, kendi cihazınızda çalışır. Paul Digital'e veya üçüncü taraflara hiçbir şey gönderilmez; sayfayı kapattığınızda hiçbir şey saklanmaz.",
+  },
+  {
+    q: "PNG veya WebP görselleri de dönüştürülebilir mi?",
+    a: "Hayır. Bu araç yalnızca JPG/JPEG görsellerini kabul eder. Diğer biçimler, nedenini açıklayan bir iletiyle reddedilir.",
+  },
+  {
+    q: "Görseller PDF'de bozulur veya esner mi?",
+    a: "Hayır. Görsellerin oranı korunur. A4 seçeneğinde görsel sayfaya sığdırılır ve esnetilmez; “Görsel boyutu” seçeneğinde sayfa görselin kendi boyutunda, kenar boşluksuz olur. Yatay görseller yatay, dikey görseller dikey sayfa oluşturur.",
+  },
+  {
+    q: "Dosya boyutu veya sayısı sınırı var mı?",
+    a: "Tarayıcının kararlı kalması için en fazla 50 görsel ekleyebilirsiniz; görsel başına sınır 50 MB, toplam sınır 300 MB'tır. Çok yüksek çözünürlüklü görseller güvenli biçimde işlenemeyebilir ve bir iletiyle reddedilir.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "tr",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "tr",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Herhangi biri (tarayıcı)",
+  browserRequirements: "JavaScript gerektirir",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="tr">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Ana Sayfa", href: "/" }, { label: h1 }]} breadcrumbLabel="Gezinme yolu">
+    <JpgPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>JPG görseller PDF'ye nasıl dönüştürülür?</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Bu araç hakkında</h2>
+      <p>
+        JPG'den PDF'ye, bir veya birden fazla JPG/JPEG görselini tek bir PDF belgesine dönüştürür. Kimlik fotokopisi, makbuz,
+        taranmış sayfa ve fotoğraf gibi görselleri tek dosyada göndermeniz gerektiğinde kullanışlıdır. Görsellerin oranı
+        korunur ve hiçbiri esnetilmez.
+      </p>
+
+      <h2>Biçim ve sınırlar</h2>
+      <p>
+        <strong>Kabul edilen:</strong> yalnızca JPG/JPEG görselleri. PNG, WebP ve diğer biçimler desteklenmez. En fazla 50
+        görsel ekleyebilirsiniz; görsel başına en fazla 50 MB, toplamda 300 MB. Bozuk, boş veya çok büyük görseller,
+        nedenini açıklayan bir iletiyle reddedilir.
+      </p>
+
+      <h2>Sık sorulan sorular</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>İlgili araçlar</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-birlestir/">PDF Birleştir: birden fazla PDF'yi tek dosyada toplayın</a></li>
+        <li><a href="/pdf-sikistir/">PDF Sıkıştır: PDF dosya boyutunu küçültün</a></li>
+        <li><a href="/pdf-bol/">PDF Böl: PDF sayfalarını ayırın</a></li>
+        <li><a href="/pdf-word-donustur/">PDF'den Word'e Dönüştür: düzenlenebilir belge elde edin</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (İngilizce): sitedeki tüm araçlar</a></li>
+      </ul>
+
+      <h2>Gizlilik</h2>
+      <p>
+        Görselleriniz tamamen tarayıcınızda, cihazınızda işlenir. Görseller Paul Digital'e veya başka bir sunucuya
+        gönderilmez ve sayfayı kapattığınızda hiçbir şey saklanmaz.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

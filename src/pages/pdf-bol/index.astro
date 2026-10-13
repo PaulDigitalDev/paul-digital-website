@@ -1,0 +1,150 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PdfBol from "../../components/tools/PdfBol";
+
+const path = "/pdf-bol/";
+const title = "PDF Böl | PDF Sayfalarını Ayır";
+const description =
+  "PDF'den istediğiniz sayfaları ayırın: sayfa seçin veya 1-3, 5, 8-10 gibi aralıklar yazın. Ücretsiz; dosyanız tarayıcınızda işlenir ve sunucuya yüklenmez.";
+const h1 = "PDF Böl";
+const intro =
+  "PDF dosyanızdan istediğiniz sayfaları ayırın: sayfa seçin veya aralık yazın; ücretsiz ve tarayıcınızda.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "“PDF Dosyası Seç” düğmesine tıklayın veya dosyanızı sayfadaki alana sürükleyin. Toplam sayfa sayısı gösterilir.",
+  "Bölme yöntemini seçin ve sayfaları belirleyin: numaralı düğmelere tıklayın veya “1-3, 5, 8-10” gibi bir aralık yazın. Numaralandırma 1. sayfadan başlar.",
+  "“Böl” düğmesine tıklayın. Araç, seçtiğiniz sayfaları içeren yeni PDF dosyalarını oluşturur.",
+  "“PDF'yi İndir” düğmesiyle kaydedin. Birden fazla dosya oluştuysa tümünü ZIP olarak veya tek tek indirebilirsiniz.",
+];
+
+const faqs = [
+  {
+    q: "PDF'den belirli sayfalar nasıl ayrılır?",
+    a: "PDF'yi seçin, numaralı sayfa düğmelerine tıklayın veya sayfa aralığını yazın (örneğin 1-3, 5, 8-10) ve “Böl” düğmesine tıklayın. Seçtiğiniz sayfalarla yeni bir PDF oluşturulur.",
+  },
+  {
+    q: "Sayfa numaralandırması nereden başlar?",
+    a: "İlk sayfa 1. sayfadır. Belgede olmayan bir numara (örneğin 12 sayfalık bir belgede 15) yazarsanız araç bunu belirtir.",
+  },
+  {
+    q: "Hangi bölme yöntemleri var?",
+    a: "Üç yöntem vardır: her aralık için ayrı bir PDF, seçilen tüm sayfalar tek bir PDF'de ve her sayfa ayrı bir PDF. Birden fazla dosya oluştuğunda tümünü tek bir ZIP dosyası olarak indirebilirsiniz.",
+  },
+  {
+    q: "Her sayfayı ayrı bir PDF yapabilir miyim?",
+    a: "Evet, “Her sayfa ayrı bir PDF olsun” seçeneğiyle. Bu seçenek en fazla 200 sayfalık belgelerde kullanılabilir; daha uzun belgelerde sayfa aralığı seçmeniz gerekir.",
+  },
+  {
+    q: "Orijinal dosyam değişir mi?",
+    a: "Hayır. Orijinal dosyanıza dokunulmaz; seçilen sayfalar yeni dosyalara kopyalanır.",
+  },
+  {
+    q: "PDF dosyam bir sunucuya yükleniyor mu?",
+    a: "Hayır. Bölme tamamen tarayıcınızda, kendi cihazınızda çalışır. Paul Digital'e veya üçüncü taraflara hiçbir şey gönderilmez; sayfayı kapattığınızda hiçbir şey saklanmaz.",
+  },
+  {
+    q: "PDF dosyam neden reddedildi?",
+    a: "Araç PDF olmayan, boş, bozuk veya parola korumalı dosyaları reddeder. Korumalı bir PDF'yi bölmek için önce dosyayı açtığınız uygulamadan parolayı kaldırın. Sınırlar dosya başına 100 MB ve 1000 sayfadır.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "tr",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "tr",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Herhangi biri (tarayıcı)",
+  browserRequirements: "JavaScript gerektirir",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="tr">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Ana Sayfa", href: "/" }, { label: h1 }]} breadcrumbLabel="Gezinme yolu">
+    <PdfBol client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>PDF nasıl bölünür?</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Bu araç hakkında</h2>
+      <p>
+        PDF Böl, bir PDF dosyasından yalnızca ihtiyacınız olan sayfaları ayırmanızı sağlar. Sözleşmenin tek bir bölümünü,
+        raporun belirli sayfalarını veya taranmış bir belgenin yalnızca ilgili kısmını göndermek istediğinizde kullanışlıdır.
+        Sayfalar yeniden sıkıştırılmadan olduğu gibi kopyalanır.
+      </p>
+
+      <h2>Sayfa aralığı nasıl yazılır?</h2>
+      <ul>
+        <li><strong>Tek sayfa:</strong> <code>5</code></li>
+        <li><strong>Aralık:</strong> <code>1-3</code> (1, 2 ve 3. sayfalar)</li>
+        <li><strong>Birleşik:</strong> <code>1-3, 5, 8-10</code></li>
+        <li>Numaralandırma 1. sayfadan başlar. Ters aralıklar (<code>5-3</code>), tekrar eden sayfalar ve belgede olmayan numaralar hata verir.</li>
+      </ul>
+
+      <h2>Biçim ve sınırlar</h2>
+      <p>
+        <strong>Kabul edilen:</strong> parolasız tek bir .pdf dosyası, en fazla 100 MB ve 1000 sayfa. Tek seferde en fazla
+        200 dosya oluşturulabilir. Parola korumalı, bozuk veya farklı biçimdeki dosyalar, nedenini açıklayan bir iletiyle
+        reddedilir. Yer imleri ve etkileşimli formlar yeni dosyalarda korunmayabilir.
+      </p>
+
+      <h2>Sık sorulan sorular</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>İlgili araçlar</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-birlestir/">PDF Birleştir: birden fazla PDF'yi tek dosyada toplayın</a></li>
+        <li><a href="/pdf-sikistir/">PDF Sıkıştır: PDF dosya boyutunu küçültün</a></li>
+        <li><a href="/pdf-word-donustur/">PDF'den Word'e Dönüştür: düzenlenebilir belge elde edin</a></li>
+        <li><a href="/jpg-pdf/">JPG'den PDF'ye: görselleri PDF yapın</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (İngilizce): sitedeki tüm araçlar</a></li>
+      </ul>
+
+      <h2>Gizlilik</h2>
+      <p>
+        Dosyanız tamamen tarayıcınızda, cihazınızda işlenir. Dosya Paul Digital'e veya başka bir sunucuya gönderilmez ve
+        sayfayı kapattığınızda hiçbir şey saklanmaz.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

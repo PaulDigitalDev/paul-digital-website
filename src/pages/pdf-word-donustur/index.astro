@@ -1,0 +1,152 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PdfWordDonustur from "../../components/tools/PdfWordDonustur";
+
+const path = "/pdf-word-donustur/";
+const title = "PDF'den Word'e Dönüştür | Paul Digital";
+const description =
+  "Metin içeren PDF dosyalarını düzenlenebilir Word (DOCX) belgesine dönüştürün. Ücretsiz, tarayıcıda çalışır ve dosyanız hiçbir sunucuya yüklenmez. OCR yoktur.";
+const h1 = "PDF'den Word'e Dönüştür";
+const intro =
+  "Metin içeren PDF dosyalarını düzenlenebilir Word (.docx) belgesine dönüştürün; ücretsiz ve tarayıcınızdan çıkmadan.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "“PDF Dosyası Seç” düğmesine tıklayın veya dosyanızı sayfadaki alana sürükleyin.",
+  "Metin sayfa sayfa çıkarılırken bekleyin. İlerleme ekranda gösterilir.",
+  "İşlem bitince özeti kontrol edin ve “Word Dosyasını İndir” düğmesine tıklayın.",
+  "Dosyayı Word'de açıp sonucu kontrol edin; özellikle PDF tablo, sütun veya görsel içeriyorsa.",
+];
+
+const faqs = [
+  {
+    q: "PDF dosyası Word'e nasıl dönüştürülür?",
+    a: "Bu araçta PDF dosyanızı seçin ve dönüştürmenin bitmesini bekleyin. Metin çıkarılır, başlıklar ve paragraflar yeniden oluşturulur; ardından Word, LibreOffice veya Google Dokümanlar'da düzenleyebileceğiniz bir .docx dosyası indirebilirsiniz.",
+  },
+  {
+    q: "PDF'den Word'e dönüştürme ücretsiz mi?",
+    a: "Evet. Araç ücretsizdir, kayıt gerektirmez ve kurulum istemez.",
+  },
+  {
+    q: "PDF dosyam bir sunucuya yükleniyor mu?",
+    a: "Hayır. Dönüştürme tamamen tarayıcınızda, kendi cihazınızda gerçekleşir. Paul Digital'e veya üçüncü taraflara hiçbir şey gönderilmez; sayfayı kapattığınızda hiçbir şey saklanmaz.",
+  },
+  {
+    q: "Taranmış PDF dosyaları için çalışır mı?",
+    a: "Hayır, bu sürümde çalışmaz. Taranmış PDF dosyaları seçilebilir metin değil, sayfa görüntüleri içerir ve OCR (karakter tanıma) gerektirir; bu araçta OCR yoktur. Araç bu tür dosyaları algılar ve sizi bilgilendirir.",
+  },
+  {
+    q: "Dönüştürmede neler korunur, neler kaybolur?",
+    a: "Korunanlar: metin, paragraf ayrımları, başlıklar (punto ve kalın yazıdan tahmin edilir) ile güvenilir biçimde algılanabildiğinde kalın ve italik yazı. Tablolar, sütunlar, görseller, üst ve alt bilgiler, renkler, özgün yazı tipleri ve birebir sayfa düzeni korunmayabilir. Mükemmel bir dönüştürme sözü vermiyoruz.",
+  },
+  {
+    q: "PDF dosyam neden reddedildi?",
+    a: "Araç PDF olmayan, boş, bozuk, parola korumalı veya seçilebilir metni olmayan dosyaları reddeder. Korumalı bir PDF'yi dönüştürmek için önce dosyayı açtığınız uygulamadan parolayı kaldırın.",
+  },
+  {
+    q: "Dosya boyutu sınırı var mı?",
+    a: "Tarayıcının kararlı kalması için sınır dosya başına 50 MB ve 500 sayfadır. Her şey cihazınızın belleğinde işlendiğinden, büyük dosyalar düşük donanımlı telefonlarda yavaş olabilir.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "tr",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "tr",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Herhangi biri (tarayıcı)",
+  browserRequirements: "JavaScript gerektirir",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="tr">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Ana Sayfa", href: "/" }, { label: h1 }]} breadcrumbLabel="Gezinme yolu">
+    <PdfWordDonustur client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>PDF Word'e nasıl dönüştürülür?</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Bu araç hakkında</h2>
+      <p>
+        PDF'den Word'e Dönüştür, PDF içindeki metni çıkarır ve düzenlenebilir bir .docx belgesi olarak yeniden oluşturur.
+        Satırları paragraflara birleştirmek ve başlıkları tanımak için her metin parçasının sayfadaki konumunu kullanır;
+        güvenle algılanabildiğinde kalın ve italik yazıyı korur. Sözleşme, rapor, makale, özgeçmiş ve ödev gibi
+        belgelerdeki metni yeniden kullanmak için uygundur. Türkçe karakterler (ç, ğ, ı, İ, ö, ş, ü) PDF'de
+        seçilebilir metin olarak bulunuyorsa korunur.
+      </p>
+
+      <h2>Bu sürümün sınırlamaları</h2>
+      <ul>
+        <li><strong>OCR yok:</strong> yalnızca seçilebilir metni olan PDF dosyaları için çalışır. Taranmış PDF dosyaları algılanır ve bir uyarıyla reddedilir.</li>
+        <li><strong>Basitleştirilmiş düzen:</strong> tablolar, sütunlar, görseller, grafikler, üst ve alt bilgiler ile birebir sayfa düzeni korunmayabilir. Sonuç, başlıklar ve paragraflardan oluşan akıcı bir metindir.</li>
+        <li><strong>Yazı tipleri ve renkler:</strong> belge Word'ün varsayılan yazı tipini kullanır. Yalnızca kalın ve italik yazı korunur.</li>
+        <li><strong>Yazı sistemleri:</strong> özel karakter tabloları gerektiren yazı sistemleri (örneğin Çince, Japonca ve Korece) doğru çıkarılamayabilir.</li>
+        <li>Önemli belgelerde kullanmadan önce sonucu mutlaka kontrol edin.</li>
+      </ul>
+
+      <h2>Biçim ve sınırlar</h2>
+      <p>
+        <strong>Kabul edilen:</strong> her dönüştürmede parolasız tek bir .pdf dosyası, en fazla 50 MB ve 500 sayfa. Bozuk,
+        parola korumalı veya farklı biçimdeki dosyalar, nedenini açıklayan bir iletiyle reddedilir.
+      </p>
+
+      <h2>Sık sorulan sorular</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>İlgili araçlar</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-sikistir/">PDF Sıkıştır: PDF dosya boyutunu küçültün</a></li>
+        <li><a href="/pdf-birlestir/">PDF Birleştir: birden fazla PDF'yi tek dosyada toplayın</a></li>
+        <li><a href="/pdf-bol/">PDF Böl: PDF sayfalarını ayırın</a></li>
+        <li><a href="/jpg-pdf/">JPG'den PDF'ye: görselleri PDF yapın</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (İngilizce): sitedeki tüm araçlar</a></li>
+      </ul>
+
+      <h2>Gizlilik</h2>
+      <p>
+        Dosyanız tamamen tarayıcınızda, cihazınızda işlenir. Dosya Paul Digital'e veya başka bir sunucuya gönderilmez ve
+        sayfayı kapattığınızda hiçbir şey saklanmaz.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
