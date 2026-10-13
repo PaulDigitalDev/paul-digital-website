@@ -171,6 +171,19 @@ const specs: GroupSpec[] = [
     ],
   },
   {
+    id: "russian",
+    title: "PDF-инструменты на русском",
+    icon: "pdf",
+    ids: [],
+    extra: [
+      { name: "PDF в Word", href: "/pdf-v-word/" },
+      { name: "Сжать PDF", href: "/szhat-pdf/" },
+      { name: "Объединить PDF", href: "/obedinit-pdf/" },
+      { name: "Word в PDF", href: "/word-v-pdf/" },
+      { name: "Разделить PDF", href: "/razdelit-pdf/" },
+    ],
+  },
+  {
     id: "turkish",
     title: "Türkçe PDF Araçları",
     icon: "pdf",

@@ -134,3 +134,23 @@ test("makes no network requests while converting", async () => {
   }
   assert.deepEqual(calls, []);
 });
+
+test("draws Cyrillic text with supplied Unicode fonts instead of replacing it", async () => {
+  const { readFileSync } = await import("node:fs");
+  const dir = "node_modules/pdfjs-dist/standard_fonts/";
+  const loadUnicodeFonts = async () =>
+    ["Regular", "Bold", "Italic", "BoldItalic"].map((n) => new Uint8Array(readFileSync(`${dir}LiberationSans-${n}.ttf`)));
+  const file = docx(para(run("Привет, мир! Договор №5 ") + run("жирный", "<w:b/>")));
+  const out = await convertDocxToPdf(file, "dokument.docx", undefined, { loadUnicodeFonts });
+  assert.equal(out.replacedChars, 0);
+  const [text] = await textOf(out.bytes);
+  for (const word of ["Привет, мир!", "Договор", "жирный"]) assert.ok(text.includes(word), `missing "${word}" in: ${text}`);
+
+  // Latin-only documents do not load the fonts at all.
+  let loaded = false;
+  await convertDocxToPdf(docx(para(run("Hello"))), "a.docx", undefined, { loadUnicodeFonts: async () => ((loaded = true), loadUnicodeFonts()) });
+  assert.equal(loaded, false);
+  // Without fonts, Cyrillic is still replaced (and reported).
+  const plain = await convertDocxToPdf(file, "dokument.docx");
+  assert.ok(plain.replacedChars > 0);
+});

@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import PdfVWord from "../../components/tools/PdfVWord";
+
+const path = "/pdf-v-word/";
+const title = "PDF в Word — Конвертировать PDF в DOCX бесплатно | Paul Digital";
+const description =
+  "Преобразуйте PDF с текстом в редактируемый документ Word (DOCX) бесплатно: файл обрабатывается прямо в браузере и не загружается на сервер. Сканы без OCR не поддерживаются.";
+const h1 = "Конвертировать PDF в Word";
+const intro =
+  "Превратите PDF с текстом в документ Word (DOCX): бесплатно и прямо в браузере, без загрузки файла на сервер.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Нажмите «Выберите PDF-файл» или перетащите файл в отмеченную область. Преобразование начнётся сразу после выбора.",
+  "Дождитесь окончания обработки: вы увидите, на каком этапе находится преобразование.",
+  "Когда появится сообщение «Преобразование завершено», нажмите «Скачать файл Word» и сохраните DOCX-файл.",
+  "Откройте документ в Word и проверьте результат: вёрстка, таблицы и изображения могли измениться.",
+];
+
+const faqs = [
+  {
+    q: "Как преобразовать PDF в Word?",
+    a: "Выберите PDF-файл с текстом, дождитесь завершения преобразования и нажмите «Скачать файл Word». Инструмент извлекает текст и создаёт новый документ DOCX.",
+  },
+  {
+    q: "Это бесплатно?",
+    a: "Да. Инструмент бесплатный, не требует регистрации и установки программ.",
+  },
+  {
+    q: "Загружается ли мой файл на сервер?",
+    a: "Нет. Преобразование выполняется в вашем браузере, на вашем устройстве. Ничего не отправляется в Paul Digital или третьим лицам, а после закрытия страницы ничего не сохраняется.",
+  },
+  {
+    q: "Сохранится ли исходное оформление?",
+    a: "Не полностью. Инструмент извлекает текст и собирает упрощённый документ Word: абзацы и заголовки сохраняются, но шрифты, колонки, таблицы, изображения и точная вёрстка могут измениться. Обязательно проверьте результат.",
+  },
+  {
+    q: "Можно ли преобразовать отсканированный PDF?",
+    a: "Нет. Сканы — это изображения страниц, а распознавание текста (OCR) в этом инструменте не поддерживается. Если в PDF нет выделяемого текста, вы увидите соответствующее сообщение, а пустой документ создан не будет.",
+  },
+  {
+    q: "Почему мой PDF не принимается?",
+    a: "Инструмент отклоняет файлы, которые не являются PDF, пустые или повреждённые файлы, PDF с защитой паролем, а также документы больше 500 страниц или 50 МБ. Чтобы преобразовать защищённый PDF, сначала снимите пароль в программе, в которой вы открываете файл.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "ru",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Главная", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "ru",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Любая (в браузере)",
+  browserRequirements: "Требуется JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="ru">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Главная", href: "/" }, { label: h1 }]} breadcrumbLabel="Навигационная цепочка">
+    <PdfVWord client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Как преобразовать PDF в Word</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Об этом инструменте</h2>
+      <p>
+        «PDF в Word» читает текст из PDF-файла и создаёт на его основе новый документ DOCX, который можно редактировать в Word и других редакторах. Он подходит для PDF, созданных из текстовых документов: писем, договоров, статей и отчётов.
+      </p>
+      <p>
+        Это не точная копия оформления, а упрощённая реконструкция: инструмент определяет абзацы и заголовки по извлечённому тексту.
+      </p>
+
+      <h2>Ограничения инструмента</h2>
+      <ul>
+        <li><strong>Сканы:</strong> распознавание текста (OCR) не поддерживается. PDF, состоящие из изображений страниц, преобразовать нельзя; страницы без текстового слоя в документ не попадают.</li>
+        <li><strong>Таблицы, колонки и изображения:</strong> они не обязательно сохраняются — после преобразования их может потребоваться восстановить вручную.</li>
+        <li><strong>Шрифты и вёрстка:</strong> исходные шрифты, отступы и разбивка на страницы не воспроизводятся.</li>
+        <li><strong>Защищённые файлы:</strong> PDF с паролем отклоняются; инструмент не снимает защиту.</li>
+      </ul>
+
+      <h2>Форматы и лимиты</h2>
+      <p>
+        <strong>Поддерживается:</strong> файлы .pdf без пароля с выделяемым текстом, не более 50 МБ и 500 страниц. Файлы с паролем, повреждённые, пустые и сканы отклоняются с пояснением причины.
+      </p>
+
+      <h2>Часто задаваемые вопросы</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Другие инструменты</h2>
+      <ul class="ic-links">
+        <li><a href="/word-v-pdf/">Word в PDF: преобразуйте документ .docx в PDF</a></li>
+        <li><a href="/szhat-pdf/">Сжать PDF: уменьшите размер PDF-файла</a></li>
+        <li><a href="/obedinit-pdf/">Объединить PDF: соедините несколько PDF в один файл</a></li>
+        <li><a href="/razdelit-pdf/">Разделить PDF: извлеките нужные страницы</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (на английском): все инструменты сайта</a></li>
+      </ul>
+
+      <h2>Конфиденциальность</h2>
+      <p>
+        Ваши файлы обрабатываются целиком в браузере, на вашем устройстве. Они не отправляются в Paul Digital и на какие-либо другие серверы, а после закрытия страницы ничего не сохраняется.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

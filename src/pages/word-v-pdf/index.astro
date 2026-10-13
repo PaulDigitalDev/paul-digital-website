@@ -1,0 +1,148 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import WordVPdf from "../../components/tools/WordVPdf";
+
+const path = "/word-v-pdf/";
+const title = "Word в PDF — Конвертировать DOCX в PDF бесплатно | Paul Digital";
+const description =
+  "Преобразуйте документ Word (.docx) в PDF бесплатно: текст на русском и латинице, списки, таблицы и изображения. Файл обрабатывается в браузере и не загружается на сервер.";
+const h1 = "Конвертировать Word в PDF";
+const intro =
+  "Превратите документ Word (.docx) в PDF: бесплатно и прямо в браузере, без загрузки файла на сервер.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Нажмите «Выберите файл Word» или перетащите файл .docx в отмеченную область. Преобразование начнётся сразу после выбора.",
+  "Дождитесь окончания обработки: вы увидите, на каком этапе находится преобразование.",
+  "Когда появится сообщение «Преобразование завершено», нажмите «Скачать PDF».",
+  "Откройте PDF и проверьте результат: переносы строк и страниц могут отличаться от Word.",
+];
+
+const faqs = [
+  {
+    q: "Как преобразовать Word в PDF?",
+    a: "Выберите файл .docx, дождитесь завершения преобразования и нажмите «Скачать PDF». Инструмент разбирает содержимое документа и заново вёрстает его в новый PDF.",
+  },
+  {
+    q: "Это бесплатно?",
+    a: "Да. Инструмент бесплатный, не требует регистрации и установки программ.",
+  },
+  {
+    q: "Загружается ли мой документ на сервер?",
+    a: "Нет. Преобразование выполняется в вашем браузере, на вашем устройстве. Ничего не отправляется в Paul Digital или третьим лицам, а после закрытия страницы ничего не сохраняется.",
+  },
+  {
+    q: "Поддерживается ли русский текст?",
+    a: "Да. Если в документе есть кириллица, при создании PDF используется шрифт Liberation Sans. Он загружается только при необходимости, а исходные шрифты документа не сохраняются. Символы, которых нет в этом шрифте (например, эмодзи), заменяются знаком «?», о чём вы получите уведомление.",
+  },
+  {
+    q: "Совпадёт ли PDF с документом в Word?",
+    a: "Не полностью. Сохраняются текст, заголовки, жирный шрифт и курсив, списки, таблицы, разрывы страниц и изображения в потоке текста. Но инструмент не воспроизводит движок Word: переносы строк и страниц, шрифты и сложная вёрстка могут отличаться.",
+  },
+  {
+    q: "Что не сохраняется?",
+    a: "Колонтитулы, сноски, текстовые надписи, фигуры, диаграммы, формулы и встроенные объекты не воспроизводятся. Если в документе есть такие элементы, инструмент сообщит об этом после преобразования.",
+  },
+  {
+    q: "Почему мой файл не принимается?",
+    a: "Инструмент принимает только файлы .docx. Старые файлы .doc, пустые, повреждённые и защищённые паролем документы отклоняются, а также документы больше 25 МБ или 300 страниц. Откройте файл в Word, снимите пароль и сохраните как .docx.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "ru",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Главная", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "ru",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Любая (в браузере)",
+  browserRequirements: "Требуется JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="ru">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Главная", href: "/" }, { label: h1 }]} breadcrumbLabel="Навигационная цепочка">
+    <WordVPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Как преобразовать Word в PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Об этом инструменте</h2>
+      <p>
+        «Word в PDF» читает файл .docx и собирает из него новый PDF: абзацы и заголовки, жирный шрифт и курсив, списки, таблицы, разрывы страниц и изображения в потоке текста. Документ не отправляется на сервер.
+      </p>
+      <p>
+        Это упрощённая вёрстка, а не копия Word: она не воспроизводит точное положение строк и страниц исходного документа.
+      </p>
+
+      <h2>Ограничения инструмента</h2>
+      <ul>
+        <li><strong>Шрифты:</strong> шрифты документа не встраиваются. Используются стандартные шрифты PDF, а для текста с кириллицей — Liberation Sans, поэтому внешний вид и переносы строк могут отличаться.</li>
+        <li><strong>Не воспроизводятся:</strong> колонтитулы, сноски, текстовые надписи, фигуры, диаграммы, формулы, встроенные объекты и колонки.</li>
+        <li><strong>Изображения:</strong> изображения со свободным положением вставляются в поток текста; изображения неподдерживаемых форматов пропускаются, о чём вы получите уведомление.</li>
+        <li><strong>Защищённые и старые файлы:</strong> файлы .doc и документы с паролем не поддерживаются.</li>
+      </ul>
+
+      <h2>Форматы и лимиты</h2>
+      <p>
+        <strong>Поддерживается:</strong> файлы .docx без пароля, не более 25 МБ и 300 страниц. Остальные файлы отклоняются с пояснением причины.
+      </p>
+
+      <h2>Часто задаваемые вопросы</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Другие инструменты</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-v-word/">PDF в Word: преобразуйте PDF с текстом в документ DOCX</a></li>
+        <li><a href="/obedinit-pdf/">Объединить PDF: соедините несколько PDF в один файл</a></li>
+        <li><a href="/szhat-pdf/">Сжать PDF: уменьшите размер PDF-файла</a></li>
+        <li><a href="/razdelit-pdf/">Разделить PDF: извлеките нужные страницы</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (на английском): все инструменты сайта</a></li>
+      </ul>
+
+      <h2>Конфиденциальность</h2>
+      <p>
+        Ваши файлы обрабатываются целиком в браузере, на вашем устройстве. Они не отправляются в Paul Digital и на какие-либо другие серверы, а после закрытия страницы ничего не сохраняется.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

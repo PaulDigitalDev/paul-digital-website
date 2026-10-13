@@ -403,10 +403,16 @@ async function embedImage(doc: PDFDocument, bytes: Uint8Array): Promise<PDFImage
   }
 }
 
+/** Optional Unicode (Latin + Cyrillic) fonts: regular, bold, italic, bold italic. Used only when the text needs them. */
+export interface DocxToPdfOptions {
+  loadUnicodeFonts?: () => Promise<[Uint8Array, Uint8Array, Uint8Array, Uint8Array]>;
+}
+
 export async function convertDocxToPdf(
   bytes: Uint8Array,
   fileName: string,
   onProgress?: (progress: DocxProgress) => void,
+  options: DocxToPdfOptions = {},
 ): Promise<DocxToPdfResult> {
   if (bytes.length === 0) throw new DocxError("invalid");
   onProgress?.({ stage: "reading" });
@@ -433,13 +439,39 @@ export async function convertDocxToPdf(
     }
   }
   const fonts = new Map<string, PDFFont>();
+  const fallbackFont = await doc.embedFont(lib.StandardFonts.Helvetica);
+  let charset = new Set(fallbackFont.getCharacterSet());
+
+  // Standard PDF fonts cannot draw Cyrillic. When the text needs more than they offer and the caller
+  // supplied Unicode fonts, draw everything with those instead of replacing characters with "?".
+  let unicodeFonts: PDFFont[] | null = null;
+  if (options.loadUnicodeFonts) {
+    let needsUnicode = false;
+    for (const para of walkParas(model.blocks)) {
+      for (const inline of para.inlines) {
+        if (inline.t !== "text") continue;
+        for (const ch of inline.text) {
+          const cp = ch.codePointAt(0)!;
+          if (cp > 127 && !charset.has(cp) && REPLACEMENTS[cp] === undefined) needsUnicode = true;
+        }
+      }
+    }
+    if (needsUnicode) {
+      const [{ default: fontkit }, data] = await Promise.all([import("@pdf-lib/fontkit"), options.loadUnicodeFonts()]);
+      doc.registerFontkit(fontkit);
+      unicodeFonts = await Promise.all(data.map((font) => doc.embedFont(font, { subset: true })));
+      charset = new Set(unicodeFonts[0].getCharacterSet());
+    }
+  }
   for (const [key, props] of wanted) {
+    if (unicodeFonts) {
+      fonts.set(key, unicodeFonts[(props.bold ? 1 : 0) + (props.italic ? 2 : 0)]);
+      continue;
+    }
     // STANDARD order is regular, bold, italic, bold-italic.
     const name = STANDARD[familyOf(props.font)][(props.bold ? 1 : 0) + (props.italic ? 2 : 0)] as keyof typeof lib.StandardFonts;
     fonts.set(key, await doc.embedFont(lib.StandardFonts[name]));
   }
-  const fallbackFont = await doc.embedFont(lib.StandardFonts.Helvetica);
-  const charset = new Set(fallbackFont.getCharacterSet());
 
   const stats = { images: 0, skippedImages: 0, replacedChars: 0 };
   const images = new Map<string, PDFImage | null>();

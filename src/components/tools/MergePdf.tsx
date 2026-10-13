@@ -6,8 +6,9 @@ const MAX_FILES = 30;
 const MAX_FILE_BYTES = 100 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
 
-type Locale = "pt-BR" | "es" | "id" | "tr" | "fr" | "de" | "it";
-type Forms = readonly [string, string];
+type Locale = "pt-BR" | "es" | "id" | "tr" | "fr" | "de" | "it" | "ru";
+/** Two forms (singular, plural) or three Russian forms (1, 2–4, 5+). */
+type Forms = readonly [string, string] | readonly [string, string, string];
 
 interface Strings {
   outputName: string;
@@ -387,6 +388,53 @@ const TEXT: Record<Locale, Strings> = {
     download: "Scarica il PDF",
     reset: "Svuota l'elenco",
   },
+  ru: {
+    outputName: "obedinyonny-pdf.pdf",
+    cleared: "Список очищен. Выберите новые PDF-файлы, чтобы начать заново.",
+    reading: (name) => `Чтение файла ${name}…`,
+    limitFiles: (name, max) => `${name}: не добавлен. Допустимо не более ${max} файлов.`,
+    empty: (name) => `${name}: файл пустой.`,
+    tooBig: (name, size, max) => `${name}: ${size} — превышает лимит ${max} на файл.`,
+    totalExceeded: (name, max) => `${name}: не добавлен, так как общий размер превысил бы ${max}.`,
+    encrypted: (name) => `${name}: этот PDF защищён паролем. Снимите защиту и повторите попытку.`,
+    invalid: (name) => `${name}: это не PDF-файл. Выберите корректный файл.`,
+    unreadable: (name) => `${name}: не удалось прочитать этот PDF. Возможно, файл повреждён.`,
+    added: ["PDF-файл добавлен", "PDF-файла добавлено", "PDF-файлов добавлено"],
+    moved: (name, pos, total) => `${name}: позиция ${pos} из ${total}.`,
+    fallbackName: "Файл",
+    removed: (name) => `${name} удалён из списка.`,
+    needTwo: "Добавьте не менее двух PDF-файлов для объединения.",
+    mergingFile: (done, total) => `Объединение файла ${done + 1} из ${total}…`,
+    finalizing: "Завершение создания PDF…",
+    success: "Объединённый PDF готов!",
+    failure: "Не удалось объединить PDF-файлы. Проверьте файлы или попробуйте объединить меньше файлов.",
+    selected: ["PDF-файл выбран", "PDF-файла выбрано", "PDF-файлов выбрано"],
+    page: ["страница", "страницы", "страниц"],
+    emptyTitle: "Перетащите сюда PDF-файлы",
+    emptySub: (max) => `Выберите не менее двух PDF-файлов. До ${max} на файл.`,
+    filledSub: (pages, size) => `${pages} · всего ${size} · можно добавить ещё файлы`,
+    select: "Добавить файлы",
+    dropAria: "Область для перетаскивания PDF-файлов",
+    privacy: "Файлы обрабатываются на вашем устройстве и не отправляются на сервер.",
+    listHeading: (n) => `Выбранные файлы (${n})`,
+    orderHint: "Расположите файлы в нужном порядке.",
+    listAria: "Выбранные файлы в порядке объединения",
+    up: (name) => `Переместить ${name} выше`,
+    down: (name) => `Переместить ${name} ниже`,
+    removeAria: (name) => `Удалить ${name}`,
+    remove: "Удалить файл",
+    merging: "Объединение PDF-файлов…",
+    submit: "Объединить PDF-файлы",
+    needOneMore: "Добавьте ещё один PDF-файл, чтобы объединить. ",
+    listHint: "Страницы объединяются в порядке списка. Стрелками меняйте порядок, а кнопкой «Удалить файл» убирайте файл из списка.",
+    result: "Результат",
+    format: "Формат",
+    size: "Размер",
+    pages: "Страницы",
+    merged: "Объединено файлов",
+    download: "Скачать PDF",
+    reset: "Очистить список",
+  },
 };
 
 interface Item {
@@ -402,7 +450,14 @@ interface Result {
   files: number;
 }
 
-const plural = (n: number, [one, many]: Forms) => `${n} ${n === 1 ? one : many}`;
+const plural = (n: number, forms: Forms) => {
+  if (forms.length === 3) {
+    const last = n % 10;
+    const teen = n % 100 >= 11 && n % 100 <= 14;
+    return `${n} ${last === 1 && !teen ? forms[0] : last >= 2 && last <= 4 && !teen ? forms[1] : forms[2]}`;
+  }
+  return `${n} ${n === 1 ? forms[0] : forms[1]}`;
+};
 
 export default function MergePdf({ locale = "pt-BR" }: { locale?: Locale }) {
   const t = TEXT[locale];
