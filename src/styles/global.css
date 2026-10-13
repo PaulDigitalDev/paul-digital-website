@@ -2958,6 +2958,35 @@ main {
   letter-spacing: -0.015em;
 }
 
+.hd-group-head h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.hd-art {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #eaf3ff;
+}
+
+.hd-art.hd-orange {
+  background: #fff1e6;
+}
+
+.hd-art.hd-green {
+  background: #e6f8ee;
+}
+
+.hd-art svg {
+  width: 30px;
+  height: 30px;
+}
+
 .hd-group-head h3 a {
   color: inherit;
   text-decoration: none;
@@ -3029,6 +3058,17 @@ main {
 }
 
 @media (max-width: 560px) {
+  .hd-art {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .hd-art svg {
+    width: 26px;
+    height: 26px;
+  }
+
   .hd-grid {
     grid-template-columns: 1fr;
   }

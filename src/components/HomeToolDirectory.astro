@@ -25,6 +25,15 @@ const colors: Record<ToolCategoryId, string> = {
   calculators: "blue",
   media: "orange",
 };
+
+// Small two-tone document illustrations shown beside each category heading (viewBox 0 0 32 32).
+const art: Partial<Record<ToolCategoryId, string>> = {
+  image:
+    '<rect x="4" y="6" width="24" height="20" rx="4" fill="#fff" stroke="#0B1F5E" stroke-width="2"/><circle cx="11" cy="13" r="2.5" fill="#FF6B00"/><path d="M6 24l7-7 4 4 3-3 6 6z" fill="#087FEA"/>',
+  pdf: '<path d="M8 3h11l6 6v18a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#fff" stroke="#0B1F5E" stroke-width="2" stroke-linejoin="round"/><path d="M19 3v6h6" fill="none" stroke="#0B1F5E" stroke-width="2" stroke-linejoin="round"/><rect x="3" y="15" width="18" height="8" rx="2" fill="#FF6B00"/><path d="M7 19h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>',
+  document:
+    '<path d="M8 3h11l6 6v18a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#fff" stroke="#0B1F5E" stroke-width="2" stroke-linejoin="round"/><path d="M19 3v6h6" fill="none" stroke="#0B1F5E" stroke-width="2" stroke-linejoin="round"/><path d="M10 14h12M10 18h12M10 22h7" stroke="#16B364" stroke-width="2.4" stroke-linecap="round"/>',
+};
 ---
 
 <section class="section home-section tools-section" aria-labelledby="web-tools">
@@ -61,7 +70,14 @@ const colors: Record<ToolCategoryId, string> = {
       groups.map(({ category, tools }) => (
         <section class="hd-group" id={`home-cat-${category.id}`} aria-labelledby={`home-h-${category.id}`}>
           <div class="hd-group-head">
-            <h3 id={`home-h-${category.id}`}>{category.route ? <a href={category.route}>{category.name}</a> : category.name}</h3>
+            <h3 id={`home-h-${category.id}`}>
+              {art[category.id] && (
+                <span class={`hd-art hd-art-${colors[category.id]}`} aria-hidden="true">
+                  <svg viewBox="0 0 32 32" set:html={art[category.id]} />
+                </span>
+              )}
+              {category.route ? <a href={category.route}>{category.name}</a> : category.name}
+            </h3>
             {category.route && (
               <a class="hd-more" href={category.route} aria-label={`View all ${category.name}`}>
                 View all <span aria-hidden="true">→</span>
