@@ -50,17 +50,6 @@ const specs: GroupSpec[] = [
       { name: "JPG to PDF Under 2MB", href: "/jpg-to-pdf-under-2mb/" },
     ],
   },
-  {
-    id: "portuguese",
-    title: "Ferramentas em Português",
-    icon: "pdf",
-    ids: [],
-    extra: [
-      { name: "Juntar PDF", href: "/juntar-pdf/" },
-      { name: "JPG para PDF", href: "/jpg-para-pdf/" },
-      { name: "Imagem para PDF", href: "/imagem-para-pdf/" },
-    ],
-  },
   { id: "docx", title: "DOCX & Text Tools", icon: "docx", ids: ["image-to-word", "jpg-to-text", "png-to-text"] },
   {
     id: "image",
@@ -102,6 +91,17 @@ const specs: GroupSpec[] = [
       "resize-image-for-whatsapp-dp",
       "resize-image-for-youtube-banner",
       "zoom-out-image",
+    ],
+  },
+  {
+    id: "portuguese",
+    title: "Ferramentas em Português",
+    icon: "pdf",
+    ids: [],
+    extra: [
+      { name: "Juntar PDF", href: "/juntar-pdf/" },
+      { name: "JPG para PDF", href: "/jpg-para-pdf/" },
+      { name: "Imagem para PDF", href: "/imagem-para-pdf/" },
     ],
   },
 ];
