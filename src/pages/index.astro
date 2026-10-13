@@ -1,9 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import AppCard from "../components/AppCard.astro";
 import HomeToolDirectory from "../components/HomeToolDirectory.astro";
-import { publishedApps } from "../data/apps";
-
 ---
 
 <BaseLayout
@@ -11,57 +8,6 @@ import { publishedApps } from "../data/apps";
   description="Paul Digital creates lightweight Android apps and practical digital tools for everyday tasks."
 >
   <div class="homepage">
-    <section class="hero home-hero">
-      <div class="container hero-inner">
-        <div class="hero-copy">
-          <h1>Paul <span class="brand-accent">Digital</span></h1>
-          <h2>Simple Utilities. Powerful Results.</h2>
-          <p>Paul Digital creates lightweight Android apps and practical digital tools for everyday tasks.</p>
-          <div class="actions">
-            <a class="button button-primary" href="/apps/">Apps <span aria-hidden="true">→</span></a>
-            <a class="button button-soft" href="/tools/">Web Tools <span aria-hidden="true">→</span></a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section home-section" aria-labelledby="android-apps">
-      <div class="container">
-        <div class="section-heading">
-          <div>
-            <h2 id="android-apps" class="section-title">Android Apps</h2>
-            <p>Lightweight Android utilities for everyday tasks.</p>
-          </div>
-          <a class="section-link" href="/apps/">View all apps <span aria-hidden="true">→</span></a>
-        </div>
-        <div class="card-grid app-grid app-grid-published">
-          {publishedApps.map((app) => <AppCard app={app} />)}
-        </div>
-      </div>
-    </section>
-
     <HomeToolDirectory />
-
-    <section class="section home-section guides-section" aria-labelledby="featured-guide">
-      <div class="container">
-        <div class="section-heading">
-          <div>
-            <h2 id="featured-guide" class="section-title">Guides</h2>
-            <p>Short, practical reading for everyday digital tasks.</p>
-          </div>
-          <a class="section-link" href="/guides/">View all guides <span aria-hidden="true">→</span></a>
-        </div>
-        <article class="guide-feature">
-          <span class="guide-icon" aria-hidden="true">PDF</span>
-          <div>
-            <h3>Preparing text before creating a PDF</h3>
-            <p>A few simple checks for clearer documents.</p>
-          </div>
-          <a class="guide-arrow" href="/guides/preparing-text-for-a-pdf/" aria-label="Read Preparing text before creating a PDF">
-            Read guide <span aria-hidden="true">→</span>
-          </a>
-        </article>
-      </div>
-    </section>
   </div>
 </BaseLayout>
