@@ -2905,30 +2905,11 @@ a.td-item:focus-visible {
   outline-offset: 1px;
 }
 
-span.td-item {
-  color: var(--muted);
-}
-
-.td-soon {
-  margin-left: auto;
-  padding: 0.05rem 0.4rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
 .td-icon {
   flex: none;
   display: block;
   width: 1.625rem;
   height: 1.625rem;
-}
-
-span.td-item .td-icon {
-  opacity: 0.55;
 }
 
 @media (max-width: 900px) {
