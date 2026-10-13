@@ -1,11 +1,158 @@
 import { useEffect, useRef, useState } from "react";
-import { formatBytesPt, inspectPdf, mergePdfs } from "../../lib/pdfMerge";
+import { formatBytes, inspectPdf, mergePdfs } from "../../lib/pdfMerge";
 import { DropArea, ResultPanel } from "./shared";
 
 const MAX_FILES = 30;
 const MAX_FILE_BYTES = 100 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
-const OUTPUT_NAME = "juntar-pdf.pdf";
+
+type Locale = "pt-BR" | "es";
+type Forms = readonly [string, string];
+
+interface Strings {
+  outputName: string;
+  cleared: string;
+  reading: (name: string) => string;
+  limitFiles: (name: string, max: number) => string;
+  empty: (name: string) => string;
+  tooBig: (name: string, size: string, max: string) => string;
+  totalExceeded: (name: string, max: string) => string;
+  encrypted: (name: string) => string;
+  invalid: (name: string) => string;
+  unreadable: (name: string) => string;
+  added: Forms;
+  moved: (name: string, pos: number, total: number) => string;
+  fallbackName: string;
+  removed: (name: string) => string;
+  needTwo: string;
+  mergingFile: (done: number, total: number) => string;
+  finalizing: string;
+  success: string;
+  failure: string;
+  selected: Forms;
+  page: Forms;
+  emptyTitle: string;
+  emptySub: (max: string) => string;
+  filledSub: (pages: string, size: string) => string;
+  select: string;
+  dropAria: string;
+  privacy: string;
+  listHeading: (n: number) => string;
+  orderHint: string;
+  listAria: string;
+  up: (name: string) => string;
+  down: (name: string) => string;
+  removeAria: (name: string) => string;
+  remove: string;
+  merging: string;
+  submit: string;
+  needOneMore: string;
+  listHint: string;
+  result: string;
+  format: string;
+  size: string;
+  pages: string;
+  merged: string;
+  download: string;
+  reset: string;
+}
+
+const TEXT: Record<Locale, Strings> = {
+  "pt-BR": {
+    outputName: "juntar-pdf.pdf",
+    cleared: "Lista de arquivos limpa. Selecione novos PDFs para começar.",
+    reading: (name) => `Lendo ${name}…`,
+    limitFiles: (name, max) => `${name}: não foi adicionado. O limite é de ${max} arquivos.`,
+    empty: (name) => `${name}: o arquivo está vazio.`,
+    tooBig: (name, size, max) => `${name}: tem ${size}, acima do limite de ${max} por arquivo.`,
+    totalExceeded: (name, max) => `${name}: não foi adicionado porque o total passaria de ${max}.`,
+    encrypted: (name) => `${name}: o PDF é protegido por senha. Remova a proteção e tente novamente.`,
+    invalid: (name) => `${name}: este arquivo não é um PDF.`,
+    unreadable: (name) => `${name}: não foi possível ler este PDF. Ele pode estar corrompido.`,
+    added: ["PDF adicionado", "PDFs adicionados"],
+    moved: (name, pos, total) => `${name} movido para a posição ${pos} de ${total}.`,
+    fallbackName: "Arquivo",
+    removed: (name) => `${name} removido.`,
+    needTwo: "Adicione pelo menos dois PDFs para juntar.",
+    mergingFile: (done, total) => `Juntando o arquivo ${done + 1} de ${total}…`,
+    finalizing: "Finalizando o PDF…",
+    success: "PDF criado com sucesso!",
+    failure: "Não foi possível juntar os PDFs. Verifique os arquivos ou tente novamente com menos arquivos.",
+    selected: ["PDF selecionado", "PDFs selecionados"],
+    page: ["página", "páginas"],
+    emptyTitle: "Arraste e solte seus arquivos PDF aqui",
+    emptySub: (max) => `Selecione dois ou mais arquivos PDF para começar. Até ${max} cada.`,
+    filledSub: (pages, size) => `${pages} · ${size} no total · adicione mais quando quiser`,
+    select: "Selecionar arquivos PDF",
+    dropAria: "Área para soltar arquivos PDF",
+    privacy: "Seus arquivos são processados no seu dispositivo e não são enviados para um servidor.",
+    listHeading: (n) => `Arquivos selecionados (${n})`,
+    orderHint: "Organize os arquivos na ordem desejada.",
+    listAria: "Arquivos selecionados, na ordem em que serão juntados",
+    up: (name) => `Mover ${name} para cima`,
+    down: (name) => `Mover ${name} para baixo`,
+    removeAria: (name) => `Remover ${name}`,
+    remove: "Remover",
+    merging: "Juntando arquivos...",
+    submit: "Juntar PDFs",
+    needOneMore: "Adicione mais um PDF para poder juntá-los. ",
+    listHint: "As páginas são unidas na ordem da lista. Use as setas para reorganizar e Remover para tirar um arquivo.",
+    result: "Resultado",
+    format: "Formato",
+    size: "Tamanho",
+    pages: "Páginas",
+    merged: "Arquivos unidos",
+    download: "Baixar PDF",
+    reset: "Limpar arquivos",
+  },
+  es: {
+    outputName: "unir-pdf.pdf",
+    cleared: "Lista de archivos vaciada. Selecciona nuevos PDF para empezar.",
+    reading: (name) => `Leyendo ${name}…`,
+    limitFiles: (name, max) => `${name}: no se añadió. El límite es de ${max} archivos.`,
+    empty: (name) => `${name}: el archivo está vacío.`,
+    tooBig: (name, size, max) => `${name}: pesa ${size}, por encima del límite de ${max} por archivo.`,
+    totalExceeded: (name, max) => `${name}: no se añadió porque el total superaría ${max}.`,
+    encrypted: (name) => `${name}: el PDF está protegido con contraseña. Quita la protección e inténtalo de nuevo.`,
+    invalid: (name) => `${name}: este archivo no es un PDF.`,
+    unreadable: (name) => `${name}: no se pudo leer este PDF. Puede estar dañado.`,
+    added: ["PDF añadido", "PDF añadidos"],
+    moved: (name, pos, total) => `${name} movido a la posición ${pos} de ${total}.`,
+    fallbackName: "Archivo",
+    removed: (name) => `${name} eliminado.`,
+    needTwo: "Añade al menos dos PDF para unirlos.",
+    mergingFile: (done, total) => `Uniendo el archivo ${done + 1} de ${total}…`,
+    finalizing: "Finalizando el PDF…",
+    success: "¡PDF creado correctamente!",
+    failure: "No se pudieron unir los PDF. Revisa los archivos o inténtalo de nuevo con menos archivos.",
+    selected: ["PDF seleccionado", "PDF seleccionados"],
+    page: ["página", "páginas"],
+    emptyTitle: "Arrastra y suelta tus archivos PDF aquí",
+    emptySub: (max) => `Selecciona dos o más archivos PDF para empezar. Hasta ${max} cada uno.`,
+    filledSub: (pages, size) => `${pages} · ${size} en total · añade más cuando quieras`,
+    select: "Seleccionar archivos PDF",
+    dropAria: "Zona para soltar archivos PDF",
+    privacy: "Tus archivos se procesan en tu dispositivo y no se envían a ningún servidor.",
+    listHeading: (n) => `Archivos seleccionados (${n})`,
+    orderHint: "Ordena los archivos como prefieras.",
+    listAria: "Archivos seleccionados, en el orden en que se unirán",
+    up: (name) => `Subir ${name}`,
+    down: (name) => `Bajar ${name}`,
+    removeAria: (name) => `Eliminar ${name}`,
+    remove: "Eliminar",
+    merging: "Uniendo archivos...",
+    submit: "Unir PDF",
+    needOneMore: "Añade un PDF más para poder unirlos. ",
+    listHint: "Las páginas se unen en el orden de la lista. Usa las flechas para reordenar y Eliminar para quitar un archivo.",
+    result: "Resultado",
+    format: "Formato",
+    size: "Tamaño",
+    pages: "Páginas",
+    merged: "Archivos unidos",
+    download: "Descargar PDF",
+    reset: "Vaciar archivos",
+  },
+};
 
 interface Item {
   id: number;
@@ -20,9 +167,12 @@ interface Result {
   files: number;
 }
 
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+const plural = (n: number, [one, many]: Forms) => `${n} ${n === 1 ? one : many}`;
 
-export default function MergePdf() {
+export default function MergePdf({ locale = "pt-BR" }: { locale?: Locale }) {
+  const t = TEXT[locale];
+  const fmt = (bytes: number) => formatBytes(bytes, locale);
+  const OUTPUT_NAME = t.outputName;
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
@@ -50,7 +200,7 @@ export default function MergePdf() {
     clearResult();
     setItems([]);
     setErrors([]);
-    setStatus("Lista de arquivos limpa. Selecione novos PDFs para começar.");
+    setStatus(t.cleared);
   };
 
   const addFiles = async (incoming: File[]) => {
@@ -63,31 +213,31 @@ export default function MergePdf() {
     let total = items.reduce((sum, item) => sum + item.file.size, 0);
     try {
       for (const file of incoming) {
-        setProgress(`Lendo ${file.name}…`);
+        setProgress(t.reading(file.name));
         if (items.length + accepted.length >= MAX_FILES) {
-          problems.push(`${file.name}: não foi adicionado. O limite é de ${MAX_FILES} arquivos.`);
+          problems.push(t.limitFiles(file.name, MAX_FILES));
           continue;
         }
         if (file.size === 0) {
-          problems.push(`${file.name}: o arquivo está vazio.`);
+          problems.push(t.empty(file.name));
           continue;
         }
         if (file.size > MAX_FILE_BYTES) {
-          problems.push(`${file.name}: tem ${formatBytesPt(file.size)}, acima do limite de ${formatBytesPt(MAX_FILE_BYTES)} por arquivo.`);
+          problems.push(t.tooBig(file.name, fmt(file.size), fmt(MAX_FILE_BYTES)));
           continue;
         }
         if (total + file.size > MAX_TOTAL_BYTES) {
-          problems.push(`${file.name}: não foi adicionado porque o total passaria de ${formatBytesPt(MAX_TOTAL_BYTES)}.`);
+          problems.push(t.totalExceeded(file.name, fmt(MAX_TOTAL_BYTES)));
           continue;
         }
         const info = await inspectPdf(new Uint8Array(await file.arrayBuffer()));
         if (!info.ok) {
           problems.push(
             info.reason === "encrypted"
-              ? `${file.name}: o PDF é protegido por senha. Remova a proteção e tente novamente.`
+              ? t.encrypted(file.name)
               : info.reason === "invalid"
-                ? `${file.name}: este arquivo não é um PDF.`
-                : `${file.name}: não foi possível ler este PDF. Ele pode estar corrompido.`,
+                ? t.invalid(file.name)
+                : t.unreadable(file.name),
           );
           continue;
         }
@@ -101,7 +251,7 @@ export default function MergePdf() {
     setErrors(problems);
     if (accepted.length > 0) {
       setItems((current) => [...current, ...accepted]);
-      setStatus(`${plural(accepted.length, "PDF adicionado", "PDFs adicionados")}.`);
+      setStatus(`${plural(accepted.length, t.added)}.`);
     }
   };
 
@@ -113,20 +263,20 @@ export default function MergePdf() {
     const next = [...items];
     [next[index], next[to]] = [next[to], next[index]];
     setItems(next);
-    setStatus(`${items[index].file.name} movido para a posição ${to + 1} de ${items.length}.`);
+    setStatus(t.moved(items[index].file.name, to + 1, items.length));
   };
 
   const remove = (id: number) => {
     if (busy) return;
     clearResult();
-    const name = items.find((item) => item.id === id)?.file.name ?? "Arquivo";
+    const name = items.find((item) => item.id === id)?.file.name ?? t.fallbackName;
     setItems((current) => current.filter((item) => item.id !== id));
-    setStatus(`${name} removido.`);
+    setStatus(t.removed(name));
   };
 
   const run = async () => {
     if (runningRef.current) return;
-    if (items.length < 2) return setErrors(["Adicione pelo menos dois PDFs para juntar."]);
+    if (items.length < 2) return setErrors([t.needTwo]);
     runningRef.current = true;
     setErrors([]);
     clearResult();
@@ -135,15 +285,15 @@ export default function MergePdf() {
     try {
       const sources: Uint8Array[] = [];
       for (const item of items) sources.push(new Uint8Array(await item.file.arrayBuffer()));
-      const merged = await mergePdfs(sources, (done, total) => setProgress(`Juntando o arquivo ${done + 1} de ${total}…`));
-      setProgress("Finalizando o PDF…");
+      const merged = await mergePdfs(sources, (done, total) => setProgress(t.mergingFile(done, total)));
+      setProgress(t.finalizing);
       const blob = new Blob([merged.bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       urlRef.current = url;
       setResult({ url, size: blob.size, pages: merged.pages, files: items.length });
-      setStatus("PDF criado com sucesso!");
+      setStatus(t.success);
     } catch {
-      setErrors(["Não foi possível juntar os PDFs. Verifique os arquivos ou tente novamente com menos arquivos."]);
+      setErrors([t.failure]);
     } finally {
       runningRef.current = false;
       setBusy(false);
@@ -155,29 +305,27 @@ export default function MergePdf() {
   const totalPages = items.reduce((sum, item) => sum + item.pages, 0);
 
   return (
-    <div className="ic" lang="pt-BR">
+    <div className="ic" lang={locale}>
       <DropArea
-        title={plural(items.length, "PDF selecionado", "PDFs selecionados")}
+        title={plural(items.length, t.selected)}
         hasFiles={items.length > 0}
-        emptyTitle="Arraste e solte seus arquivos PDF aqui"
-        emptySub={`Selecione dois ou mais arquivos PDF para começar. Até ${formatBytesPt(MAX_FILE_BYTES)} cada.`}
-        filledSub={`${plural(totalPages, "página", "páginas")} · ${formatBytesPt(totalSize)} no total · adicione mais quando quiser`}
-        buttonLabel="Selecionar arquivos PDF"
-        moreLabel="Selecionar arquivos PDF"
+        emptyTitle={t.emptyTitle}
+        emptySub={t.emptySub(fmt(MAX_FILE_BYTES))}
+        filledSub={t.filledSub(plural(totalPages, t.page), fmt(totalSize))}
+        buttonLabel={t.select}
+        moreLabel={t.select}
         accept="application/pdf,.pdf"
         multiple
         busy={busy}
-        ariaLabel="Área para soltar arquivos PDF"
+        ariaLabel={t.dropAria}
         onFiles={(files) => void addFiles(files)}
       />
-      <p className="ic-hint">Seus arquivos são processados no seu dispositivo e não são enviados para um servidor.</p>
+      <p className="ic-hint">{t.privacy}</p>
 
+      {items.length > 0 && <h2 className="jp-heading">{t.listHeading(items.length)}</h2>}
+      {items.length > 0 && <p className="ic-hint">{t.orderHint}</p>}
       {items.length > 0 && (
-        <h2 className="jp-heading">Arquivos selecionados ({items.length})</h2>
-      )}
-      {items.length > 0 && <p className="ic-hint">Organize os arquivos na ordem desejada.</p>}
-      {items.length > 0 && (
-        <ol className="jp-list" aria-label="Arquivos selecionados, na ordem em que serão juntados">
+        <ol className="jp-list" aria-label={t.listAria}>
           {items.map((item, index) => (
             <li key={item.id} className="jp-item">
               <span className="jp-num" aria-hidden="true">
@@ -186,23 +334,23 @@ export default function MergePdf() {
               <span className="jp-name">
                 {item.file.name}
                 <small>
-                  {plural(item.pages, "página", "páginas")} · {formatBytesPt(item.file.size)}
+                  {plural(item.pages, t.page)} · {fmt(item.file.size)}
                 </small>
               </span>
               <span className="jp-actions">
-                <button type="button" onClick={() => move(index, -1)} disabled={busy || index === 0} aria-label={`Mover ${item.file.name} para cima`}>
+                <button type="button" onClick={() => move(index, -1)} disabled={busy || index === 0} aria-label={t.up(item.file.name)}>
                   ↑
                 </button>
                 <button
                   type="button"
                   onClick={() => move(index, 1)}
                   disabled={busy || index === items.length - 1}
-                  aria-label={`Mover ${item.file.name} para baixo`}
+                  aria-label={t.down(item.file.name)}
                 >
                   ↓
                 </button>
-                <button type="button" onClick={() => remove(item.id)} disabled={busy} aria-label={`Remover ${item.file.name}`}>
-                  Remover
+                <button type="button" onClick={() => remove(item.id)} disabled={busy} aria-label={t.removeAria(item.file.name)}>
+                  {t.remove}
                 </button>
               </span>
             </li>
@@ -218,17 +366,17 @@ export default function MergePdf() {
         }}
       >
         <button type="submit" className="button button-primary ic-submit" disabled={items.length < 2 || busy}>
-          {busy ? "Juntando arquivos..." : "Juntar PDFs"}
+          {busy ? t.merging : t.submit}
         </button>
       </form>
       <p className="ic-hint">
-        {items.length === 1 ? "Adicione mais um PDF para poder juntá-los. " : ""}
-        As páginas são unidas na ordem da lista. Use as setas para reorganizar e Remover para tirar um arquivo.
+        {items.length === 1 ? t.needOneMore : ""}
+        {t.listHint}
       </p>
 
       <div className="ic-status" role="status" aria-live="polite">
         {busy ? <span className="ic-spinner" aria-hidden="true" /> : null}
-        {busy ? "Juntando arquivos..." : status}
+        {busy ? t.merging : status}
       </div>
       {busy && progress ? (
         <p className="ic-hint ic-progress" aria-hidden="true">
@@ -247,22 +395,22 @@ export default function MergePdf() {
 
       {result && (
         <ResultPanel
-          ariaLabel="Resultado"
+          ariaLabel={t.result}
           tone="success"
-          title="PDF criado com sucesso!"
+          title={t.success}
           fileName={OUTPUT_NAME}
           details={[
-            { label: "Formato", value: "PDF" },
-            { label: "Tamanho", value: formatBytesPt(result.size) },
-            { label: "Páginas", value: String(result.pages) },
-            { label: "Arquivos unidos", value: String(result.files) },
+            { label: t.format, value: "PDF" },
+            { label: t.size, value: fmt(result.size) },
+            { label: t.pages, value: String(result.pages) },
+            { label: t.merged, value: String(result.files) },
           ]}
           primary={
             <a className="button button-download" href={result.url} download={OUTPUT_NAME}>
-              Baixar PDF
+              {t.download}
             </a>
           }
-          resetLabel="Limpar arquivos"
+          resetLabel={t.reset}
           onReset={reset}
         />
       )}

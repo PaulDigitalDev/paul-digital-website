@@ -3134,3 +3134,91 @@ a.td-item:focus-visible {
 .tool-top + .content-section {
   padding-top: clamp(1.5rem, 4vw, 2.5rem) !important;
 }
+
+/* Dividir PDF */
+.sp-total {
+  margin: 0;
+  color: var(--navy);
+  font-size: 0.9rem;
+}
+
+.sp-modes {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 0.88rem;
+  color: var(--navy);
+}
+
+.sp-modes legend {
+  padding: 0;
+  margin-bottom: 0.3rem;
+  font-weight: 700;
+}
+
+.sp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  max-height: 9rem;
+  overflow-y: auto;
+}
+
+.sp-chip {
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0 0.4rem;
+  border: 1px solid #c9d6e8;
+  border-radius: 0.5rem;
+  background: var(--white);
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.sp-chip[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: var(--blue-text);
+  color: var(--white);
+}
+
+.sp-chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sp-files {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: 14rem;
+  overflow-y: auto;
+  font-size: 0.86rem;
+}
+
+.sp-files li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--white);
+  overflow-wrap: anywhere;
+}
+
+.sp-files small {
+  color: var(--muted);
+}
+
+.sp-files a {
+  flex: none;
+  color: var(--blue-text);
+  font-weight: 700;
+}

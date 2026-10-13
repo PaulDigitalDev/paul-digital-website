@@ -110,7 +110,15 @@ const specs: GroupSpec[] = [
     title: "Herramientas en Español",
     icon: "pdf",
     ids: [],
-    extra: [{ name: "JPG a PDF", href: "/jpg-a-pdf/" }],
+    extra: [
+      { name: "JPG a PDF", href: "/jpg-a-pdf/" },
+      { name: "Imagen a PDF", href: "/imagen-a-pdf/" },
+      { name: "Unir PDF", href: "/unir-pdf/" },
+      { name: "PDF a Word", href: "/pdf-a-word/" },
+      { name: "Word a PDF", href: "/word-a-pdf/" },
+      { name: "Comprimir PDF", href: "/comprimir-pdf/" },
+      { name: "Dividir PDF", href: "/dividir-pdf/" },
+    ],
   },
 ];
 

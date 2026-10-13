@@ -1,0 +1,151 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import DividirPdf from "../../components/tools/DividirPdf";
+
+const path = "/dividir-pdf/";
+const title = "Dividir PDF: separa páginas de un PDF gratis y online | Paul Digital";
+const description =
+  "Divide un PDF: extrae páginas sueltas o rangos como 1-3, 5, 8-10, o separa cada página en su propio archivo. Todo se hace en tu navegador, sin subir tus documentos.";
+const h1 = "Dividir PDF";
+const intro = "Extrae páginas o rangos de un PDF y descárgalos como archivos nuevos, de forma rápida, gratuita y sin salir del navegador.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "<");
+
+const steps = [
+  "Haz clic en “Seleccionar archivo PDF” o arrastra tu archivo a la zona de selección. La herramienta muestra cuántas páginas tiene.",
+  "Elige cómo dividir: un PDF por cada rango, un solo PDF con las páginas elegidas, o cada página en un PDF distinto.",
+  "Escribe las páginas o rangos (por ejemplo 1-3, 5, 8-10) o haz clic en los números de página. Decide si quieres mantener el orden que escribiste o seguir el del documento.",
+  "Haz clic en “Dividir PDF” y descarga los archivos. Si se crean varios, también puedes descargarlos todos en un ZIP.",
+];
+
+const faqs = [
+  {
+    q: "¿Cómo dividir un PDF?",
+    a: "Selecciona el PDF, indica las páginas que quieres separar (por ejemplo 1-3, 5, 8-10) y haz clic en “Dividir PDF”. Se crean archivos nuevos con esas páginas y el original no se modifica.",
+  },
+  {
+    q: "¿Cómo se escriben las páginas y los rangos?",
+    a: "Separa las partes con comas y usa un guion para los rangos: “1-3, 5, 8-10” significa las páginas 1, 2 y 3, la 5 y de la 8 a la 10. La primera página es la 1. Los rangos van de menor a mayor y cada página solo puede aparecer una vez.",
+  },
+  {
+    q: "¿Puedo guardar cada página en un archivo distinto?",
+    a: "Sí. Elige “Cada página en un PDF distinto” y la herramienta crea un PDF por página, que puedes descargar uno a uno o todos juntos en un ZIP. Esta opción admite documentos de hasta 200 páginas.",
+  },
+  {
+    q: "¿Puedo reunir páginas no consecutivas en un solo PDF?",
+    a: "Sí. Elige “Un solo PDF con las páginas elegidas” y escribe, por ejemplo, 2, 7, 9-11. También puedes elegir si el nuevo PDF respeta el orden que escribiste (por ejemplo 8, 2-3) o si se ordena según el documento original (2-3, 8).",
+  },
+  {
+    q: "¿Mis archivos se suben a un servidor?",
+    a: "No. La división se realiza por completo en tu navegador, en tu propio dispositivo. No se envía nada a Paul Digital ni a terceros, y no se guarda nada cuando cierras la página.",
+  },
+  {
+    q: "¿Se modifica mi PDF original?",
+    a: "No. La herramienta solo lee tu archivo y crea archivos nuevos. Las páginas se copian sin recomprimir, de modo que el texto, las imágenes y los enlaces de esas páginas se mantienen. Es posible que los marcadores y los formularios interactivos no se conserven en los archivos nuevos.",
+  },
+  {
+    q: "¿Por qué no se aceptó mi PDF?",
+    a: "La herramienta rechaza los archivos que no son PDF, los que están vacíos o dañados, los que no tienen páginas y los protegidos con contraseña. Para dividir un PDF protegido, quita antes la contraseña con el programa que usas para abrirlo.",
+  },
+  {
+    q: "¿Hay un límite de tamaño o de páginas?",
+    a: "Para mantener estable el navegador, puedes dividir PDF de hasta 100 MB y 1000 páginas. Cada vez se pueden crear hasta 200 archivos, y el resultado total no puede superar los 500 MB. Como todo se procesa en la memoria de tu dispositivo, los archivos grandes pueden ir lentos en móviles sencillos.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "es",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Inicio", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "es",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Cualquiera (navegador)",
+  browserRequirements: "Requiere JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="es">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Inicio", href: "/" }, { label: h1 }]} breadcrumbLabel="Ruta de navegación">
+    <DividirPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cómo dividir un PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Modos de división</h2>
+      <ul>
+        <li><strong>Un PDF por cada rango:</strong> “1-3, 5, 8-10” crea tres archivos, uno por cada parte.</li>
+        <li><strong>Un solo PDF con las páginas elegidas:</strong> reúne todas las páginas indicadas en un único documento nuevo.</li>
+        <li><strong>Cada página en un PDF distinto:</strong> crea un archivo por página y los ofrece también en un ZIP.</li>
+      </ul>
+      <p>
+        Los archivos se nombran a partir del original, por ejemplo <em>documento_paginas_1-3.pdf</em> o <em>documento_pagina_5.pdf</em>.
+        Las páginas se copian sin cambios: la herramienta no comprime ni modifica su contenido.
+      </p>
+
+      <h2>Formatos y límites</h2>
+      <p>
+        <strong>Acepta:</strong> un archivo .pdf sin contraseña, de hasta 100 MB y 1000 páginas. Se pueden crear hasta 200 archivos por
+        operación y el resultado total puede ocupar hasta 500 MB. Los PDF protegidos con contraseña, dañados o de otros formatos se
+        rechazan con un mensaje que explica el motivo.
+      </p>
+      <p>
+        El procesamiento usa la memoria de tu dispositivo. En móviles con poca memoria, es mejor extraer menos páginas cada vez.
+      </p>
+
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Herramientas relacionadas</h2>
+      <ul class="ic-links">
+        <li><a href="/unir-pdf/">Unir PDF: combina varios archivos PDF en uno</a></li>
+        <li><a href="/comprimir-pdf/">Comprimir PDF: reduce el tamaño de un PDF</a></li>
+        <li><a href="/jpg-a-pdf/">JPG a PDF: convierte fotos JPG en un único PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (en inglés): todas las herramientas del sitio</a></li>
+      </ul>
+
+      <h2>Privacidad</h2>
+      <p>
+        Tus archivos se procesan por completo en el navegador, en tu dispositivo. No se envían a Paul Digital ni a ningún otro
+        servidor, y no se guarda nada cuando cierras la página.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

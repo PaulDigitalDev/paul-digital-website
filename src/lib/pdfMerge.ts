@@ -57,6 +57,11 @@ export async function mergePdfs(
 
 /** Brazilian Portuguese file size, e.g. "1,4 MB". */
 export function formatBytesPt(bytes: number): string {
+  return formatBytes(bytes, "pt-BR");
+}
+
+/** File size with locale-specific decimals, e.g. "1,4 MB". */
+export function formatBytes(bytes: number, locale: string): string {
   const units = ["bytes", "KB", "MB", "GB"];
   let value = bytes;
   let unit = 0;
@@ -65,5 +70,5 @@ export function formatBytesPt(bytes: number): string {
     unit++;
   }
   const digits = unit === 0 ? 0 : value < 10 ? 1 : 0;
-  return `${value.toLocaleString("pt-BR", { minimumFractionDigits: digits, maximumFractionDigits: digits })} ${units[unit]}`;
+  return `${value.toLocaleString(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits })} ${units[unit]}`;
 }

@@ -89,6 +89,24 @@ test("converts a real text PDF end to end with headings and styles", async () =>
   assert.match(xml, /Este paragrafo explica o conteudo principal do documento de teste\./);
 });
 
+test("preserves Spanish and Portuguese accented characters end to end", async () => {
+  const line1 = "Información: ¿cómo está el niño? Señor Núñez, ¡gracias!";
+  const line2 = "Ação, coração, não, você e à vontade — açúcar.";
+  const bytes = await textPdf((p, f) => {
+    p.drawText(line1, { x: 72, y: 720, size: 12, font: f.regular });
+    p.drawText(line2, { x: 72, y: 660, size: 12, font: f.regular });
+  });
+  const result = await convertPdfToDocx(bytes, "acentos.pdf");
+  const files = readStoredZip(new Uint8Array(await result.blob.arrayBuffer()));
+  assert.ok(files["word/document.xml"].includes(line1));
+  assert.ok(files["word/document.xml"].includes(line2));
+  for (const [name, content] of Object.entries(files)) assert.ok(isBalanced(content), `${name} is not well-formed`);
+});
+
+test("rejects an empty file as invalid", async () => {
+  await assert.rejects(extractPages(new Uint8Array(0)), (e) => e instanceof PdfToWordError && e.code === "invalid");
+});
+
 test("reports a PDF without text as scanned", async () => {
   const bytes = await textPdf(() => {}, 2);
   await assert.rejects(convertPdfToDocx(bytes, "x.pdf"), (e) => e instanceof PdfToWordError && e.code === "no-text");

@@ -1,0 +1,145 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import MergePdf from "../../components/tools/MergePdf";
+
+const path = "/unir-pdf/";
+const title = "Unir PDF: combina archivos PDF gratis y online | Paul Digital";
+const description =
+  "Une varios archivos PDF en uno solo, ordénalos y descárgalo. Todo se hace en tu navegador, sin subir tus documentos a ningún servidor.";
+const h1 = "Unir PDF";
+const intro = "Combina varios archivos PDF en un único documento de forma rápida, gratuita y sin salir del navegador.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\u003c");
+
+const steps = [
+  "Haz clic en “Seleccionar archivos PDF” o arrastra tus archivos a la zona de selección. Puedes elegir varios a la vez.",
+  "Revisa la lista: cada PDF muestra su número de páginas y su tamaño. Usa las flechas para cambiar el orden y “Eliminar” para quitar un archivo.",
+  "Haz clic en “Unir PDF”. Las páginas se unen en el orden de la lista, del primer archivo al último.",
+  "Descarga el archivo unir-pdf.pdf. Si quieres unir otros archivos, usa “Vaciar archivos”.",
+];
+
+const faqs = [
+  {
+    q: "¿Cómo unir archivos PDF?",
+    a: "Añade tus PDF a la herramienta, ajusta el orden con las flechas y haz clic en “Unir PDF”. El nuevo archivo reúne todas las páginas, en el orden de la lista, y estará listo para descargar en unos instantes.",
+  },
+  {
+    q: "¿Es gratis unir PDF?",
+    a: "Sí. Esta herramienta es gratuita y no requiere registro ni instalación.",
+  },
+  {
+    q: "¿Mis archivos se suben a un servidor?",
+    a: "No. La unión se realiza por completo en tu navegador, en tu propio dispositivo. No se envía nada a Paul Digital ni a terceros, y no se guarda nada cuando cierras la página.",
+  },
+  {
+    q: "¿Puedo cambiar el orden de los PDF?",
+    a: "Sí. Usa las flechas hacia arriba y hacia abajo junto a cada archivo. Las páginas del archivo que está al principio de la lista aparecen primero en el PDF final.",
+  },
+  {
+    q: "¿El PDF final conserva todas las páginas?",
+    a: "Sí. Todas las páginas de cada archivo se copian tal cual, sin recomprimir: el texto, las imágenes y los enlaces se mantienen como en el original. Es posible que los marcadores y los formularios interactivos no se conserven en el archivo final.",
+  },
+  {
+    q: "¿Por qué no se aceptó mi PDF?",
+    a: "La herramienta rechaza los archivos que no son PDF, los que están vacíos, dañados o protegidos con contraseña. Para unir un PDF protegido, quita antes la contraseña con el programa que usas para abrirlo.",
+  },
+  {
+    q: "¿Hay un límite de tamaño o de cantidad?",
+    a: "Para mantener estable el navegador, puedes unir hasta 30 archivos de hasta 100 MB cada uno, con un máximo de 300 MB en total. Como todo se procesa en la memoria de tu dispositivo, los archivos muy grandes pueden ir lentos en móviles sencillos.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "es",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Inicio", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "es",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Cualquiera (navegador)",
+  browserRequirements: "Requiere JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="es">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Inicio", href: "/" }, { label: h1 }]} breadcrumbLabel="Ruta de navegación">
+    <MergePdf client:load locale="es" />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cómo unir PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Sobre esta herramienta</h2>
+      <p>
+        Unir PDF te permite combinar PDF online: eliges los archivos, defines el orden y los reúnes en un único documento, sin
+        instalar nada. Sirve para unir archivos PDF de contratos, comprobantes, currículums, trabajos escolares, facturas o
+        cualquier conjunto de documentos que haya que enviar de una sola vez.
+      </p>
+      <p>
+        Las páginas se copian sin cambios, en el orden que muestra la lista. La herramienta no comprime ni modifica el contenido
+        de las páginas; solo las reúne en un archivo nuevo.
+      </p>
+
+      <h2>Formatos y límites</h2>
+      <p>
+        <strong>Acepta:</strong> archivos .pdf sin contraseña. Puedes añadir hasta 30 archivos, de hasta 100 MB cada uno y 300 MB
+        en total. Los PDF protegidos con contraseña, dañados o de otros formatos se rechazan con un mensaje que explica el motivo.
+      </p>
+      <p>
+        El procesamiento usa la memoria de tu dispositivo. En móviles con poca memoria, es mejor unir menos archivos cada vez.
+      </p>
+
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Herramientas relacionadas</h2>
+      <ul class="ic-links">
+        <li><a href="/jpg-a-pdf/">JPG a PDF: convierte fotos JPG en un único PDF</a></li>
+        <li><a href="/imagen-a-pdf/">Imagen a PDF: convierte imágenes en un PDF</a></li>
+        <li><a href="/tools/" lang="en" hreflang="en">All tools (en inglés): todas las herramientas del sitio</a></li>
+      </ul>
+
+      <h2>Privacidad</h2>
+      <p>
+        Tus archivos se procesan por completo en el navegador, en tu dispositivo. No se envían a Paul Digital ni a ningún otro
+        servidor, y no se guarda nada cuando cierras la página.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

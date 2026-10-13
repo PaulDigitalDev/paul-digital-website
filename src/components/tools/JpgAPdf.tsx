@@ -9,7 +9,6 @@ const MAX_FILES = 50;
 const MAX_FILE_BYTES = 50 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
 const MAX_PIXELS = 100_000_000;
-const OUTPUT_NAME = "jpg-a-pdf.pdf";
 
 interface Item {
   id: number;
@@ -42,7 +41,7 @@ function formatBytesEs(bytes: number): string {
   return `${value.toLocaleString("es", { minimumFractionDigits: digits, maximumFractionDigits: digits })} ${units[unit]}`;
 }
 
-export default function JpgAPdf() {
+export default function JpgAPdf({ outputName = "jpg-a-pdf.pdf" }: { outputName?: string }) {
   const [items, setItems] = useState<Item[]>([]);
   const [pageSize, setPageSize] = useState<PageSizeChoice>("a4");
   const [busy, setBusy] = useState(false);
@@ -324,14 +323,14 @@ export default function JpgAPdf() {
           ariaLabel="Resultado"
           tone="success"
           title="¡PDF creado correctamente!"
-          fileName={OUTPUT_NAME}
+          fileName={outputName}
           details={[
             { label: "Formato", value: "PDF" },
             { label: "Tamaño", value: formatBytesEs(result.size) },
             { label: "Páginas", value: String(result.pages) },
           ]}
           primary={
-            <a className="button button-download" href={result.url} download={OUTPUT_NAME}>
+            <a className="button button-download" href={result.url} download={outputName}>
               Descargar PDF
             </a>
           }

@@ -1,0 +1,157 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
+import WordAPdf from "../../components/tools/WordAPdf";
+
+const path = "/word-a-pdf/";
+const title = "Word a PDF online: gratis y privado | Paul Digital";
+const description =
+  "Convierte un documento de Word (.docx) en PDF gratis y en tu navegador, sin subir tu archivo a ningún servidor. Conserva texto, formato básico, listas, tablas e imágenes.";
+const h1 = "Word a PDF";
+const intro =
+  "Convierte un documento de Word (.docx) en un archivo PDF, de forma gratuita y sin salir del navegador. Tu archivo no se envía a ningún servidor.";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const steps = [
+  "Haz clic en “Seleccionar archivo Word” o arrastra tu archivo .docx a la zona de selección.",
+  "Espera unos segundos mientras se lee el documento y se genera el PDF. El progreso aparece en pantalla.",
+  "Cuando termine, revisa el resumen y los avisos, y haz clic en “Descargar PDF”.",
+  "Abre el PDF y compruébalo antes de enviarlo o imprimirlo, sobre todo si el documento tiene un diseño complejo.",
+];
+
+const faqs = [
+  {
+    q: "¿Cómo convertir un documento de Word a PDF?",
+    a: "Selecciona tu archivo .docx en la herramienta y espera a que termine. El navegador lee el documento, distribuye el texto, las tablas y las imágenes en páginas y crea un PDF que puedes descargar.",
+  },
+  {
+    q: "¿Es gratis convertir Word a PDF aquí?",
+    a: "Sí. La herramienta es gratuita y no requiere registro ni instalación.",
+  },
+  {
+    q: "¿Mi documento se sube a un servidor?",
+    a: "No. La conversión se hace por completo en tu navegador, en tu propio dispositivo. No se envía nada a Paul Digital ni a terceros, y no se guarda nada cuando cierras la página.",
+  },
+  {
+    q: "¿Se verá igual que en Word?",
+    a: "No siempre. Esta herramienta no usa el motor de Word: reconstruye el documento con las fuentes estándar del PDF (Helvetica, Times y Courier), por lo que los saltos de línea y de página pueden cambiar. Para documentos con un diseño exacto, como formularios o maquetaciones complejas, conviene usar la opción «Guardar como PDF» o «Exportar» de Word.",
+  },
+  {
+    q: "¿Qué se conserva en el PDF?",
+    a: "Se conservan el texto con acentos y ñ, los párrafos, los títulos, la negrita, la cursiva, el subrayado, el color del texto, la alineación, las sangrías, las listas con viñetas o números, las tablas con bordes y color de fondo, las imágenes PNG y JPEG en línea con el texto, los saltos de página y el tamaño y los márgenes de la página.",
+  },
+  {
+    q: "¿Qué no se incluye?",
+    a: "No se incluyen encabezados, pies de página ni números de página, notas al pie, cuadros de texto, formas, gráficos, ecuaciones, columnas ni comentarios. Las imágenes flotantes se colocan en línea con el texto. Las fuentes del documento se sustituyen por fuentes estándar, y los caracteres que no existen en ellas (emojis, chino, japonés, árabe, etc.) aparecen como «?».",
+  },
+  {
+    q: "¿Por qué no se aceptó mi archivo?",
+    a: "La herramienta solo acepta archivos .docx. Rechaza los archivos .doc antiguos, los protegidos con contraseña, los dañados, los vacíos y los de otros formatos. Si tu archivo es .doc, ábrelo en Word y guárdalo como .docx.",
+  },
+  {
+    q: "¿Hay un límite de tamaño?",
+    a: "Para mantener estable el navegador, el límite es de 25 MB por archivo y 300 páginas en el PDF. Como todo se procesa en la memoria de tu dispositivo, los documentos grandes pueden tardar más en móviles sencillos.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "es",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Inicio", item: site("/") },
+    { "@type": "ListItem", position: 2, name: h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  url: site(path),
+  inLanguage: "es",
+  description,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Cualquiera (navegador)",
+  browserRequirements: "Requiere JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={path} lang="es">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Inicio", href: "/" }, { label: h1 }]} breadcrumbLabel="Ruta de navegación">
+    <WordAPdf client:load />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>Cómo convertir Word a PDF</h2>
+      <ol>
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>Sobre esta herramienta</h2>
+      <p>
+        Word a PDF lee el contenido de un archivo .docx directamente en tu navegador y lo distribuye en páginas: reparte el
+        texto en líneas, aplica la negrita, la cursiva, el subrayado, los colores y la alineación, numera las listas, dibuja
+        las tablas y coloca las imágenes. Después genera un PDF que puedes descargar. Es útil para convertir cartas,
+        currículos, informes, trabajos escolares y otros documentos de texto cuando no tienes Word a mano.
+      </p>
+
+      <h2>Limitaciones de esta versión</h2>
+      <ul>
+        <li><strong>Conversión aproximada:</strong> no es el motor de Word. El PDF puede diferir del original en saltos de línea, saltos de página y espaciado.</li>
+        <li><strong>Fuentes sustituidas:</strong> se usan Helvetica, Times y Courier según el tipo de fuente del documento (por ejemplo, Calibri y Arial se muestran como Helvetica). Las fuentes originales no se incrustan.</li>
+        <li><strong>Caracteres especiales:</strong> funcionan los acentos, la ñ, la ç, la ü y los signos ¿ ¡ del español y el portugués. Los emojis y los alfabetos no latinos (chino, japonés, coreano, árabe, cirílico, etc.) se sustituyen por «?».</li>
+        <li><strong>Contenido no incluido:</strong> encabezados y pies de página, números de página, notas al pie, cuadros de texto, formas, gráficos, ecuaciones y comentarios. La herramienta te avisa cuando detecta alguno en tu documento.</li>
+        <li><strong>Imágenes:</strong> se admiten PNG y JPEG. Las demás se convierten solo si tu navegador puede leerlas. Las imágenes flotantes se colocan en línea y el recorte o la rotación no se aplican.</li>
+        <li><strong>Tablas y diseño:</strong> las tablas conservan bordes, anchos y color de fondo, pero las celdas combinadas verticalmente se aproximan. No se reproducen las columnas de texto, los bordes de párrafo ni los campos que Word actualiza (índices, referencias).</li>
+        <li>Revisa siempre el PDF antes de usarlo en un trámite o un documento importante.</li>
+      </ul>
+
+      <h2>Formatos y límites</h2>
+      <p>
+        <strong>Acepta:</strong> un archivo .docx a la vez, sin contraseña, de hasta 25 MB y con un resultado máximo de 300
+        páginas. Los archivos .doc antiguos, dañados, protegidos con contraseña o de otros formatos se rechazan con un
+        mensaje que explica el motivo.
+      </p>
+
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <h2>Herramientas relacionadas</h2>
+      <ul class="ic-links">
+        <li><a href="/pdf-a-word/">PDF a Word: convierte un PDF con texto en un documento editable</a></li>
+        <li><a href="/unir-pdf/">Unir PDF: combina varios PDF en uno solo</a></li>
+        <li><a href="/jpg-a-pdf/">JPG a PDF: convierte fotos JPG en un único PDF</a></li>
+        <li><a href="/imagen-a-pdf/">Imagen a PDF: convierte imágenes en un PDF</a></li>
+      </ul>
+
+      <h2>Privacidad</h2>
+      <p>
+        Tu archivo se procesa por completo en el navegador, en tu dispositivo. No se envía a Paul Digital ni a ningún otro
+        servidor, y no se guarda nada cuando cierras la página.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
