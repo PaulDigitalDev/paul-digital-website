@@ -1,0 +1,40 @@
+---
+/**
+ * Shared top-of-page layout for every tool page: breadcrumb, centered heading and subtitle, then the working tool
+ * (passed in the default slot). SEO text, steps, FAQs and related tools belong in a section after this one.
+ */
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  h1: string;
+  intro: string;
+  crumbs: Crumb[];
+  breadcrumbLabel?: string;
+}
+
+const { h1, intro, crumbs, breadcrumbLabel = "Breadcrumb" } = Astro.props;
+---
+
+<section class="tool-top">
+  <div class="container">
+    <nav class="breadcrumb" aria-label={breadcrumbLabel}>
+      <ol>
+        {
+          crumbs.map((crumb) => (
+            <li {...(crumb.href ? {} : { "aria-current": "page" })}>
+              {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : crumb.label}
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+    <div class="tool-head">
+      <h1>{h1}</h1>
+      <p>{intro}</p>
+    </div>
+    <slot />
+  </div>
+</section>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ToolTop from "./ToolTop.astro";
 import JpgToPdf from "./tools/JpgToPdf";
 import { jpgToPdfRoutes, targetText } from "../data/jpgToPdfRoutes";
 import type { JpgToPdfRoute } from "../data/jpgToPdfRoutes";
@@ -91,24 +92,9 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(appSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <section class="page-hero">
-    <div class="container">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <ol>
-          <li><a href="/">Home</a></li>
-          <li><a href="/tools/">Tools</a></li>
-          <li aria-current="page">{route.h1}</li>
-        </ol>
-      </nav>
-      <h1>{route.h1}</h1>
-      <p>{route.intro}</p>
-    </div>
-  </section>
-  <section class="content-section">
-    <div class="container">
+  <ToolTop h1={route.h1} intro={route.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Tools", href: "/tools/" }, { label: route.h1 }]} breadcrumbLabel="Breadcrumb">
       <JpgToPdf client:load target={route.target} unit={route.unit} label={route.label} />
-    </div>
-  </section>
+  </ToolTop>
   <section class="content-section" style="padding-top: 0">
     <div class="container prose">
       <h2>How to convert {label} to PDF</h2>

@@ -3072,21 +3072,25 @@ main {
 }
 
 /* Minimal Imagem para PDF landing: converter first, content below */
-.im-top {
+.im-top,
+.tool-top {
   padding: clamp(1.25rem, 5vw, 3rem) 0 clamp(1.5rem, 5vw, 3rem);
   background: var(--background);
 }
 
-.im-top .breadcrumb {
+.im-top .breadcrumb,
+.tool-top .breadcrumb {
   margin-bottom: clamp(1rem, 4vw, 2.5rem);
 }
 
-.im-head {
+.im-head,
+.tool-head {
   margin-bottom: clamp(1.25rem, 4vw, 2rem);
   text-align: center;
 }
 
-.im-head h1 {
+.im-head h1,
+.tool-head h1 {
   margin: 0;
   color: var(--navy);
   font-size: clamp(2rem, 6vw, 3.1rem);
@@ -3094,7 +3098,8 @@ main {
   line-height: 1.1;
 }
 
-.im-head p {
+.im-head p,
+.tool-head p {
   max-width: 36rem;
   margin: 0.85rem auto 0;
   color: var(--muted);
@@ -3158,4 +3163,95 @@ main {
 
 .ic-minimal .ic-drop:not(.has-file):focus-visible {
   border-radius: 0.75rem;
+}
+
+/* Shared tool-page standard: every tool opens with a centered heading, then the real input, with SEO content below. */
+.tool-top {
+  --tool-action: #c84b00;
+  --tool-action-hover: #a64400;
+  --tool-action-disabled: #e8b48c;
+}
+
+.tool-top .ic {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.tool-top .ic .ic-drop:not(.has-file) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: clamp(1rem, 4vw, 2rem) 0;
+  border: 0;
+  background: transparent;
+}
+
+.tool-top .ic .ic-drop:not(.has-file) .button {
+  order: 1;
+  min-height: 3.5rem;
+  margin-bottom: 0.3rem;
+  padding-inline: 2.25rem;
+  border-color: var(--tool-action);
+  border-radius: 0.6rem;
+  background: var(--tool-action);
+  color: var(--white);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.tool-top .ic .ic-drop:not(.has-file) .ic-drop-title {
+  order: 2;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.tool-top .ic .ic-drop:not(.has-file) .ic-drop-sub {
+  order: 3;
+}
+
+.tool-top .ic .ic-drop:not(.has-file).is-dragging {
+  border: 2px dashed var(--blue);
+  border-radius: 0.75rem;
+  background: #f1f7ff;
+}
+
+.tool-top .ic .ic-drop:not(.has-file):focus-visible {
+  border-radius: 0.75rem;
+}
+
+.tool-top .ic > .ic-drop + .ic-hint {
+  text-align: center;
+}
+
+.tool-top .ic .button-primary,
+.tool-top .ic .button-download {
+  border-color: var(--tool-action);
+  border-radius: 0.6rem;
+  background: var(--tool-action);
+  color: var(--white);
+}
+
+.tool-top .ic .ic-drop:not(.has-file) .button:hover:not(:disabled),
+.tool-top .ic .button-primary:hover:not(:disabled),
+.tool-top .ic .button-download:hover:not(:disabled) {
+  border-color: var(--tool-action-hover);
+  background: var(--tool-action-hover);
+  color: var(--white);
+}
+
+.tool-top .ic .ic-drop:not(.has-file) .button:disabled,
+.tool-top .ic .button-primary:disabled,
+.tool-top .ic .button-download:disabled {
+  border-color: var(--tool-action-disabled);
+  background: var(--tool-action-disabled);
+  color: var(--white);
+}
+
+.tool-top + .content-section {
+  padding-top: clamp(1.5rem, 4vw, 2.5rem) !important;
 }

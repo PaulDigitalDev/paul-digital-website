@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ToolTop from "./ToolTop.astro";
 import SocialImageTool from "./tools/SocialImageTool";
 import InstagramGrid from "./tools/InstagramGrid";
 import { socialToolBySlug } from "../data/socialTools";
@@ -62,24 +63,9 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(appSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <section class="page-hero">
-    <div class="container">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <ol>
-          <li><a href="/">Home</a></li>
-          <li><a href="/tools/">Web Tools</a></li>
-          <li aria-current="page">{tool.h1}</li>
-        </ol>
-      </nav>
-      <h1>{tool.h1}</h1>
-      <p>{tool.intro}</p>
-    </div>
-  </section>
-  <section class="content-section">
-    <div class="container">
+  <ToolTop h1={tool.h1} intro={tool.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Web Tools", href: "/tools/" }, { label: tool.h1 }]} breadcrumbLabel="Breadcrumb">
       {tool.mode === "grid" ? <InstagramGrid client:load tool={tool} /> : <SocialImageTool client:load tool={tool} />}
-    </div>
-  </section>
+  </ToolTop>
   <section class="content-section" style="padding-top: 0">
     <div class="container prose">
       <h2>How to use {tool.h1}</h2>

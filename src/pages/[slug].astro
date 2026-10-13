@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ToolTop from "../components/ToolTop.astro";
 import ImageCompressor from "../components/tools/ImageCompressor";
 import { imageSizeBySlug, imageSizeRoutes, targetLabel } from "../data/imageSizeRoutes";
 import type { ImageSizeRoute } from "../data/imageSizeRoutes";
@@ -63,21 +64,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
     <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <section class="page-hero">
-    <div class="container">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <ol>
-          <li><a href="/">Home</a></li>
-          <li><a href="/tools/">Tools</a></li>
-          <li aria-current="page">{route.h1}</li>
-        </ol>
-      </nav>
-      <h1>{route.h1}</h1>
-      <p>{content.intro}</p>
-    </div>
-  </section>
-  <section class="content-section">
-    <div class="container">
+  <ToolTop h1={route.h1} intro={content.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Tools", href: "/tools/" }, { label: route.h1 }]} breadcrumbLabel="Breadcrumb">
       <ImageCompressor
         client:load
         mode={route.mode}
@@ -85,8 +72,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
         target={route.target}
         unit={route.unit}
       />
-    </div>
-  </section>
+  </ToolTop>
   <section class="content-section" style="padding-top: 0">
     <div class="container prose">
       <h2>How to use this tool</h2>

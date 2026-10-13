@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolTop from "../../components/ToolTop.astro";
 import JpgParaPdf from "../../components/tools/JpgParaPdf";
 
 const path = "/jpg-para-pdf/";
@@ -93,23 +94,9 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(appSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <section class="page-hero">
-    <div class="container">
-      <nav class="breadcrumb" aria-label="Trilha de navegação">
-        <ol>
-          <li><a href="/">Início</a></li>
-          <li aria-current="page">{h1}</li>
-        </ol>
-      </nav>
-      <h1>{h1}</h1>
-      <p>{intro}</p>
-    </div>
-  </section>
-  <section class="content-section">
-    <div class="container">
+  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Início", href: "/" }, { label: h1 }]} breadcrumbLabel="Trilha de navegação">
       <JpgParaPdf client:load />
-    </div>
-  </section>
+  </ToolTop>
   <section class="content-section" style="padding-top: 0">
     <div class="container prose">
       <h2>Como converter JPG em PDF</h2>
