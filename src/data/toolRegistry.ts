@@ -5,6 +5,7 @@ import { imageSizeRoutes } from "./imageSizeRoutes";
 import { jpgToPdfRoutes } from "./jpgToPdfRoutes";
 import { englishPdfTools } from "./englishPdfTools";
 import { effectTools } from "./effectTools";
+import { densityTools } from "./densityTools";
 
 export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "media";
 /** "available" tools work today and are listed. Anything else is never shown or put in the sitemap. */
@@ -98,6 +99,17 @@ const effectEntries: RegistryTool[] = effectTools.map((tool) => ({
   keywords: tool.keywords,
 }));
 
+const densityEntries: RegistryTool[] = densityTools.map((tool) => ({
+  id: tool.slug,
+  name: tool.h1,
+  category: "image",
+  route: `/${tool.slug}/`,
+  description: tool.summary,
+  status: "available",
+  related: tool.related,
+  keywords: tool.keywords,
+}));
+
 const pdfMainSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "word-to-pdf"];
 const pdfEntries: RegistryTool[] = englishPdfTools
   .filter((tool) => pdfMainSlugs.includes(tool.slug))
@@ -144,6 +156,7 @@ export const tools: RegistryTool[] = [
   ...socialEntries,
   ...editorEntries,
   ...effectEntries,
+  ...densityEntries,
 ];
 
 export const toolById = new Map(tools.map((tool) => [tool.id, tool]));
