@@ -93,6 +93,12 @@ const specs: GroupSpec[] = [
     ids: ["image-to-black-and-white", "add-border-to-image", "round-image-corners", "crop-image-to-circle"],
   },
   {
+    id: "dpi",
+    title: "DPI & File Size",
+    icon: "image",
+    ids: ["dpi-checker", "convert-dpi", "increase-image-size-in-kb"],
+  },
+  {
     id: "social",
     title: "Social Media Tools",
     icon: "social",
