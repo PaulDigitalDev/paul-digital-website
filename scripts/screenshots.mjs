@@ -11,17 +11,11 @@ const base = "http://localhost:4321";
 const fixture = path.resolve("scripts/fixture-photo.jpg");
 
 const pages = [
-  { name: "home", url: "/" },
-  { name: "image-compressor", url: "/image-compressor/", upload: true },
-  { name: "compress-50kb", url: "/compress-image-to-50kb/", upload: true },
-  { name: "jpg-to-pdf", url: "/jpg-to-pdf/", upload: true },
-  { name: "jpg-to-pdf-100kb", url: "/jpg-to-pdf-under-100kb/" },
-  { name: "webp-to-jpg", url: "/webp-to-jpg/" },
-  { name: "image-resizer", url: "/image-resizer/", upload: true },
-  { name: "passport", url: "/passport-photo-resizer/", upload: true },
-  { name: "pisah-pdf", url: "/pisah-pdf/", upload: true, file: "pdf" },
-  { name: "pdf-a-word", url: "/pdf-a-word/", upload: true, file: "pdf" },
-  { name: "unir-pdf", url: "/unir-pdf/", upload: true, file: "pdf" },
+  { name: "resize-mm", url: "/resize-image-in-mm/", upload: true },
+  { name: "photo-35x45", url: "/resize-image-to-35mmx45mm/", upload: true },
+  { name: "a4", url: "/resize-image-to-a4-size/", upload: true },
+  { name: "reduce-kb", url: "/reduce-image-size-in-kb/", upload: true },
+  { name: "signature-50x20", url: "/resize-signature-to-50mmx20mm/" },
 ];
 const viewports = [
   { tag: "desktop", width: 1366, height: 900, isMobile: false },
