@@ -118,7 +118,7 @@ export const tvm: CalcDef = {
         shown = pct(value, 4);
         label = "Annual interest rate";
       }
-      const rows = [{ label, value: shown, big: true }];
+      const rows: { label: string; value: string; big?: boolean }[] = [{ label, value: shown, big: true }];
       if (solve === "n" && py !== 1) rows.push({ label: "That many years", value: plain(value / py, 2) });
       const notes = [`Using ${plain(r * 100, 6)}% per period, ${t ? "payments at the start" : "payments at the end"} of each period.`];
       return { rows, notes };

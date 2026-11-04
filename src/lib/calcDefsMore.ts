@@ -243,7 +243,7 @@ export const percentageCalc: CalcDef = {
       if ((mode === "whatpct" && b === 0) || (mode === "change" && a === 0) || (mode === "total" && b === 0)) throw new Bad(mode === "change" ? "The old value cannot be zero for a percentage change." : "That number cannot be zero here.");
       const r = percentage(mode, a, b);
       const text = mode === "whatpct" || mode === "change" ? pct(r, 4) : plain(r, 6);
-      const rows = [{ label: PCT[mode].out, value: text, big: true }];
+      const rows: { label: string; value: string; big?: boolean }[] = [{ label: PCT[mode].out, value: text, big: true }];
       if (mode === "change") rows.push({ label: "Difference", value: plain(b - a, 6) });
       if (mode === "up" || mode === "down") rows.push({ label: "Change", value: plain(r - a, 6) });
       return { rows };
@@ -269,7 +269,7 @@ export const hourlyToSalary: CalcDef = {
       if (weeks > 52) throw new Bad("Use 52 weeks or fewer.");
       const hourly = v.from === "annual" ? positive(num(v, "annual", "Yearly salary"), "Yearly salary") / (hours * weeks) : positive(num(v, "hourly", "Hourly pay"), "Hourly pay");
       const r = hourlyToAnnual(hourly, hours, weeks);
-      const rows = v.from === "annual" ? [{ label: "Hourly pay", value: money(hourly), big: true }] : [{ label: "Yearly salary", value: money(r.annual), big: true }];
+      const rows: { label: string; value: string; big?: boolean }[] = v.from === "annual" ? [{ label: "Hourly pay", value: money(hourly), big: true }] : [{ label: "Yearly salary", value: money(r.annual), big: true }];
       rows.push({ label: "Monthly", value: money(r.monthly) }, { label: "Every 2 weeks", value: money(r.biweekly) }, { label: "Weekly", value: money(r.weekly) }, { label: "Daily (5 days)", value: money(r.daily) });
       return { rows, notes: ["Before tax and other deductions."] };
     }),

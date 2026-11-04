@@ -12,7 +12,7 @@ export type PdfToJpgErrorCode = "invalid" | "encrypted" | "corrupt" | "too-many-
 
 export class PdfToJpgError extends Error {
   code: PdfToJpgErrorCode;
-  constructor(code: PdfToJpgErrorCode, message = code) {
+  constructor(code: PdfToJpgErrorCode, message: string = code) {
     super(message);
     this.code = code;
   }
@@ -134,6 +134,6 @@ export async function renderPdfToJpg(bytes: Uint8Array, options: RenderOptions):
     }
     return { pages: out, total };
   } finally {
-    await doc.destroy().catch(() => {});
+    await (doc as unknown as { destroy?: () => Promise<void> }).destroy?.().catch(() => {});
   }
 }
