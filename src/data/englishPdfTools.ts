@@ -4,7 +4,7 @@ import type { Faq } from "./formatTools";
    Limits quoted here match the limits in the components: merge 30 files / 100 MB each / 300 MB total, split 100 MB / 1000 pages,
    compress 100 MB, PDF to Word 50 MB / 500 pages (text PDFs only, no OCR), Word to PDF 25 MB / 300 pages (.docx only). */
 
-export type PdfToolKind = "merge" | "split" | "compress" | "pdf-to-word" | "word-to-pdf";
+export type PdfToolKind = "merge" | "split" | "compress" | "pdf-to-word" | "word-to-pdf" | "pdf-to-jpg";
 
 export interface EnglishPdfTool {
   slug: string;
@@ -224,6 +224,47 @@ export const englishPdfTools: EnglishPdfTool[] = [
       { q: PRIVACY, a: PRIVACY_A },
     ],
     related: ["pdf-to-word", "merge-pdf", "jpg-to-pdf", "compress-pdf"],
+  },
+  {
+    slug: "pdf-to-jpg",
+    kind: "pdf-to-jpg",
+    accent: "pdf",
+    h1: "PDF to JPG",
+    title: "PDF to JPG Converter — Every Page as an Image, No Upload | Paul Digital",
+    description: "Convert each page of a PDF into a JPG image at 72, 150, 200 or 300 DPI. Runs in your browser, nothing is uploaded, no watermark.",
+    summary: "Convert every page of a PDF into a JPG image at the resolution you choose.",
+    intro: "Turn each page of a PDF into a JPG picture. Choose the resolution, and download one image or a ZIP of all pages. Your file never leaves your device.",
+    keywords: ["pdf to jpg", "convert pdf to jpg", "pdf to image", "pdf to jpeg"],
+    steps: [
+      "Select your PDF, or drag it onto the page.",
+      "Choose a resolution: 72 DPI for small previews, 150 for screens and sharing, 300 for printing.",
+      "Adjust the JPG quality if you need smaller files, then press Convert to JPG.",
+      "Download the image, or the ZIP if the PDF has several pages. You can also tap a page preview to download just that page.",
+    ],
+    about: [
+      "PDF to JPG draws each page of a PDF onto a white canvas and saves the result as a JPG image. Text, pictures and vector graphics are all turned into pixels, so the result looks like the printed page but can no longer be edited or searched as text.",
+      "The resolution decides how many pixels each page gets. A page is measured in points, 72 to an inch, and the DPI you pick scales it up from there. An A4 page at 150 DPI comes out at about 1241 by 1754 pixels, and at 300 DPI at about 2481 by 3508 pixels. Higher DPI gives sharper images and much larger files. Each JPG also carries the DPI it was drawn at, which only affects the print size programs assume for it.",
+      "Everything is done in your browser with the open-source PDF.js library, so confidential documents are never sent to a server. A PDF with one page gives a single JPG. A PDF with several pages gives one JPG per page, named in page order and packed into a ZIP.",
+    ],
+    limits: [
+      "PDF up to 100 MB and 100 pages.",
+      "Password-protected PDFs are rejected. Remove the protection first.",
+      "Very large pages are drawn at a lower resolution to stay within browser memory limits, and the tool tells you when that happens.",
+      "JPG has no transparency, so pages are drawn on a white background.",
+    ],
+    tips: [
+      "Use 150 DPI for sharing and 300 DPI only when you need to print, as the files are much larger.",
+      "For a text-heavy page, keep quality at 85% or higher so the letters stay crisp.",
+      "If you need only some pages, split the PDF first with Split PDF and convert the part you need.",
+    ],
+    faqs: [
+      { q: "How do I convert a PDF to JPG?", a: "Select the PDF, choose a resolution and press Convert to JPG. You download one image for a single page, or a ZIP with one image per page." },
+      { q: "What DPI should I choose?", a: "150 DPI is a good all-round choice for screens and sharing. 300 DPI is better for printing. 72 DPI gives small previews." },
+      { q: "Will the text still be selectable?", a: "No. Each page becomes a picture, so the text is pixels. Use PDF to Word if you need editable text." },
+      { q: "Is there a page or size limit?", a: "Yes. PDFs up to 100 MB and 100 pages, so that your browser can handle the conversion." },
+      { q: PRIVACY, a: PRIVACY_A },
+    ],
+    related: ["split-pdf", "compress-pdf", "jpg-to-pdf", "image-compressor"],
   },
   sizePage(
     50,

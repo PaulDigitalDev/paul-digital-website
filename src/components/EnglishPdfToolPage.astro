@@ -6,6 +6,7 @@ import SplitPdf from "./tools/SplitPdf";
 import CompressPdf from "./tools/CompressPdf";
 import PdfToWord from "./tools/PdfToWord";
 import WordToPdf from "./tools/WordToPdf";
+import PdfToJpg from "./tools/PdfToJpg";
 import { englishPdfTools, englishPdfToolBySlug } from "../data/englishPdfTools";
 import { toolById } from "../data/toolRegistry";
 import { jpgToPdfBySlug } from "../data/jpgToPdfRoutes";
@@ -74,6 +75,7 @@ const appSchema = {
     {tool.kind === "compress" && <CompressPdf client:load targetKb={tool.targetKb} />}
     {tool.kind === "pdf-to-word" && <PdfToWord client:load />}
     {tool.kind === "word-to-pdf" && <WordToPdf client:load />}
+    {tool.kind === "pdf-to-jpg" && <PdfToJpg client:load />}
   </ToolTop>
   <section class="content-section" style="padding-top: 0">
     <div class="container prose">
