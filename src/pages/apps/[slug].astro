@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AppDetail from "../../components/AppDetail.astro";
+import { allApps, type App } from "../../data/apps";
+
+export function getStaticPaths() {
+  return allApps.map((app) => ({ params: { slug: app.slug }, props: { app } }));
+}
+
+const { app } = Astro.props as { app: App };
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  name: app.name,
+  operatingSystem: "Android",
+  applicationCategory: "UtilitiesApplication",
+  description: app.metaDescription,
+  url: site(`/apps/${app.slug}/`),
+  ...(app.playUrl ? { installUrl: app.playUrl, downloadUrl: app.playUrl } : {}),
+  author: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={app.metaTitle} description={app.metaDescription} canonicalUrl={`/apps/${app.slug}/`}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(appSchema)} />
+  </Fragment>
+  <AppDetail app={app} />
+</BaseLayout>

@@ -24,4 +24,39 @@ const items = jpgToPdfRoutes.map((route) => ({
     "Choose an exact size limit below to open the converter with that target already set, or start with the default converter and edit the target yourself.",
     "The actual size of the finished PDF is always measured and reported, so you can see whether it meets the limit before you download it.",
   ]}
+  sections={[
+    {
+      heading: "How to convert JPG images to a PDF",
+      html: `<ol>
+<li>Open a size page, or the default converter, and choose one or more JPG files. You can select many at once.</li>
+<li>Put the pages in order with the arrows and remove any you do not need.</li>
+<li>Choose A4 pages or pages that match each image, and confirm the target size.</li>
+<li>Create the PDF. The converter embeds your JPEGs unchanged when they already fit, and recompresses them gradually only when the PDF would be over the target.</li>
+<li>Check the measured size and the Target met message, then download the PDF.</li>
+</ol>`,
+    },
+    {
+      heading: "Keeping a PDF small but readable",
+      html: `<p>A PDF made from photos is about as large as the images inside it, so a ten-page PDF of full-size phone photos can easily reach 30 MB. Crop each photo to the page and avoid sending more pages than needed. As a rule of thumb, divide the upload limit by the number of pages to get the budget for each image: a 500 KB limit for five pages leaves about 100 KB per page, which is enough for clear printed text at around 1000–1240 pixels wide.</p>
+<p>The guide <a href="/guides/make-a-small-pdf-from-photos/">how to turn photos into a small PDF</a> walks through the whole process, and <a href="/guides/scan-documents-with-your-phone/">scanning documents with your phone</a> explains how to take clean page photos in the first place.</p>`,
+    },
+    {
+      heading: "Other formats and languages",
+      html: `<p>The converter accepts JPG and JPEG. Convert PNG, WebP or HEIC images first with the <a href="/image-converter/">Image Converter</a>. The same tool is also available in other languages, for example <a href="/jpg-a-pdf/" lang="es" hreflang="es">JPG a PDF</a> in Spanish, <a href="/jpg-para-pdf/" lang="pt" hreflang="pt">JPG para PDF</a> in Portuguese and <a href="/jpg-ke-pdf/" lang="id" hreflang="id">JPG ke PDF</a> in Indonesian. Your images are processed in your browser and never uploaded.</p>`,
+    },
+  ]}
+  faqs={[
+    {
+      q: "How do I combine several JPGs into one PDF?",
+      a: "Select all the images at once, or add more afterwards, arrange them with the arrows and create the PDF. Each image becomes one page in the order shown.",
+    },
+    {
+      q: "Does converting JPG to PDF lose quality?",
+      a: "No, unless the PDF has to be recompressed to meet a size target. When the images already fit, they are embedded unchanged.",
+    },
+    {
+      q: "How can I make a PDF under 100 KB?",
+      a: "Use the 100 KB page with one or two cropped pages. For more pages, choose a larger target or reduce the number of pages.",
+    },
+  ]}
 />

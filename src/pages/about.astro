@@ -1,46 +1,80 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { publishedApps } from "../data/apps";
+import { guides } from "../data/guides";
+import { availableTools } from "../data/toolRegistry";
 ---
 
 <BaseLayout
-  title="About Paul Digital"
-  description="Learn about Paul Digital and its lightweight Android utilities and practical browser-based tools."
+  title="About Paul Digital — Android Utility Apps and Free Browser Tools"
+  description="Paul Digital is an independent developer of Android utility apps and free browser-based tools for images, PDFs and documents. Learn how the tools work and how the guides are written."
 >
   <section class="page-hero">
     <div class="container">
       <span class="eyebrow">About</span>
       <h1>Useful software, thoughtfully made.</h1>
       <p>
-        Paul Digital creates lightweight Android utilities and practical digital tools for
-        everyday tasks, for people around the world.
+        Paul Digital is an independent developer of lightweight Android utilities and free web tools for everyday file tasks,
+        used by people around the world.
       </p>
     </div>
   </section>
   <section class="content-section">
     <div class="container prose">
-      <h2>Designed for everyday tasks</h2>
+      <h2>What Paul Digital does</h2>
       <p>
-        Paul Digital focuses on simple, fast and useful software. Apps and tools are designed
-        around practical user experiences that help people complete everyday tasks without
-        unnecessary complexity.
+        Most of us run into the same small file problems again and again: a form that rejects a photo for being 3 KB too large,
+        a document that has to be sent as one PDF, an iPhone picture a website will not accept, a screenshot whose text you need
+        to copy. Paul Digital builds simple tools for exactly these jobs, without accounts, clutter or unnecessary permissions.
       </p>
-      <h2>Lightweight and privacy-conscious</h2>
+      <p>The work falls into three parts:</p>
+      <ul>
+        <li>
+          <strong>{availableTools.length} free <a href="/tools/">web tools</a></strong> for compressing, resizing, cropping and
+          converting images, turning JPGs into PDFs, and extracting text from pictures.
+        </li>
+        <li>
+          <strong>{publishedApps.length} <a href="/apps/">Android apps</a></strong> on Google Play, including
+          {publishedApps.slice(0, 3).map((app, i) => <>{i > 0 && ", "}<a href={`/apps/${app.slug}/`}>{app.name}</a></>)}.
+        </li>
+        <li>
+          <strong>{guides.length} in-depth <a href="/guides/">guides</a></strong> that explain the problems behind the tools,
+          such as how image file size works and what photo metadata reveals.
+        </li>
+      </ul>
+
+      <h2>How the web tools work</h2>
       <p>
-        Lightweight performance and thoughtful handling of information are important
-        considerations. Where technically appropriate, an app may support offline use; behavior
-        and connectivity needs vary by app and feature. See the
-        <a href="/privacy/">Privacy Policy</a> and the relevant app disclosures for details.
+        Every web tool on this site runs inside your browser. When you choose a file, it is read and processed on your own phone
+        or computer, and the result is offered as a download. Your files are not uploaded to Paul Digital or anyone else, which
+        makes the tools quick on slow connections and suitable for private documents. The guide
+        <a href="/guides/how-browser-based-file-tools-work/">how browser-based file tools work</a> explains this in detail and
+        shows how to check it yourself.
       </p>
-      <h2>Apps, web tools and guides</h2>
       <p>
-        Paul Digital develops Android apps and useful browser-based tools. Explore the
-        <a href="/apps/">apps</a>, see the <a href="/tools/">web tools</a>, or read the
-        <a href="/guides/">guides</a>.
+        Tools that aim for a target, such as a size in KB, always measure and report the real result rather than assuming it.
+        If a target cannot be reached without making the file unusable, the tool says so.
       </p>
+
+      <h2>How the guides are written</h2>
+      <p>
+        Guides are written from hands-on use of the tools and the file formats they handle, in plain language, with concrete
+        numbers where they help. Where rules are set by someone else, such as exam boards, governments or social networks, the
+        guides describe typical requirements and point you to the official instructions, because those rules vary and change.
+        Guides show the date they were last updated and are revised when formats, platforms or the tools change.
+      </p>
+
+      <h2>Privacy and advertising</h2>
+      <p>
+        The website uses Google Analytics only if you accept it in the consent banner, and may show advertising to keep the tools
+        free. Neither receives the files you process. Details are in the <a href="/privacy/">Privacy Policy</a>, and the rules for
+        using the site are in the <a href="/terms/">Terms of Use</a>.
+      </p>
+
       <h2>Contact</h2>
       <p>
-        For app support, feedback, or general and business inquiries, email
-        <a href="mailto:askpaulonline@gmail.com">askpaulonline@gmail.com</a>.
+        For app support, feedback, corrections to a guide, or general and business inquiries, email
+        <a href="mailto:askpaulonline@gmail.com">askpaulonline@gmail.com</a> or see the <a href="/contact/">contact page</a>.
       </p>
     </div>
   </section>
