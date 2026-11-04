@@ -1333,3 +1333,74 @@
     width: 100%;
   }
 }
+
+/* Controls that used blue/orange now follow the page's category colour. */
+.tool-top .ic:not(.pt) input[type="range"],
+.tool-top .ic:not(.pt) input[type="checkbox"],
+.tool-top .ic:not(.pt) input[type="radio"] {
+  accent-color: var(--accent);
+}
+
+.tool-top .ic:not(.pt) .ed-tab.is-active,
+.tool-top .ic:not(.pt) .ed-toolbar .button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.tool-top .ic:not(.pt) .ed-tab:focus-visible,
+.tool-top .ic:not(.pt) .ed-toolbar .button:focus-visible {
+  outline-color: var(--accent);
+}
+
+.tool-top .ic:not(.pt) .ed-tab {
+  border-color: #dbe1ee;
+}
+
+.tool-top .ic:not(.pt) .ed-tab:hover:not(.is-active) {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+/* Split / mode pickers become tappable cards. */
+.tool-top .ic:not(.pt) .sp-total,
+.tool-top .ic:not(.pt) .sp-modes {
+  flex: 1 1 100%;
+  margin: 0;
+}
+
+.tool-top .ic:not(.pt) .sp-modes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.6rem;
+  padding: 0;
+  border: 0;
+}
+
+.tool-top .ic:not(.pt) .sp-modes legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.tool-top .ic:not(.pt) .sp-modes label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #dbe1ee;
+  border-radius: 0.8rem;
+  background: #fff;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.tool-top .ic:not(.pt) .sp-modes label:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+/* Once a file is loaded, hide the page heading so the workspace sits at the top. */
+.tool-top:has(.ic:not(.pt) .ic-drop.has-file) .tool-head {
+  display: none;
+}
