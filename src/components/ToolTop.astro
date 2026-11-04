@@ -13,12 +13,14 @@ interface Props {
   intro: string;
   crumbs: Crumb[];
   breadcrumbLabel?: string;
+  /** Category colour for the main buttons: pdf (red), word (blue), image (green), convert (teal), photo (indigo), social (pink), text (purple). */
+  accent?: "pdf" | "word" | "image" | "convert" | "photo" | "social" | "text";
 }
 
-const { h1, intro, crumbs, breadcrumbLabel = "Breadcrumb" } = Astro.props;
+const { h1, intro, crumbs, breadcrumbLabel = "Breadcrumb", accent } = Astro.props;
 ---
 
-<section class="tool-top">
+<section class="tool-top" data-accent={accent}>
   <div class="container">
     <nav class="breadcrumb" aria-label={breadcrumbLabel}>
       <ol>

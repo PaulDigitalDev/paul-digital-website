@@ -1,0 +1,42 @@
+name: Design screenshots
+
+# Builds the site, takes desktop and mobile screenshots of key pages, and pushes them to the
+# `ci-screenshots` branch (one folder per source branch) for design review.
+on:
+  push:
+    branches: [premium-redesign]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - run: npm i --no-save --no-audit --no-fund playwright@1.49.1 && npx playwright install --with-deps chromium
+      - name: Serve and capture
+        run: |
+          npx astro preview --port 4321 &
+          npx -y wait-on@8 http://localhost:4321/ --timeout 60000
+          node scripts/screenshots.mjs /tmp/shots
+      - name: Push screenshots
+        run: |
+          SHA=$(git rev-parse --short HEAD)
+          BR=${GITHUB_REF_NAME}
+          cd /tmp/shots
+          git init -q
+          git checkout -q -b ci-screenshots
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          mkdir -p "../repo-shots/$BR" && mv *.png "../repo-shots/$BR/" && mv "../repo-shots" ./shots
+          echo "$SHA" > shots/$BR/COMMIT
+          git add -A && git commit -qm "Screenshots for $BR @ $SHA"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" ci-screenshots
