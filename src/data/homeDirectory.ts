@@ -99,6 +99,12 @@ const specs: GroupSpec[] = [
     ids: ["dpi-checker", "convert-dpi", "increase-image-size-in-kb"],
   },
   {
+    id: "calculators",
+    title: "Calculators",
+    icon: "convert",
+    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator"],
+  },
+  {
     id: "social",
     title: "Social Media Tools",
     icon: "social",
