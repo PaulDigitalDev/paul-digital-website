@@ -11,11 +11,13 @@ const base = "http://localhost:4321";
 const fixture = path.resolve("scripts/fixture-photo.jpg");
 
 const pages = [
-  { name: "resize-mm", url: "/resize-image-in-mm/", upload: true },
-  { name: "photo-35x45", url: "/resize-image-to-35mmx45mm/", upload: true },
-  { name: "a4", url: "/resize-image-to-a4-size/", upload: true },
-  { name: "reduce-kb", url: "/reduce-image-size-in-kb/", upload: true },
-  { name: "signature-50x20", url: "/resize-signature-to-50mmx20mm/" },
+  { name: "home", url: "/" },
+  { name: "merge-pdf", url: "/merge-pdf/", upload: true, file: "pdf" },
+  { name: "split-pdf", url: "/split-pdf/", upload: true, file: "pdf" },
+  { name: "compress-pdf", url: "/compress-pdf/", upload: true, file: "pdf" },
+  { name: "compress-100kb", url: "/compress-pdf-to-100kb/", upload: true, file: "pdf" },
+  { name: "pdf-to-word", url: "/pdf-to-word/", upload: true, file: "pdf" },
+  { name: "word-to-pdf", url: "/word-to-pdf/" },
 ];
 const viewports = [
   { tag: "desktop", width: 1366, height: 900, isMobile: false },
