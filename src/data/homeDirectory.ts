@@ -87,6 +87,12 @@ const specs: GroupSpec[] = [
     ids: ["passport-photo-resizer", "uk-passport-photo-digital", "signature-resizer", "government-job-photo-signature-resizer"],
   },
   {
+    id: "effects",
+    title: "Image Effects",
+    icon: "image",
+    ids: ["image-to-black-and-white", "add-border-to-image", "round-image-corners", "crop-image-to-circle"],
+  },
+  {
     id: "social",
     title: "Social Media Tools",
     icon: "social",
