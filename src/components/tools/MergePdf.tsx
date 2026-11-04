@@ -7,7 +7,7 @@ const MAX_FILES = 30;
 const MAX_FILE_BYTES = 100 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 300 * 1024 * 1024;
 
-type Locale = "pt-BR" | "es" | "id" | "tr" | "fr" | "de" | "it" | "ru" | "ar";
+type Locale = "pt-BR" | "en" | "es" | "id" | "tr" | "fr" | "de" | "it" | "ru" | "ar";
 /** Two forms (singular, plural), three Russian forms (1, 2–4, 5+) or six Arabic forms (zero, one, two, few, many, other; "{n}" is the count). */
 type Forms = readonly [string, string] | readonly [string, string, string] | readonly [string, string, string, string, string, string];
 
@@ -110,6 +110,53 @@ const TEXT: Record<Locale, Strings> = {
     merged: "Arquivos unidos",
     download: "Baixar PDF",
     reset: "Limpar arquivos",
+  },
+  en: {
+    outputName: "merged.pdf",
+    cleared: "File list cleared. Select new PDFs to start.",
+    reading: (name) => `Reading ${name}…`,
+    limitFiles: (name, max) => `${name}: not added. The limit is ${max} files.`,
+    empty: (name) => `${name}: the file is empty.`,
+    tooBig: (name, size, max) => `${name}: it is ${size}, over the ${max} limit per file.`,
+    totalExceeded: (name, max) => `${name}: not added because the total would pass ${max}.`,
+    encrypted: (name) => `${name}: the PDF is password protected. Remove the protection and try again.`,
+    invalid: (name) => `${name}: this file is not a PDF.`,
+    unreadable: (name) => `${name}: this PDF could not be read. It may be damaged.`,
+    added: ["PDF added", "PDFs added"],
+    moved: (name, pos, total) => `${name} moved to position ${pos} of ${total}.`,
+    fallbackName: "File",
+    removed: (name) => `${name} removed.`,
+    needTwo: "Add at least two PDFs to merge.",
+    mergingFile: (done, total) => `Merging file ${done + 1} of ${total}…`,
+    finalizing: "Finishing the PDF…",
+    success: "Your merged PDF is ready!",
+    failure: "The PDFs could not be merged. Check the files or try again with fewer files.",
+    selected: ["PDF selected", "PDFs selected"],
+    page: ["page", "pages"],
+    emptyTitle: "Drag and drop your PDF files here",
+    emptySub: (max) => `Select two or more PDF files to start. Up to ${max} each.`,
+    filledSub: (pages, size) => `${pages} · ${size} in total · add more any time`,
+    select: "Select PDF files",
+    dropAria: "Drop area for PDF files",
+    privacy: "Your files are processed on your device and are not uploaded to a server.",
+    listHeading: (n) => `Selected files (${n})`,
+    orderHint: "Put the files in the order you want.",
+    listAria: "Selected files, in the order they will be merged",
+    up: (name) => `Move ${name} up`,
+    down: (name) => `Move ${name} down`,
+    removeAria: (name) => `Remove ${name}`,
+    remove: "Remove",
+    merging: "Merging files...",
+    submit: "Merge PDFs",
+    needOneMore: "Add one more PDF so you can merge them. ",
+    listHint: "Pages are joined in the order of the list. Use the arrows to reorder and Remove to take a file out.",
+    result: "Result",
+    format: "Format",
+    size: "Size",
+    pages: "Pages",
+    merged: "Files merged",
+    download: "Download PDF",
+    reset: "Clear files",
   },
   es: {
     outputName: "unir-pdf.pdf",

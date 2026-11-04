@@ -318,5 +318,5 @@ export function savedPercent(original: number, result: number): number {
 export function formatPercent(value: number, locale: string): string {
   const abs = Math.abs(value);
   const digits = abs < 10 ? 1 : 0;
-  return `${abs.toLocaleString(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits })} %`;
+  return `${abs.toLocaleString(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits })}${locale.startsWith("en") ? "%" : " %"}`;
 }
