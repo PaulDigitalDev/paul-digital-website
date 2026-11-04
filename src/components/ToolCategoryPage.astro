@@ -14,9 +14,12 @@ interface Props {
   gridId: string;
   items: { href: string; label: string; ariaLabel: string }[];
   about: string[];
+  /** Optional in-depth sections (trusted HTML) shown after the size grid. */
+  sections?: { heading: string; html: string }[];
+  faqs?: { q: string; a: string }[];
 }
 
-const { path, title, description, h1, intro, group, openHref, openLabel, gridId, items, about } = Astro.props;
+const { path, title, description, h1, intro, group, openHref, openLabel, gridId, items, about, sections = [], faqs = [] } = Astro.props;
 const site = (p: string) => new URL(p, Astro.site).href;
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -28,11 +31,17 @@ const breadcrumbSchema = {
   ],
 };
 const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
 ---
 
 <BaseLayout title={title} description={description} canonicalUrl={path}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    {faqs.length > 0 && <script type="application/ld+json" set:html={json(faqSchema)} />}
   </Fragment>
   <section class="page-hero">
     <div class="container">
@@ -55,6 +64,29 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
       <TargetSizeGrid headingId={gridId} items={items} />
       <div class="prose target-about">
         {about.map((text) => <p>{text}</p>)}
+        {
+          sections.map((section) => (
+            <>
+              <h2>{section.heading}</h2>
+              <Fragment set:html={section.html} />
+            </>
+          ))
+        }
+        {
+          faqs.length > 0 && (
+            <>
+              <h2>Frequently asked questions</h2>
+              <div class="faq-list">
+                {faqs.map((faq) => (
+                  <div class="faq-item">
+                    <h3>{faq.q}</h3>
+                    <p>{faq.a}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )
+        }
       </div>
     </div>
   </section>

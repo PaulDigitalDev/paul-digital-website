@@ -5,21 +5,41 @@ import { publishedApps } from "../../data/apps";
 ---
 
 <BaseLayout
-  title="Apps — Paul Digital"
-  description="Explore Paul Digital apps, including Image to PDF Converter Offline and WAV to MP3 Converter."
+  title="Android Apps by Paul Digital — PDF, Image and Audio Utilities"
+  description="Paul Digital Android apps on Google Play: Image to PDF Converter Offline, Word to PDF Converter, Compress Image Size, Photo EXIF Editor and WAV to MP3 Converter."
 >
   <section class="page-hero">
     <div class="container">
       <span class="eyebrow">Paul Digital apps</span>
-      <h1>Apps</h1>
-      <p>Explore Paul Digital apps available on Google Play.</p>
+      <h1>Android apps</h1>
+      <p>
+        Small, focused Android utilities for documents, photos and audio. Each app does one job well and processes your files
+        on your phone.
+      </p>
     </div>
   </section>
   <section class="content-section">
     <div class="container">
-      <h2 class="section-title">Published Apps</h2>
+      <h2 class="section-title">Published apps</h2>
       <div class="card-grid app-grid">
         {publishedApps.map((app) => <AppCard app={app} />)}
+      </div>
+      <div class="prose" style="margin-top: 2rem">
+        <h2>How Paul Digital apps are made</h2>
+        <p>
+          Paul Digital apps are built around a single everyday task: turning photos into a PDF, getting a picture under an
+          upload limit, fixing a photo's date or location, or converting an audio file. They avoid permissions the task does not
+          need and keep files on the device wherever the task allows.
+        </p>
+        <p>
+          Many of the same jobs can also be done without installing anything, using the free <a href="/tools/">web tools</a> on
+          this site. Questions and feature requests are welcome at
+          <a href="mailto:askpaulonline@gmail.com">askpaulonline@gmail.com</a>, and app privacy details are in the
+          <a href="/privacy/">privacy policy</a>.
+        </p>
+        <p>
+          <a href="https://play.google.com/store/apps/dev?id=7949073170466838031" target="_blank" rel="noopener noreferrer">See all Paul Digital apps on Google Play</a>.
+        </p>
       </div>
     </div>
   </section>

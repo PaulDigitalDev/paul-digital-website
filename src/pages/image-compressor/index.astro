@@ -24,4 +24,40 @@ const items = imageSizeRoutes.map((route) => {
     "Pick an exact target size below to open the compressor with that goal already filled in, or open the default compressor and type your own limit. The target stays editable on every page.",
     "The size you choose is a goal, not a promise. The result depends on the original image and your browser, so the tool reports the actual size of the file it produces.",
   ]}
+  sections={[
+    {
+      heading: "How the Image Compressor reaches a target size",
+      html: `<p>When you set a target such as 50 KB, the compressor first re-encodes the image at gradually lower quality and measures the real file after each attempt. If quality alone cannot reach the target without the picture falling apart, it then reduces the pixel dimensions step by step. This order keeps as much detail as possible: a slightly smaller image at good quality nearly always looks better than a full-size image at very low quality.</p>
+<p>The "resize" pages, such as <a href="/resize-image-to-50kb/">resize image to 50 KB</a>, work the other way round: they scale dimensions down first and only lower quality if needed. That suits graphics and screenshots, where heavy compression creates visible blocks around edges and text.</p>`,
+    },
+    {
+      heading: "Which target size to choose",
+      html: `<ul>
+<li><strong>10–20 KB:</strong> signatures and tiny ID photos for online forms.</li>
+<li><strong>20–50 KB:</strong> passport-style photos for exam, job and government applications.</li>
+<li><strong>100–200 KB:</strong> profile pictures, document photos and scans that must stay readable.</li>
+<li><strong>300–500 KB:</strong> good-quality photos for websites and email.</li>
+<li><strong>1–2 MB:</strong> near-original quality for portals with generous limits.</li>
+</ul>
+<p>Always use the limit stated by the form you are filling in, and aim a few kilobytes under it. The guide on <a href="/guides/compress-image-to-specific-kb-size/">compressing an image to an exact KB size</a> explains the method in detail, and <a href="/guides/photo-and-signature-size-for-online-forms/">photo and signature size for online forms</a> covers the other requirements portals check.</p>`,
+    },
+    {
+      heading: "Supported formats and privacy",
+      html: `<p>The compressor accepts JPEG, PNG and WebP images; pages labelled JPEG accept only .jpg and .jpeg. Photos are best saved as JPEG for a small size. iPhone HEIC photos need converting first with <a href="/heic-to-jpg/">HEIC to JPG</a>. Everything runs in your browser: your image is not uploaded, and nothing is kept after you close the page.</p>`,
+    },
+  ]}
+  faqs={[
+    {
+      q: "How do I compress an image to 50 KB?",
+      a: "Open the 50 KB page, choose your photo and press the button. The tool lowers quality and, if needed, dimensions until the file is at or under 50 KB, then shows the measured size.",
+    },
+    {
+      q: "Will compressing reduce the image quality?",
+      a: "Some detail is removed, but at moderate targets the change is hard to see. Cropping away empty background first lets the tool keep higher quality.",
+    },
+    {
+      q: "Is the Image Compressor free and private?",
+      a: "Yes. It is free, needs no sign-up, and processes images on your device without uploading them.",
+    },
+  ]}
 />

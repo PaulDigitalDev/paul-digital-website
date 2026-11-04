@@ -156,7 +156,7 @@ export const guides: Guide[] = [
 <li>Sign in the middle of a plain white sheet with a black or dark blue pen. A gel or felt pen gives a clearer line than a ballpoint.</li>
 <li>Photograph it straight from above in good light, so the paper is evenly bright with no shadow of your phone.</li>
 <li>Crop tightly around the signature, leaving only a small margin.</li>
-<li>Resize to the required dimensions and compress to the KB range with the <a href="/signature-resizer/">signature resizer</a>.</li>
+<li>Resize to the required dimensions and set the maximum KB with the <a href="/signature-resizer/">signature resizer</a>. If the notice also gives a minimum, use the <a href="/government-job-photo-signature-resizer/">government form resizer</a>, which handles a KB range.</li>
 </ol>
 <p>If the paper looks grey, increase brightness slightly before compressing; a white background compresses much better than a grey, textured one.</p>`,
       },
@@ -593,7 +593,7 @@ export const guides: Guide[] = [
 <li><strong>Straightness:</strong> skewed or curved lines (a book photographed near the spine) reduce accuracy.</li>
 <li><strong>Blur and shadows:</strong> motion blur and the shadow of your phone over part of the page cause missing or wrong characters.</li>
 <li><strong>Handwriting and decorative fonts:</strong> general OCR engines are trained mainly on print, so handwriting results vary widely.</li>
-<li><strong>Language:</strong> the engine must know the language; English-trained models will mangle other scripts.</li>
+<li><strong>Language:</strong> the engine must know the language; English-trained models will mangle other scripts. The OCR tools on this site read printed English.</li>
 </ul>`,
       },
       {
@@ -603,7 +603,7 @@ export const guides: Guide[] = [
 <li>Crop to the text you need with the <a href="/crop-rotate-flip-image/">crop tool</a>; less clutter means fewer stray characters.</li>
 <li>Rotate so lines are horizontal.</li>
 <li>For screenshots, use the original PNG rather than a compressed copy; PNG keeps letter edges sharp.</li>
-<li>Run <a href="/jpg-to-text/">JPG to Text</a> or <a href="/png-to-text/">PNG to Text</a>, or <a href="/image-to-word/">Image to Word</a> if you want an editable document.</li>
+<li>Run <a href="/jpg-to-text/">JPG to Text</a> or <a href="/png-to-text/">PNG to Text</a>, then paste the text into your document. These tools read printed English.</li>
 </ol>`,
       },
       {
@@ -628,7 +628,7 @@ export const guides: Guide[] = [
     tools: [
       { href: "/jpg-to-text/", label: "JPG to Text (OCR)" },
       { href: "/png-to-text/", label: "PNG to Text (OCR)" },
-      { href: "/image-to-word/", label: "Image to Word" },
+      { href: "/image-to-word/", label: "Image to Word (place images in a .docx)" },
     ],
   },
   {
@@ -736,9 +736,9 @@ export const guides: Guide[] = [
 <tbody>
 <tr><td>Multi-page document, official submission</td><td>PDF (one page per image)</td></tr>
 <tr><td>Single page uploaded as an image</td><td>JPEG</td></tr>
-<tr><td>Need to edit or copy the text</td><td>OCR to text or Word</td></tr>
+<tr><td>Need to edit or copy the text</td><td>OCR to plain text</td></tr>
 </tbody></table>
-<p>To combine pages, use <a href="/jpg-to-pdf/">JPG to PDF</a>; for a size limit, see <a href="/guides/make-a-small-pdf-from-photos/">making a small PDF from photos</a>. To get editable text, run the page through <a href="/image-to-word/">Image to Word</a>.</p>`,
+<p>To combine pages, use <a href="/jpg-to-pdf/">JPG to PDF</a>; for a size limit, see <a href="/guides/make-a-small-pdf-from-photos/">making a small PDF from photos</a>. To get editable text, run the page through <a href="/jpg-to-text/">JPG to Text</a>; to place the page images into a Word file as pictures, use <a href="/image-to-word/">Image to Word</a>.</p>`,
       },
       {
         heading: "Scanning on Android with an app",
@@ -761,7 +761,7 @@ export const guides: Guide[] = [
     ],
     tools: [
       { href: "/jpg-to-pdf/", label: "JPG to PDF" },
-      { href: "/image-to-word/", label: "Image to Word" },
+      { href: "/jpg-to-text/", label: "JPG to Text (OCR)" },
       { href: "/apps/image-to-pdf-converter/", label: "Image to PDF Converter (Android app)" },
     ],
   },
@@ -890,7 +890,7 @@ export const guides: Guide[] = [
     tools: [
       { href: "/jpg-to-pdf/", label: "JPG to PDF" },
       { href: "/image-resizer/", label: "Image Resizer" },
-      { href: "/image-to-word/", label: "Image to Word" },
+      { href: "/image-compressor/", label: "Image Compressor" },
     ],
   },
 ];
