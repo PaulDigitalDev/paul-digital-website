@@ -7,6 +7,15 @@ import { DropArea, ResultPanel, StatusArea } from "./shared";
 import { IMAGE_ACCEPT, useImageSource } from "./useImageSource";
 
 type Mode = "pixels" | "percent" | "cm";
+export type PhysicalUnit = "cm" | "mm" | "in";
+const UNITS_PER_INCH: Record<PhysicalUnit, number> = { cm: 2.54, mm: 25.4, in: 1 };
+const UNIT_NAME: Record<PhysicalUnit, string> = { cm: "Centimetres", mm: "Millimetres", in: "Inches" };
+
+export interface ResizerStart {
+  mode?: Mode;
+  unit?: PhysicalUnit;
+  dpi?: number;
+}
 
 interface Exported {
   url: string;
@@ -18,18 +27,19 @@ interface Exported {
   notes: string[];
 }
 
-const CM_PER_INCH = 2.54;
 const fmt = (n: number, digits = 2) => String(Number(n.toFixed(digits)));
 
-export default function ImageResizer() {
-  const [mode, setMode] = useState<Mode>("pixels");
+export default function ImageResizer({ start }: { start?: ResizerStart }) {
+  const [mode, setMode] = useState<Mode>(start?.mode ?? "pixels");
+  const [unit, setUnit] = useState<PhysicalUnit>(start?.unit ?? "cm");
+  const CM_PER_INCH = UNITS_PER_INCH[unit];
   const [lock, setLock] = useState(true);
   const [wStr, setWStr] = useState("");
   const [hStr, setHStr] = useState("");
   const [pct, setPct] = useState("50");
   const [cmW, setCmW] = useState("");
   const [cmH, setCmH] = useState("");
-  const [dpi, setDpi] = useState("300");
+  const [dpi, setDpi] = useState(String(start?.dpi ?? 300));
   const [format, setFormat] = useState<OutputKind>("jpeg");
   const [quality, setQuality] = useState(0.92);
   const [result, setResult] = useState<Exported | null>(null);
@@ -58,7 +68,7 @@ export default function ImageResizer() {
     const own = src.kind === "png" ? "png" : src.kind === "webp" ? "webp" : "jpeg";
     setFormat(encoders.includes(own) ? own : encoders[0]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dims]);
+  }, [dims, unit]);
 
   useEffect(() => {
     if (!encoders.includes(format)) setFormat(encoders[0]);
@@ -105,14 +115,14 @@ export default function ImageResizer() {
       w = Math.round((dims.w * Number(pct)) / 100);
       h = Math.round((dims.h * Number(pct)) / 100);
     } else {
-      if (!positive(cmW) || !positive(cmH)) return { w: 0, h: 0, error: "Enter a width and height in centimetres greater than zero." };
+      if (!positive(cmW) || !positive(cmH)) return { w: 0, h: 0, error: "Enter a width and height greater than zero." };
       if (!(dpiN >= 1 && dpiN <= 2400)) return { w: 0, h: 0, error: "Enter a DPI between 1 and 2400." };
       w = Math.round((Number(cmW) / CM_PER_INCH) * dpiN);
       h = Math.round((Number(cmH) / CM_PER_INCH) * dpiN);
     }
     if (w < 1 || h < 1) return { w: 0, h: 0, error: "That would make the image smaller than 1 pixel on one side. Use a larger size." };
     return { w, h, error: checkOutputSize(w, h) };
-  }, [dims, mode, wStr, hStr, pct, cmW, cmH, dpi]);
+  }, [dims, mode, wStr, hStr, pct, cmW, cmH, dpi, unit]);
 
   const dpiN = Number(dpi);
   const printCm = target.w && dpiN >= 1 ? { w: (target.w / dpiN) * CM_PER_INCH, h: (target.h / dpiN) * CM_PER_INCH } : null;
@@ -194,7 +204,7 @@ export default function ImageResizer() {
           <div className="ed-tabs" role="group" aria-label="Resize by">
             {modeBtn("pixels", "Pixels")}
             {modeBtn("percent", "Percentage")}
-            {modeBtn("cm", "Centimetres + DPI")}
+            {modeBtn("cm", `${UNIT_NAME[unit]} + DPI`)}
           </div>
 
           <div className="ic-controls">
@@ -219,11 +229,19 @@ export default function ImageResizer() {
             {mode === "cm" && (
               <>
                 <div className="ic-field ic-field-unit">
-                  <label htmlFor="rz-cmw">Width (cm)</label>
+                  <label htmlFor="rz-unit">Unit</label>
+                  <select id="rz-unit" value={unit} disabled={busy} onChange={(e) => { clearResult(); setUnit(e.target.value as PhysicalUnit); }}>
+                    <option value="cm">cm</option>
+                    <option value="mm">mm</option>
+                    <option value="in">inch</option>
+                  </select>
+                </div>
+                <div className="ic-field ic-field-unit">
+                  <label htmlFor="rz-cmw">Width ({unit})</label>
                   <input id="rz-cmw" type="number" inputMode="decimal" min={0.1} step="any" value={cmW} disabled={busy} onChange={(e) => changeCmW(e.target.value)} />
                 </div>
                 <div className="ic-field ic-field-unit">
-                  <label htmlFor="rz-cmh">Height (cm)</label>
+                  <label htmlFor="rz-cmh">Height ({unit})</label>
                   <input id="rz-cmh" type="number" inputMode="decimal" min={0.1} step="any" value={cmH} disabled={busy} onChange={(e) => changeCmH(e.target.value)} />
                 </div>
               </>
@@ -245,7 +263,7 @@ export default function ImageResizer() {
           <EncoderNote encoders={encoders} />
 
           <p className="st-note">
-            <strong>About DPI:</strong> a digital image is a grid of pixels. Centimetres only mean something once you choose how many pixels print per inch, so the pixel count here is worked out as cm ÷ 2.54 × DPI. The saved file does not carry a DPI value, so the printed size also depends on the printer or software you use.
+            <strong>About DPI:</strong> a digital image is a grid of pixels. Centimetres, millimetres and inches only mean something once you choose how many pixels print per inch, so the pixel count here is worked out as size ÷ units per inch × DPI (2.54 cm, 25.4 mm or 1 inch). The saved file does not carry a DPI value, so the printed size also depends on the printer or software you use.
           </p>
 
           {target.error ? (
@@ -259,7 +277,7 @@ export default function ImageResizer() {
                 <figcaption>
                   <strong>Original</strong>
                   <span>{dims.w} × {dims.h} px</span>
-                  {printCm && <span>≈ {fmt((dims.w / dpiN) * CM_PER_INCH, 1)} × {fmt((dims.h / dpiN) * CM_PER_INCH, 1)} cm at {dpiN} DPI</span>}
+                  {printCm && <span>≈ {fmt((dims.w / dpiN) * CM_PER_INCH, 1)} × {fmt((dims.h / dpiN) * CM_PER_INCH, 1)} {unit} at {dpiN} DPI</span>}
                 </figcaption>
               </figure>
               <div className="ed-compare-arrow" aria-hidden="true">→</div>
@@ -268,7 +286,7 @@ export default function ImageResizer() {
                 <div className="ed-compare-text">
                   <strong>New size</strong>
                   <span>{target.w} × {target.h} px</span>
-                  {printCm && <span>≈ {fmt(printCm.w, 1)} × {fmt(printCm.h, 1)} cm at {dpiN} DPI</span>}
+                  {printCm && <span>≈ {fmt(printCm.w, 1)} × {fmt(printCm.h, 1)} {unit} at {dpiN} DPI</span>}
                   <span>{fmt(((target.w * target.h) / (dims.w * dims.h)) * 100, 1)}% of the original pixels</span>
                 </div>
               </div>

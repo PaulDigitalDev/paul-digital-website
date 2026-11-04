@@ -809,6 +809,132 @@ export const imageSizeContent: Record<string, RouteContent> = {
     ],
     related: ["compress-image-to-1mb", "compress-jpeg-to-500kb", "compress-jpeg-to-300kb", "compress-image-to-200kb"],
   },
+
+  "reduce-image-size-in-kb": {
+    intro:
+      "Reduce an image to the size in KB that your form asks for. Pick an image, enter the limit and download the smaller file.",
+    explanation:
+      "Kilobytes are the unit most upload forms use, and the limit is usually a hard ceiling: a file of 101 KB is rejected when the form says 100 KB. This page starts at 100 KB, but the number is yours to change, so it works for 20, 50, 150, 200 KB or anything else. The tool lowers JPEG quality first, because that shrinks the file with the least visible damage, and only reduces the pixel dimensions when quality alone cannot reach the target. The size it reports is measured from the actual saved file, not estimated. A simple picture such as a signature or a document scan reaches a small limit easily, while a detailed photograph needs a higher limit to stay clear. If the form does not state a limit, aim for the largest size that is still allowed rather than the smallest, since extra compression only costs quality.",
+    settings:
+      "Choose JPEG output for photographs. Type the limit into the size box exactly as the form states it. If the result is slightly under the limit, that is expected, because the tool stops at the best quality that fits instead of squeezing further.",
+    useCases: [
+      "Uploading a photo or document to a form that sets a maximum in KB",
+      "Making an attachment small enough for a portal with a strict size cap",
+      "Shrinking images for a web page that should load quickly",
+    ],
+    tips: [
+      "Check whether the form counts 1 KB as 1,024 or 1,000 bytes, and leave a little room.",
+      "Crop the picture first; fewer pixels means less to compress.",
+      "Use JPEG for photos and keep PNG only for flat graphics.",
+      "If it will not fit, raise the target a little instead of accepting a blurry result.",
+    ],
+    faqs: [
+      { q: "How do I reduce an image to a specific KB size?", a: "Enter the KB limit, choose the image and start. The tool lowers quality, then dimensions if needed, and shows the real size it reached." },
+      { q: "Why is my file a bit smaller than the number I typed?", a: "The tool keeps the best quality that stays under your limit, so the result is at or just below the target." },
+      { q: "Is my image uploaded?", a: "No. The compression runs in your browser and the file stays on your device." },
+    ],
+    related: ["compress-image-to-50kb", "compress-image-to-100kb", "compress-image-to-200kb", "reduce-image-size-in-mb", "jpg-to-kb"],
+  },
+
+  "reduce-image-size-in-mb": {
+    intro:
+      "Reduce a large photo to a size in megabytes. Pick an image, set the MB limit and download the smaller file.",
+    explanation:
+      "Phone and camera photos are often between 3 and 10 MB, which is more than many email systems, chat apps and upload forms allow. Reducing a photo to 1 or 2 MB almost always leaves it looking the same on a screen, because most of the extra data in a large photo is detail that a phone display cannot show. The tool does this in two steps: it lowers JPEG quality a little, and if the file is still too large it scales the pixel dimensions down. The saved file is measured, so the size you see is the size you get. If your limit is stated in KB rather than MB, remember that 1 MB equals 1,024 KB, so 2 MB is 2,048 KB. Pictures that are already small or already heavily compressed may not shrink much, because there is less data left to remove.",
+    settings:
+      "Use JPEG output for photographs. Start at 1 MB and raise it to 2 MB if you want more detail. For a screenshot or a graphic with sharp text, PNG keeps edges clean but shrinks less, so JPEG is the better route when the limit is tight.",
+    useCases: [
+      "Sending photos by email or messaging without hitting the attachment cap",
+      "Uploading to a portal that allows only a few MB",
+      "Saving space on a drive or a website",
+    ],
+    tips: [
+      "A 1 MB photo is plenty for screen viewing; keep the original for printing.",
+      "Reduce once from the original, not repeatedly from a reduced copy.",
+      "For a very small limit in KB, use the KB size pages instead.",
+    ],
+    faqs: [
+      { q: "How do I reduce a photo from 5 MB to 1 MB?", a: "Choose the photo, leave the target at 1 MB and start. The tool lowers quality and, if needed, dimensions, then shows the real size." },
+      { q: "Will the picture look worse?", a: "Usually not on a screen. Going from several MB to 1 or 2 MB removes detail that most displays cannot show." },
+      { q: "Is anything uploaded?", a: "No. The file is processed in your browser and never leaves your device." },
+    ],
+    related: ["compress-image-to-1mb", "compress-image-to-2mb", "reduce-image-size-in-kb", "compress-jpeg-to-500kb", "image-compressor"],
+  },
+
+  "jpg-to-kb": {
+    intro:
+      "Make a JPG smaller, to a size in KB. Choose the JPG, enter the limit and download the new file.",
+    explanation:
+      "A JPG does not have a fixed size in kilobytes, and many forms ask for one anyway: for example a photo under 50 KB or 100 KB. This page turns a JPG of any size into a smaller JPG that fits the limit you type. It reduces the quality setting first, because that cuts the file size quickly while the picture still looks natural, and it reduces the pixel width and height only if quality alone is not enough. Because every picture compresses differently, two JPGs with the same dimensions can end up at different quality for the same limit: a plain studio portrait compresses well, while a busy scene with fine texture does not. The tool measures the saved file and tells you if the limit could not be met. That is more useful than a progress bar, since a form will reject the file regardless of how close it looked.",
+    settings:
+      "This page accepts JPEG files and saves JPEG output. Start with 50 KB for forms that ask for small photos, or raise the limit to 100 or 200 KB for sharper results. If the picture still looks soft, try a larger limit before giving up.",
+    useCases: [
+      "A photo for an application that allows only a small JPG",
+      "A signature or ID scan with a KB cap",
+      "Making a thumbnail-sized JPG for a profile",
+    ],
+    tips: [
+      "Crop the JPG first so the subject fills the frame.",
+      "Do not compress an already-compressed copy; start from the original JPG.",
+      "If the limit is under 20 KB, expect a small picture.",
+    ],
+    faqs: [
+      { q: "How do I convert a JPG to a specific KB?", a: "Choose the JPG, type the KB limit and start. The tool reduces quality, then size if necessary, and shows the final KB." },
+      { q: "What if my file is a PNG?", a: "Use the main image compressor, which accepts PNG and WebP as well as JPEG." },
+      { q: "Does it stay private?", a: "Yes. The file is compressed in your browser and is never uploaded." },
+    ],
+    related: ["compress-jpeg-to-150kb", "compress-jpeg-to-300kb", "compress-image-to-50kb", "reduce-image-size-in-kb", "compress-jpeg-to-500kb"],
+  },
+
+  "convert-image-from-mb-to-kb": {
+    intro:
+      "Turn an image that is a few MB into one that is a few hundred KB. Choose the image, enter the KB size and download.",
+    explanation:
+      "Converting from MB to KB means two things, and this page does both. First, the unit: 1 MB is 1,024 KB, so 1 MB is 1,024 KB, 2 MB is 2,048 KB and 0.5 MB is 512 KB. Some systems count 1 MB as 1,000 KB instead, which is why a file can look slightly bigger or smaller depending on the program that shows it. Second, the file itself: if a form needs 500 KB and your photo is 4 MB, the photo has to lose roughly nine tenths of its data. The tool achieves that by lowering the JPEG quality and, if needed, reducing the dimensions, and it measures the real result so you can see whether it fits. A photograph from a recent phone has far more pixels than a form field ever shows, so it normally survives a large reduction well. Heavily detailed pictures lose more.",
+    settings:
+      "The tool starts at 500 KB. Change it to the figure on your form. For scanned documents with text, keep a higher limit (200 KB or more) so the writing stays readable.",
+    useCases: [
+      "Uploading a camera photo to a form that wants a few hundred KB",
+      "Shrinking a scan before emailing it",
+      "Checking how small a photo can get before it looks bad",
+    ],
+    tips: [
+      "Remember 1 MB = 1,024 KB when you compare the original with the result.",
+      "Work from the original photo, not a copy that has already been reduced.",
+      "If the text in a scan looks fuzzy, raise the KB target.",
+    ],
+    faqs: [
+      { q: "How many KB is 1 MB?", a: "1 MB is 1,024 KB in the units this tool uses. Some systems use 1,000 KB, so the numbers can differ a little between programs." },
+      { q: "How do I get a 3 MB photo under 500 KB?", a: "Enter 500 as the KB target and start. The tool lowers quality and, if needed, dimensions, and then shows the real size." },
+      { q: "Is the image uploaded?", a: "No. Everything happens in your browser." },
+    ],
+    related: ["compress-image-to-100kb", "compress-image-to-200kb", "compress-jpeg-to-500kb", "reduce-image-size-in-mb", "convert-image-size-kb-to-mb"],
+  },
+
+  "convert-image-size-kb-to-mb": {
+    intro:
+      "Convert an image size between KB and MB, and compress a picture to a limit given in MB.",
+    explanation:
+      "Going from kilobytes to megabytes is a division: divide the KB by 1,024 to get MB. So 512 KB is 0.5 MB, 1,024 KB is exactly 1 MB, 2,048 KB is 2 MB and 150 KB is about 0.15 MB. Going the other way, multiply the MB by 1,024. Some operating systems and websites divide by 1,000 instead, which is why the same file can show a slightly different size in different places; the difference is about 2 percent. This is a unit conversion only and does not change the file. The compressor above is for when the unit is not the problem but the size is: if a form says your picture must be under 1 MB, enter 1 MB and the tool lowers quality and, if needed, dimensions until the saved file fits, then shows the measured result. A file cannot be made larger in useful quality by this conversion, since extra size does not add detail.",
+    settings:
+      "The target starts at 1 MB. Change it to the MB limit you were given. Decimals such as 1.5 MB are accepted.",
+    useCases: [
+      "Checking whether a file in KB fits an MB limit",
+      "Compressing a photo to a limit stated in MB",
+      "Understanding why two programs show different sizes for the same file",
+    ],
+    tips: [
+      "Divide KB by 1,024 for MB, or multiply MB by 1,024 for KB.",
+      "Leave a small margin under the limit, because programs round differently.",
+      "To meet a limit in KB, use the KB size pages instead.",
+    ],
+    faqs: [
+      { q: "How do I convert KB to MB?", a: "Divide the KB by 1,024. For example, 512 KB is 0.5 MB and 2,048 KB is 2 MB." },
+      { q: "Why does my computer show a different size?", a: "Some systems use 1,000 instead of 1,024 for each step, so the same file can look a few percent different." },
+      { q: "Can I make an image bigger in MB?", a: "You can enlarge dimensions or save at higher quality, but that does not add real detail. This tool is for making files smaller." },
+    ],
+    related: ["convert-image-from-mb-to-kb", "reduce-image-size-in-mb", "compress-image-to-1mb", "compress-image-to-2mb", "reduce-image-size-in-kb"],
+  },
 };
 
 export function getContent(route: ImageSizeRoute): RouteContent {

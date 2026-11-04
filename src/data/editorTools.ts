@@ -1,4 +1,6 @@
 import type { Faq } from "./formatTools";
+import type { SizePreset } from "./photoPresets";
+import { editorSizePages } from "./editorSizePages";
 
 export type EditorMode = "resize" | "crop" | "metadata" | "passport" | "signature" | "government" | "ukdigital";
 
@@ -27,6 +29,10 @@ export interface EditorTool {
   related: string[];
   /** Official source for requirement claims, with the date it was checked. */
   sources?: OfficialSource[];
+  /** Resizer only: unit and DPI the tool opens with. */
+  start?: { mode?: "pixels" | "percent" | "cm"; unit?: "cm" | "mm" | "in"; dpi?: number };
+  /** Crop tools only: the exact output size the tool opens with. */
+  fixed?: SizePreset;
 }
 
 export const editorTools: EditorTool[] = [
@@ -338,4 +344,6 @@ export const editorTools: EditorTool[] = [
   },
 ];
 
-export const editorToolBySlug = new Map(editorTools.map((tool) => [tool.slug, tool]));
+/** Every editor page: the main tools plus the size landing pages (which are not separate tiles in the directory). */
+export const editorToolBySlug = new Map([...editorTools, ...editorSizePages].map((tool) => [tool.slug, tool]));
+export { editorSizePages };

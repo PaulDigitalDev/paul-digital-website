@@ -12,16 +12,12 @@ const fixture = path.resolve("scripts/fixture-photo.jpg");
 
 const pages = [
   { name: "home", url: "/" },
-  { name: "image-compressor", url: "/image-compressor/", upload: true },
-  { name: "compress-50kb", url: "/compress-image-to-50kb/", upload: true },
-  { name: "jpg-to-pdf", url: "/jpg-to-pdf/", upload: true },
-  { name: "jpg-to-pdf-100kb", url: "/jpg-to-pdf-under-100kb/" },
-  { name: "webp-to-jpg", url: "/webp-to-jpg/" },
-  { name: "image-resizer", url: "/image-resizer/", upload: true },
-  { name: "passport", url: "/passport-photo-resizer/", upload: true },
-  { name: "pisah-pdf", url: "/pisah-pdf/", upload: true, file: "pdf" },
-  { name: "pdf-a-word", url: "/pdf-a-word/", upload: true, file: "pdf" },
-  { name: "unir-pdf", url: "/unir-pdf/", upload: true, file: "pdf" },
+  { name: "merge-pdf", url: "/merge-pdf/", upload: true, file: "pdf" },
+  { name: "split-pdf", url: "/split-pdf/", upload: true, file: "pdf" },
+  { name: "compress-pdf", url: "/compress-pdf/", upload: true, file: "pdf" },
+  { name: "compress-100kb", url: "/compress-pdf-to-100kb/", upload: true, file: "pdf" },
+  { name: "pdf-to-word", url: "/pdf-to-word/", upload: true, file: "pdf" },
+  { name: "word-to-pdf", url: "/word-to-pdf/" },
 ];
 const viewports = [
   { tag: "desktop", width: 1366, height: 900, isMobile: false },

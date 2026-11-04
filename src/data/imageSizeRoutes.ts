@@ -281,6 +281,71 @@ export const imageSizeRoutes: ImageSizeRoute[] = (
       details:
         "Two megabytes is a typical limit for social profiles and support forms. Most phone photos need only light compression to fit.",
     },
+    {
+      slug: "reduce-image-size-in-kb",
+      target: 100,
+      unit: "KB",
+      mode: "compress",
+      scope: "image",
+      title: "Reduce Image Size in KB Online — Free, Private | Paul Digital",
+      h1: "Reduce Image Size in KB",
+      description:
+        "Reduce an image to a size in KB you choose, such as 50, 100 or 200 KB. The compression runs in your browser and the real result size is measured and shown.",
+      details:
+        "This page is for any KB limit, not one fixed number: type the size your form or website asks for and the tool works toward it.",
+    },
+    {
+      slug: "reduce-image-size-in-mb",
+      target: 1,
+      unit: "MB",
+      mode: "compress",
+      scope: "image",
+      title: "Reduce Image Size in MB Online — Free, Private | Paul Digital",
+      h1: "Reduce Image Size in MB",
+      description:
+        "Reduce a large photo to 1 MB, 2 MB or any size in megabytes. Done in your browser, with the real file size shown before you download.",
+      details:
+        "Megabyte limits are common for uploads, email and messaging. Phone photos are often 3 to 8 MB, so a light squeeze is usually enough.",
+    },
+    {
+      slug: "jpg-to-kb",
+      target: 50,
+      unit: "KB",
+      mode: "compress",
+      scope: "jpeg",
+      title: "JPG to KB — Compress a JPG to a Size in KB | Paul Digital",
+      h1: "JPG to KB Converter",
+      description:
+        "Turn a JPG into a smaller JPG of a chosen size in KB. Set the limit, compress in your browser, and check the real size before you download.",
+      details:
+        "People search for JPG to KB when a form says a JPG must be under a certain number of kilobytes. This tool is built for that exact job.",
+    },
+    {
+      slug: "convert-image-from-mb-to-kb",
+      target: 500,
+      unit: "KB",
+      mode: "compress",
+      scope: "image",
+      title: "Convert Image from MB to KB — Make a Big Photo Smaller | Paul Digital",
+      h1: "Convert Image from MB to KB",
+      description:
+        "Make an image that is a few MB into one that is a few hundred KB. Choose the KB target, compress in your browser and see the real size before you download.",
+      details:
+        "A megabyte is 1,024 kilobytes, so a 2 MB photo is about 2,048 KB. Getting it down to 500 KB means keeping roughly a quarter of the data.",
+    },
+    {
+      slug: "convert-image-size-kb-to-mb",
+      target: 1,
+      unit: "MB",
+      mode: "compress",
+      scope: "image",
+      title: "Convert Image Size KB to MB — Units and a 1 MB Compressor | Paul Digital",
+      h1: "Convert Image Size KB to MB",
+      description:
+        "Convert an image size between KB and MB, and compress a picture to a limit given in MB. 1 MB is 1,024 KB. Private, done in your browser.",
+      details:
+        "Converting KB to MB is arithmetic, and this page explains it. The tool then lets you compress a picture to a limit stated in MB.",
+    },
   ] as Entry[]
 ).map(build);
 

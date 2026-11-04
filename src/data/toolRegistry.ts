@@ -3,6 +3,7 @@ import { socialTools } from "./socialTools";
 import { editorTools } from "./editorTools";
 import { imageSizeRoutes } from "./imageSizeRoutes";
 import { jpgToPdfRoutes } from "./jpgToPdfRoutes";
+import { englishPdfTools } from "./englishPdfTools";
 
 export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "media";
 /** "available" tools work today and are listed. Anything else is never shown or put in the sitemap. */
@@ -85,6 +86,24 @@ const editorEntries: RegistryTool[] = editorTools.map((tool) => ({
   keywords: tool.keywords,
 }));
 
+const pdfMainSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "word-to-pdf"];
+const pdfEntries: RegistryTool[] = englishPdfTools
+  .filter((tool) => pdfMainSlugs.includes(tool.slug))
+  .map((tool) => ({
+    id: tool.slug,
+    name: tool.h1,
+    category: "pdf" as const,
+    route: `/${tool.slug}/`,
+    description: tool.summary,
+    status: "available" as const,
+    related: pdfMainSlugs.filter((id) => id !== tool.slug).slice(0, 3).concat("jpg-to-pdf"),
+    keywords: tool.keywords,
+    variants:
+      tool.slug === "compress-pdf"
+        ? englishPdfTools.filter((page) => page.targetKb).map((page) => ({ route: `/${page.slug}/`, label: page.h1 }))
+        : undefined,
+  }));
+
 export const tools: RegistryTool[] = [
   {
     id: "image-compressor",
@@ -108,6 +127,7 @@ export const tools: RegistryTool[] = [
     keywords: ["jpeg to pdf", "image to pdf", "combine", "merge images"],
     variants: jpgToPdfRoutes.map((route) => ({ route: `/${route.slug}/`, label: route.h1 })),
   },
+  ...pdfEntries,
   ...formatEntries,
   ...socialEntries,
   ...editorEntries,

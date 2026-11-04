@@ -87,7 +87,7 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(appSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <ToolTop accent="pdf" accent="pdf" h1={h1} intro={intro} crumbs={[{ label: "Beranda", href: "/" }, { label: h1 }]} breadcrumbLabel="Jalur navigasi">
+  <ToolTop accent="pdf" h1={h1} intro={intro} crumbs={[{ label: "Beranda", href: "/" }, { label: h1 }]} breadcrumbLabel="Jalur navigasi">
     <MergePdf client:load locale="id" />
   </ToolTop>
   <section class="content-section" style="padding-top: 0">
