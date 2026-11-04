@@ -6,6 +6,7 @@ import { jpgToPdfRoutes } from "./jpgToPdfRoutes";
 import { englishPdfTools } from "./englishPdfTools";
 import { effectTools } from "./effectTools";
 import { densityTools } from "./densityTools";
+import { calculatorTools } from "./calculatorTools";
 
 export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "media";
 /** "available" tools work today and are listed. Anything else is never shown or put in the sitemap. */
@@ -48,7 +49,12 @@ export const categories: ToolCategory[] = [
     route: "/tools/document/",
   },
   { id: "developer", name: "Developer Tools", summary: "Small utilities for developers." },
-  { id: "calculators", name: "Calculators and Converters", summary: "Everyday calculators and unit converters." },
+  {
+    id: "calculators",
+    name: "Calculators",
+    summary: "Finance calculators for loans, savings growth, returns and pay raises.",
+    route: "/tools/calculators/",
+  },
   { id: "media", name: "File and Media Utilities", summary: "Utilities for files, audio and video." },
 ];
 
@@ -110,6 +116,17 @@ const densityEntries: RegistryTool[] = densityTools.map((tool) => ({
   keywords: tool.keywords,
 }));
 
+const calculatorEntries: RegistryTool[] = calculatorTools.map((tool) => ({
+  id: tool.slug,
+  name: tool.h1,
+  category: "calculators",
+  route: `/${tool.slug}/`,
+  description: tool.summary,
+  status: "available",
+  related: tool.related,
+  keywords: tool.keywords,
+}));
+
 const pdfMainSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "word-to-pdf", "pdf-to-jpg"];
 const pdfEntries: RegistryTool[] = englishPdfTools
   .filter((tool) => pdfMainSlugs.includes(tool.slug))
@@ -157,6 +174,7 @@ export const tools: RegistryTool[] = [
   ...editorEntries,
   ...effectEntries,
   ...densityEntries,
+  ...calculatorEntries,
 ];
 
 export const toolById = new Map(tools.map((tool) => [tool.id, tool]));
