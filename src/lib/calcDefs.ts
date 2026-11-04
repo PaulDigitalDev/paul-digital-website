@@ -7,11 +7,12 @@ export type Values = Record<string, string>;
 export interface Field {
   id: string;
   label: string;
-  kind: "number" | "select";
+  kind: "number" | "select" | "date" | "time" | "textarea";
   default: string;
   options?: { value: string; label: string }[];
   step?: string;
   hint?: string;
+  placeholder?: string;
   /** Hide the field for some choices (for example the value being solved for). */
   show?: (v: Values) => boolean;
 }
@@ -25,26 +26,28 @@ export interface CalcOutput {
 
 export interface CalcDef {
   id: string;
+  /** Results depend on today's date or time, so they are shown only after the page loads in the browser. */
+  volatile?: boolean;
   fields: Field[];
   compute: (v: Values) => CalcOutput;
 }
 
 export const money = (n: number) => n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export const pct = (n: number, digits = 2) => `${n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: digits })}%`;
-const plain = (n: number, digits = 4) => n.toLocaleString("en-US", { maximumFractionDigits: digits });
+export const plain = (n: number, digits = 4) => n.toLocaleString("en-US", { maximumFractionDigits: digits });
 
-class Bad extends Error {}
-const num = (v: Values, id: string, label: string): number => {
+export class Bad extends Error {}
+export const num = (v: Values, id: string, label: string): number => {
   const raw = (v[id] ?? "").trim();
   const n = Number(raw);
   if (raw === "" || !Number.isFinite(n)) throw new Bad(`Enter a number for “${label}”.`);
   return n;
 };
-const positive = (n: number, label: string) => {
+export const positive = (n: number, label: string) => {
   if (!(n > 0)) throw new Bad(`“${label}” must be greater than zero.`);
   return n;
 };
-const guard = (fn: () => CalcOutput): CalcOutput => {
+export const guard = (fn: () => CalcOutput): CalcOutput => {
   try {
     return fn();
   } catch (error) {
@@ -280,7 +283,7 @@ export const roiCalc: CalcDef = {
     }),
 };
 
-export const calcDefs: Record<string, CalcDef> = {
+export const baseDefs: Record<string, CalcDef> = {
   tvm,
   "future-value": futureValue,
   "compound-interest": compoundInterest,

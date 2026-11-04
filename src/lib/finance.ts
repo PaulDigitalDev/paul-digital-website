@@ -165,3 +165,38 @@ export function roi(invested: number, returned: number, years: number | null): R
   if (years && years > 0 && returned > 0) annualizedPercent = (Math.pow(returned / invested, 1 / years) - 1) * 100;
   return { gain, roiPercent, annualizedPercent };
 }
+
+export interface PayoffYear {
+  year: number;
+  principalPaid: number;
+  interestPaid: number;
+  balance: number;
+}
+
+/** Fixed-rate loan with monthly payments and an optional extra amount paid every month. Extra payments shorten the loan. */
+export function amortize(principal: number, annualPercent: number, years: number, extraMonthly = 0) {
+  const r = annualPercent / 100 / 12;
+  const n = Math.round(years * 12);
+  const payment = loanPayment(principal, r, n);
+  let balance = principal;
+  let totalInterest = 0;
+  let months = 0;
+  const rows: PayoffYear[] = [];
+  let yp = 0;
+  let yi = 0;
+  while (balance > 0.005 && months < n + 1) {
+    const interest = balance * r;
+    const principalPart = Math.min(balance, payment - interest + extraMonthly);
+    balance -= principalPart;
+    totalInterest += interest;
+    yp += principalPart;
+    yi += interest;
+    months++;
+    if (months % 12 === 0 || balance <= 0.005) {
+      rows.push({ year: Math.ceil(months / 12), principalPaid: yp, interestPaid: yi, balance: Math.max(0, balance) });
+      yp = 0;
+      yi = 0;
+    }
+  }
+  return { payment, months, totalInterest, totalPaid: principal + totalInterest, rows };
+}

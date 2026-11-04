@@ -1,6 +1,7 @@
 import type { Faq } from "./formatTools";
 import { growth, loanSchedule, roi, salaryFromPercent, solveFv, solvePmt } from "../lib/finance.ts";
 import { money, pct } from "../lib/calcDefs.ts";
+import { moreCalculatorTools } from "./calculatorToolsMore.ts";
 
 export interface CalculatorTool {
   slug: string;
@@ -24,7 +25,7 @@ export interface CalculatorTool {
 const PRIVACY: Faq = { q: "Are my numbers saved or sent anywhere?", a: "No. The calculation runs in your browser on your own device. Nothing you type is sent to Paul Digital or any other server." };
 const NOT_ADVICE = "These results are estimates from the numbers you enter. They are not financial, tax or legal advice, and they are not a quote from any lender or bank.";
 
-export const calculatorTools: CalculatorTool[] = [
+const coreCalculatorTools: CalculatorTool[] = [
   {
     slug: "tvm-calculator",
     calc: "tvm",
@@ -304,5 +305,7 @@ export const calculatorTools: CalculatorTool[] = [
     related: ["compound-interest-calculator", "future-value-calculator", "tvm-calculator", "salary-increase-calculator"],
   },
 ];
+
+export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools];
 
 export const calculatorToolBySlug = new Map(calculatorTools.map((tool) => [tool.slug, tool]));

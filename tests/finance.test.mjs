@@ -76,7 +76,8 @@ test("salary increase both ways", () => {
   close(b.percent, 10);
 });
 
-import { calcDefs, defaultsFor } from "../src/lib/calcDefs.ts";
+import { calcDefs } from "../src/lib/calcRegistry.ts";
+import { defaultsFor } from "../src/lib/calcDefs.ts";
 
 test("every calculator works with its default values", () => {
   for (const def of Object.values(calcDefs)) {

@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
-import { calcDefs, defaultsFor } from "../../lib/calcDefs";
+import { useEffect, useMemo, useState } from "react";
+import { defaultsFor } from "../../lib/calcDefs";
+import { calcDefs } from "../../lib/calcRegistry";
 import type { Values } from "../../lib/calcDefs";
 
 /* Live calculator: results update as you type. Nothing is sent anywhere. */
@@ -7,7 +8,9 @@ import type { Values } from "../../lib/calcDefs";
 export default function Calculator({ calc }: { calc: string }) {
   const def = calcDefs[calc];
   const [values, setValues] = useState<Values>(() => defaultsFor(def));
-  const out = useMemo(() => def.compute(values), [def, values]);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const out = useMemo(() => (def.volatile && !mounted ? { rows: [] } : def.compute(values)), [def, values, mounted]);
   const set = (id: string, value: string) => setValues((current) => ({ ...current, [id]: value }));
   const big = out.rows?.find((row) => row.big);
   const rest = out.rows?.filter((row) => !row.big) ?? [];
@@ -15,14 +18,14 @@ export default function Calculator({ calc }: { calc: string }) {
   return (
     <div className="calc">
       <form className="calc-card" onSubmit={(event) => event.preventDefault()} aria-label="Calculator inputs">
-        <h2>Your numbers</h2>
+        <h2 className="calc-bar">Enter your values</h2>
         <div className="calc-form">
           {def.fields
             .filter((field) => !field.show || field.show(values))
             .map((field) => {
               const id = `calc-${calc}-${field.id}`;
               return (
-                <div className="ic-field" key={field.id}>
+                <div className="ic-field calc-row" key={field.id}>
                   <label htmlFor={id}>{field.label}</label>
                   {field.kind === "select" ? (
                     <select id={id} value={values[field.id]} onChange={(event) => set(field.id, event.target.value)}>
@@ -32,8 +35,12 @@ export default function Calculator({ calc }: { calc: string }) {
                         </option>
                       ))}
                     </select>
-                  ) : (
+                  ) : field.kind === "textarea" ? (
+                    <textarea id={id} rows={6} value={values[field.id]} placeholder={field.placeholder} onChange={(event) => set(field.id, event.target.value)} />
+                  ) : field.kind === "number" ? (
                     <input id={id} type="number" inputMode="decimal" step={field.step ?? "any"} value={values[field.id]} onChange={(event) => set(field.id, event.target.value)} />
+                  ) : (
+                    <input id={id} type={field.kind} value={values[field.id]} onChange={(event) => set(field.id, event.target.value)} />
                   )}
                   {field.hint && <p className="calc-hint">{field.hint}</p>}
                 </div>
@@ -41,12 +48,12 @@ export default function Calculator({ calc }: { calc: string }) {
             })}
         </div>
         <button type="button" className="pt-secondary calc-reset" onClick={() => setValues(defaultsFor(def))}>
-          Reset to example values
+          Clear and reset
         </button>
       </form>
 
       <section className="calc-card" aria-live="polite" aria-label="Result">
-        <h2>Result</h2>
+        <h2 className="calc-bar calc-bar-result">Result</h2>
         {out.error ? (
           <p className="calc-error" role="alert">
             {out.error}
