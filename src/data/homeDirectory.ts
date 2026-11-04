@@ -41,7 +41,7 @@ const specs: GroupSpec[] = [
     id: "pdf",
     title: "PDF Tools",
     icon: "pdf",
-    ids: ["jpg-to-pdf", "merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "word-to-pdf"],
+    ids: ["jpg-to-pdf", "merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "word-to-pdf", "pdf-to-jpg"],
     extra: [
       { name: "JPG to PDF Under 50KB", href: "/jpg-to-pdf-under-50kb/" },
       { name: "JPG to PDF Under 100KB", href: "/jpg-to-pdf-under-100kb/" },

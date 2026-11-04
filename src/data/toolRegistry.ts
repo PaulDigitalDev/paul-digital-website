@@ -110,7 +110,7 @@ const densityEntries: RegistryTool[] = densityTools.map((tool) => ({
   keywords: tool.keywords,
 }));
 
-const pdfMainSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "word-to-pdf"];
+const pdfMainSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "word-to-pdf", "pdf-to-jpg"];
 const pdfEntries: RegistryTool[] = englishPdfTools
   .filter((tool) => pdfMainSlugs.includes(tool.slug))
   .map((tool) => ({
