@@ -513,11 +513,10 @@ export default function ImageCompressor(props: ImageCompressorProps) {
                     <img
                       src={preview.url}
                       alt={`Preview of ${file.name}`}
-                      onLoad={(event) =>
-                        setPreview((current) =>
-                          current ? { ...current, width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight } : current,
-                        )
-                      }
+                      onLoad={(event) => {
+                        const { naturalWidth: width, naturalHeight: height } = event.currentTarget;
+                        setPreview((current) => (current ? { ...current, width, height } : current));
+                      }}
                     />
                   )}
                   {busy && (
