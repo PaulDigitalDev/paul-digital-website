@@ -102,7 +102,7 @@ const specs: GroupSpec[] = [
     id: "calculators",
     title: "Calculators",
     icon: "convert",
-    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator"],
+    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator"],
   },
   {
     id: "social",
