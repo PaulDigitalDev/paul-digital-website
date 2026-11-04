@@ -73,11 +73,11 @@ const fraction = (r: PxRect, tw: number, th: number): CropRect => ({ x: r.x / tw
 const toPx = (c: CropRect, tw: number, th: number): PxRect => ({ x: c.x * tw, y: c.y * th, w: c.w * tw, h: c.h * th });
 const nextRotation = (r: Rotation, delta: 90 | -90): Rotation => (((r + delta + 360) % 360) as Rotation);
 
-export default function CropEditor({ variant }: { variant: EditorVariant }) {
+export default function CropEditor({ variant, fixed }: { variant: EditorVariant; fixed?: SizePreset }) {
   const isPreset = variant !== "crop";
   /* "government" has no presets: the user types the pixel size and KB limits from their own notification. */
   const isGov = variant === "government";
-  const presets = variant === "passport" ? passportPresets : isGov ? [] : signaturePresets;
+  const presets = fixed ? [fixed] : variant === "passport" ? passportPresets : isGov ? [] : signaturePresets;
   const initialPresetId = isGov ? "custom" : presets[0].id;
 
   const [result, setResult] = useState<Exported | null>(null);
@@ -94,8 +94,8 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
   const [crop, setCrop] = useState<CropRect>({ x: 0, y: 0, w: 1, h: 1 });
   const [aspectId, setAspectId] = useState("free");
   const [presetId, setPresetId] = useState(initialPresetId);
-  const [customW, setCustomW] = useState(isGov ? "" : variant === "passport" ? "413" : "300");
-  const [customH, setCustomH] = useState(isGov ? "" : variant === "passport" ? "531" : "100");
+  const [customW, setCustomW] = useState(fixed ? String(fixed.w) : isGov ? "" : variant === "passport" ? "413" : "300");
+  const [customH, setCustomH] = useState(fixed ? String(fixed.h) : isGov ? "" : variant === "passport" ? "531" : "100");
   const [format, setFormat] = useState<OutputKind>("jpeg");
   const [quality, setQuality] = useState(0.92);
   const [maxKb, setMaxKb] = useState("");
@@ -429,7 +429,7 @@ export default function CropEditor({ variant }: { variant: EditorVariant }) {
               <div className="ic-controls">
                 {!isGov && (
                 <div className="ic-field">
-                  <label htmlFor="cr-preset">{variant === "passport" ? "Photo size" : "Signature size"}</label>
+                  <label htmlFor="cr-preset">{fixed ? "Output size" : variant === "passport" ? "Photo size" : "Signature size"}</label>
                   <select id="cr-preset" value={presetId} disabled={busy} onChange={(e) => setPresetId(e.target.value)}>
                     {[...new Set(presets.map((p) => p.region))].map((region) => (
                       <optgroup key={region} label={region}>

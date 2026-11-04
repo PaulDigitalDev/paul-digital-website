@@ -5,8 +5,8 @@ import ImageResizer from "./tools/ImageResizer";
 import CropEditor from "./tools/CropEditor";
 import MetadataTool from "./tools/MetadataTool";
 import UkPhotoCheck from "./tools/UkPhotoCheck";
-import { editorToolBySlug } from "../data/editorTools";
-import { relatedTools } from "../data/toolRegistry";
+import { editorToolBySlug, editorSizePages } from "../data/editorTools";
+import { toolById } from "../data/toolRegistry";
 
 interface Props {
   slug: string;
@@ -19,7 +19,19 @@ if (!tool) throw new Error(`Unknown editor tool: ${slug}`);
 const path = `/${tool.slug}/`;
 const site = (p: string) => new URL(p, Astro.site).href;
 const json = (value: unknown) => JSON.stringify(value).replace(/</g, "<");
-const related = relatedTools(tool.slug);
+const relatedLink = (id: string) => {
+  const registered = toolById.get(id);
+  if (registered) return { route: registered.route, name: registered.name };
+  const size = editorToolBySlug.get(id);
+  return size ? { route: `/${size.slug}/`, name: size.h1 } : undefined;
+};
+const related = tool.related.map(relatedLink).filter((item): item is { route: string; name: string } => Boolean(item));
+/* Size pages are grouped under the tool that does the work, so each page links to its siblings and to its parent. */
+const parentOf = { resize: "image-resizer", passport: "passport-photo-resizer", signature: "signature-resizer" } as Record<string, string>;
+const isSizePage = editorSizePages.some((page) => page.slug === tool.slug);
+const groupMode = isSizePage ? tool.mode : ({ "image-resizer": "resize", "passport-photo-resizer": "passport", "signature-resizer": "signature" } as Record<string, string>)[tool.slug];
+const moreSizes = groupMode ? editorSizePages.filter((page) => page.mode === groupMode && page.slug !== tool.slug) : [];
+const parent = isSizePage ? toolById.get(parentOf[tool.mode] ?? "") : undefined;
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -56,11 +68,11 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
   <ToolTop accent={tool.mode === "resize" ? "image" : "photo"} h1={tool.h1} intro={tool.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Web Tools", href: "/tools/" }, { label: tool.h1 }]} breadcrumbLabel="Breadcrumb">
-      {tool.mode === "resize" && <ImageResizer client:load />}
+      {tool.mode === "resize" && <ImageResizer client:load start={tool.start} />}
       {tool.mode === "crop" && <CropEditor client:load variant="crop" />}
       {tool.mode === "metadata" && <MetadataTool client:load />}
-      {tool.mode === "passport" && <CropEditor client:load variant="passport" />}
-      {tool.mode === "signature" && <CropEditor client:load variant="signature" />}
+      {tool.mode === "passport" && <CropEditor client:load variant="passport" fixed={tool.fixed} />}
+      {tool.mode === "signature" && <CropEditor client:load variant="signature" fixed={tool.fixed} />}
       {tool.mode === "government" && <CropEditor client:load variant="government" />}
       {tool.mode === "ukdigital" && <UkPhotoCheck client:load />}
   </ToolTop>
@@ -114,6 +126,18 @@ const appSchema = {
           ))
         }
       </div>
+
+      {
+        moreSizes.length > 0 && (
+          <>
+            <h2>More sizes</h2>
+            <ul class="ic-links">
+              {parent && <li><a href={parent.route}>{parent.name} (all sizes)</a></li>}
+              {moreSizes.map((page) => <li><a href={`/${page.slug}/`}>{page.h1}</a></li>)}
+            </ul>
+          </>
+        )
+      }
 
       <h2>Related tools</h2>
       <ul class="ic-links">
