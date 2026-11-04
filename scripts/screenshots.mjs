@@ -37,6 +37,8 @@ for (const vp of viewports) {
     } catch {}
   });
   const page = await context.newPage();
+  page.on("pageerror", (err) => console.log(`[pageerror ${vp.tag}] ${page.url()} ${err.message}\n${err.stack ?? ""}`));
+  page.on("console", (msg) => msg.type() === "error" && console.log(`[console ${vp.tag}] ${page.url()} ${msg.text()}`));
   for (const p of pages) {
     await page.goto(base + p.url, { waitUntil: "networkidle" });
     await page.waitForTimeout(400);
@@ -47,7 +49,7 @@ for (const vp of viewports) {
       if (await input.count()) {
         await input.setInputFiles(fixture);
         await page.waitForTimeout(1500);
-        const action = page.locator("main button.button-primary, main .tool-action").first();
+        const action = page.locator("main .pt-action, main button.button-primary").first();
         await page.screenshot({ path: `${out}/${p.name}-${vp.tag}-loaded.png` });
         if (await action.count()) {
           await action.click().catch(() => {});
