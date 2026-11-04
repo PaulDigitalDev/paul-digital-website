@@ -1,13 +1,155 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HomeToolDirectory from "../components/HomeToolDirectory.astro";
+import { guides } from "../data/guides";
+import { availableTools } from "../data/toolRegistry";
+import { publishedApps } from "../data/apps";
+
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+const featuredGuides = guides.slice(0, 6);
+
+const faqs = [
+  {
+    q: "Are Paul Digital tools free?",
+    a: "Yes. Every web tool on this site is free to use, with no sign-up and no watermark on your files.",
+  },
+  {
+    q: "Are my files uploaded?",
+    a: "No. The tools run inside your browser, so images, PDFs and documents are processed on your own device and are not sent to a server.",
+  },
+  {
+    q: "Do the tools work on a phone?",
+    a: "Yes. They work in modern mobile browsers on Android and iPhone. Very large files or long batches may be slower on older phones because the work happens on the device.",
+  },
+  {
+    q: "Can I compress a photo to an exact KB size for a form?",
+    a: "Yes. The Image Compressor and its preset pages, such as 20 KB, 50 KB and 100 KB, aim for the size you set and report the real result, so you can see whether it fits the limit.",
+  },
+];
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Paul Digital",
+  url: site("/"),
+  logo: site("/paul-digital-logo.png"),
+  email: "askpaulonline@gmail.com",
+  sameAs: ["https://play.google.com/store/apps/dev?id=7949073170466838031"],
+};
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Paul Digital",
+  url: site("/"),
+  publisher: { "@type": "Organization", name: "Paul Digital" },
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
 ---
 
 <BaseLayout
-  title="Paul Digital — Simple Utilities. Powerful Results."
-  description="Paul Digital creates lightweight Android apps and practical digital tools for everyday tasks."
+  title="Free Online Image & PDF Tools — Compress, Resize, Convert | Paul Digital"
+  description="Free online tools that run in your browser: compress images to 20 KB, 50 KB or 100 KB, resize photos and signatures for forms, convert JPG to PDF, HEIC and WebP to JPG, and extract text. No uploads, no sign-up."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(organizationSchema)} />
+    <script type="application/ld+json" set:html={json(websiteSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
   <div class="homepage">
     <HomeToolDirectory />
   </div>
+
+  <section class="home-about" aria-labelledby="home-about-h">
+    <div class="container prose">
+      <h2 id="home-about-h">Everyday file tools that keep your files on your device</h2>
+      <p>
+        Paul Digital makes {availableTools.length} free web tools for the small file jobs that come up all the time: getting a
+        photo under a form's KB limit, turning phone photos of documents into one PDF, converting an iPhone HEIC picture into a
+        JPG that any website accepts, fitting an image to Instagram or a WhatsApp profile picture, or copying text out of a
+        screenshot. Each tool runs entirely in your web browser. Your files are read and processed on your own phone or computer
+        and are never uploaded to our servers.
+      </p>
+
+      <div class="home-about-grid">
+        <div>
+          <h3>Photos for online forms</h3>
+          <p>
+            Exam, job and government portals often want a photo of 20–50 KB and a signature of 10–20 KB. Use the
+            <a href="/government-job-photo-signature-resizer/">photo and signature resizer</a>, the
+            <a href="/compress-image-to-50kb/">50 KB compressor</a> or the <a href="/compress-image-to-20kb/">20 KB compressor</a>.
+          </p>
+        </div>
+        <div>
+          <h3>PDFs from images</h3>
+          <p>
+            Combine several JPG pages into one PDF with <a href="/jpg-to-pdf/">JPG to PDF</a>, or keep it under an upload limit
+            with <a href="/jpg-to-pdf-under-100kb/">JPG to PDF under 100 KB</a> and similar presets.
+          </p>
+        </div>
+        <div>
+          <h3>Format conversion</h3>
+          <p>
+            Convert <a href="/heic-to-jpg/">HEIC to JPG</a>, <a href="/webp-to-jpg/">WebP to JPG</a>,
+            <a href="/png-to-jpeg/">PNG to JPEG</a> and more, or see every option on the
+            <a href="/format-conversions/">format conversions</a> page.
+          </p>
+        </div>
+        <div>
+          <h3>Text from images</h3>
+          <p>
+            Extract printed text with <a href="/jpg-to-text/">JPG to Text</a> and <a href="/png-to-text/">PNG to Text</a>, or
+            create an editable document with <a href="/image-to-word/">Image to Word</a>.
+          </p>
+        </div>
+      </div>
+
+      <h2>How the tools work</h2>
+      <ol>
+        <li>Open a tool and choose a file, or drag it onto the page.</li>
+        <li>Set the target: a size in KB, dimensions in pixels, a page size or an output format.</li>
+        <li>The tool processes the file in your browser and shows the real result, such as the measured file size.</li>
+        <li>Download the new file. Nothing is kept once you close the page.</li>
+      </ol>
+      <p>
+        Because nothing is uploaded, the tools are quick on slow connections and suitable for private documents such as ID cards
+        and certificates. Read <a href="/guides/how-browser-based-file-tools-work/">how browser-based tools work</a> for the
+        details, or see the <a href="/privacy/">privacy policy</a>.
+      </p>
+
+      <h2>Guides</h2>
+      <p>Practical explanations written alongside the tools:</p>
+      <ul>
+        {featuredGuides.map((g) => <li><a href={`/guides/${g.slug}/`}>{g.title}</a></li>)}
+        <li><a href="/guides/">All guides</a></li>
+      </ul>
+
+      <h2>Android apps</h2>
+      <p>
+        Paul Digital also publishes Android utility apps on Google Play, including
+        {publishedApps.map((app, i) => (
+          <>
+            {i > 0 && (i === publishedApps.length - 1 ? " and " : ", ")}
+            <a href={`/apps/${app.slug}/`}>{app.name}</a>
+          </>
+        ))}. See all <a href="/apps/">Paul Digital apps</a>.
+      </p>
+
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.q}</h3>
+              <p>{faq.a}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 </BaseLayout>

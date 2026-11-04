@@ -1,28 +1,56 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { guides, readingMinutes } from "../../data/guides";
+
+const order = ["Images", "PDF and documents", "Privacy", "Phones and apps"] as const;
+const groups = order
+  .map((category) => ({ category, items: guides.filter((g) => g.category === category) }))
+  .filter((group) => group.items.length > 0);
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+const listSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Paul Digital guides",
+  itemListElement: guides.map((g, i) => ({ "@type": "ListItem", position: i + 1, name: g.title, url: site(`/guides/${g.slug}/`) })),
+};
 ---
 
 <BaseLayout
-  title="Guides — Paul Digital"
-  description="Practical Paul Digital guides for everyday digital tasks. Read straightforward tips for preparing text before making a PDF."
+  title="Guides: Images, PDFs, Photo Uploads and Privacy — Paul Digital"
+  description="Practical, in-depth guides on compressing photos to a KB limit, preparing photos and signatures for online forms, image formats, making small PDFs, OCR and photo privacy."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(listSchema)} />
+  </Fragment>
   <section class="page-hero">
     <div class="container">
       <span class="eyebrow">Useful, straightforward reading</span>
       <h1>Guides</h1>
-      <p>Short guides for preparing and working with everyday digital content.</p>
+      <p>
+        Clear explanations of everyday file problems: why a form rejects your photo, which image format to use, how to make a
+        small PDF, and how to keep personal details out of the files you share.
+      </p>
     </div>
   </section>
   <section class="content-section">
     <div class="container">
-      <article class="guide-feature">
-        <div>
-          <p class="guide-meta"><time datetime="2026-10-03">October 3, 2026</time> · 3 min read</p>
-          <h2 style="margin-top: 0.4rem; font-size: 1.35rem">Preparing text before creating a PDF</h2>
-          <p style="margin-top: 0.5rem; color: var(--muted)">A few simple checks can make a text document easier to read and share.</p>
-        </div>
-        <a class="button" href="/guides/preparing-text-for-a-pdf/">Read the guide</a>
-      </article>
+      {
+        groups.map((group) => (
+          <section class="guide-group" aria-labelledby={`g-${group.category.replace(/\W+/g, "-")}`}>
+            <h2 id={`g-${group.category.replace(/\W+/g, "-")}`}>{group.category}</h2>
+            <ul class="guide-cards">
+              {group.items.map((g) => (
+                <li class="guide-card">
+                  <h3><a href={`/guides/${g.slug}/`}>{g.title}</a></h3>
+                  <p>{g.summary}</p>
+                  <p class="guide-meta">{readingMinutes(g)} min read</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
     </div>
   </section>
 </BaseLayout>

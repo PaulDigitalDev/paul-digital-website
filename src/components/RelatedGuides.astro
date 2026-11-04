@@ -1,0 +1,25 @@
+---
+// Links a tool page to the guides that explain it, so readers (and crawlers) can move from a tool to
+// in-depth reading. Rendered by BaseLayout on every page; it outputs nothing when no guide matches.
+import { guidesForRoute } from "../data/guides";
+
+const path = Astro.url.pathname;
+const matches = path.startsWith("/guides/") ? [] : guidesForRoute(path).slice(0, 3);
+---
+
+{
+  matches.length > 0 && (
+    <section class="content-section related-guides" aria-labelledby="related-guides-h" lang="en" dir="ltr">
+      <div class="container prose">
+        <h2 id="related-guides-h">Related guides</h2>
+        <ul>
+          {matches.map((g) => (
+            <li>
+              <a href={`/guides/${g.slug}/`}>{g.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

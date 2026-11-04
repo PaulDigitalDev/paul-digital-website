@@ -3,6 +3,7 @@ import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import Analytics from "../components/Analytics.astro";
+import RelatedGuides from "../components/RelatedGuides.astro";
 import { BRAND_LOGO } from "../config/brand";
 
 interface Props {
@@ -40,6 +41,7 @@ const socialImage = new URL(image, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#F7FAFF" />
     <meta name="description" content={description} />
+    <meta name="google-adsense-account" content="ca-pub-5048291410050597" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" href={BRAND_LOGO} sizes="768x768" />
     <link rel="apple-touch-icon" href={BRAND_LOGO} />
@@ -65,6 +67,7 @@ const socialImage = new URL(image, Astro.site);
     {chromeLang ? <div lang={chromeLang} dir={dir ? "ltr" : undefined} style="display: contents"><SiteHeader currentPath={Astro.url.pathname} /></div> : <SiteHeader currentPath={Astro.url.pathname} />}
     <main id="main-content">
       <slot />
+      <RelatedGuides />
     </main>
     {chromeLang ? <div lang={chromeLang} dir={dir ? "ltr" : undefined} style="display: contents"><SiteFooter /></div> : <SiteFooter />}
     <Analytics />

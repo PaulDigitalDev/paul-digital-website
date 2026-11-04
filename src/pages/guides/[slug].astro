@@ -1,0 +1,132 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { guides, readingMinutes, type Guide } from "../../data/guides";
+
+export function getStaticPaths() {
+  return guides.map((guide) => ({ params: { slug: guide.slug }, props: { guide } }));
+}
+
+const { guide } = Astro.props as { guide: Guide };
+const path = `/guides/${guide.slug}/`;
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+const minutes = readingMinutes(guide);
+const formatDate = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const more = guides
+  .filter((g) => g.slug !== guide.slug)
+  .sort((a, b) => Number(b.category === guide.category) - Number(a.category === guide.category))
+  .slice(0, 4);
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: guide.title,
+  description: guide.description,
+  datePublished: guide.published,
+  dateModified: guide.updated,
+  mainEntityOfPage: site(path),
+  image: site("/social-card.svg"),
+  author: { "@type": "Organization", name: "Paul Digital", url: site("/about/") },
+  publisher: { "@type": "Organization", name: "Paul Digital", logo: { "@type": "ImageObject", url: site("/paul-digital-logo.png") } },
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: "Guides", item: site("/guides/") },
+    { "@type": "ListItem", position: 3, name: guide.title, item: site(path) },
+  ],
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: guide.faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+---
+
+<BaseLayout title={`${guide.metaTitle} — Paul Digital`} description={guide.description} canonicalUrl={path} type="article">
+  <Fragment slot="head">
+    <meta property="article:published_time" content={guide.published} />
+    <meta property="article:modified_time" content={guide.updated} />
+    <script type="application/ld+json" set:html={json(articleSchema)} />
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    {guide.faqs.length > 0 && <script type="application/ld+json" set:html={json(faqSchema)} />}
+  </Fragment>
+  <article>
+    <header class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/guides/">Guides</a></li>
+            <li aria-current="page">{guide.category}</li>
+          </ol>
+        </nav>
+        <h1>{guide.title}</h1>
+        <p>{guide.summary}</p>
+        <p class="guide-byline">
+          By the Paul Digital team · Updated <time datetime={guide.updated}>{formatDate(guide.updated)}</time> · {minutes} min read
+        </p>
+      </div>
+    </header>
+    <div class="content-section">
+      <div class="container prose guide-body">
+        <nav class="guide-toc" aria-label="On this page">
+          <p><strong>On this page</strong></p>
+          <ol>
+            {guide.sections.map((section, i) => <li><a href={`#s${i + 1}`}>{section.heading}</a></li>)}
+            {guide.faqs.length > 0 && <li><a href="#faq">Frequently asked questions</a></li>}
+          </ol>
+        </nav>
+
+        {
+          guide.sections.map((section, i) => (
+            <>
+              <h2 id={`s${i + 1}`}>{section.heading}</h2>
+              <Fragment set:html={section.html} />
+            </>
+          ))
+        }
+
+        <aside class="guide-tools" aria-labelledby="guide-tools-h">
+          <h2 id="guide-tools-h">Free tools for this task</h2>
+          <p>These tools run in your browser. Your files are processed on your device and are not uploaded.</p>
+          <ul>
+            {guide.tools.map((tool) => <li><a href={tool.href}>{tool.label}</a></li>)}
+          </ul>
+        </aside>
+
+        {
+          guide.faqs.length > 0 && (
+            <>
+              <h2 id="faq">Frequently asked questions</h2>
+              <div class="faq-list">
+                {guide.faqs.map((faq) => (
+                  <div class="faq-item">
+                    <h3>{faq.q}</h3>
+                    <p>{faq.a}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )
+        }
+
+        <h2>More guides</h2>
+        <ul>
+          {more.map((g) => <li><a href={`/guides/${g.slug}/`}>{g.title}</a></li>)}
+          <li><a href="/guides/">All guides</a></li>
+        </ul>
+
+        <p class="guide-note">
+          Paul Digital guides are written from hands-on testing of the tools on this site and are reviewed when platforms or
+          formats change. Requirements set by exam boards, governments and apps vary and change over time, so always check the
+          official instructions for your case. Spotted an error? Email
+          <a href="mailto:askpaulonline@gmail.com">askpaulonline@gmail.com</a>.
+        </p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
