@@ -55,7 +55,7 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(appSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <ToolTop h1={tool.h1} intro={tool.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Web Tools", href: "/tools/" }, { label: tool.h1 }]} breadcrumbLabel="Breadcrumb">
+  <ToolTop accent={tool.mode === "resize" ? "image" : "photo"} h1={tool.h1} intro={tool.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Web Tools", href: "/tools/" }, { label: tool.h1 }]} breadcrumbLabel="Breadcrumb">
       {tool.mode === "resize" && <ImageResizer client:load />}
       {tool.mode === "crop" && <CropEditor client:load variant="crop" />}
       {tool.mode === "metadata" && <MetadataTool client:load />}

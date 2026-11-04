@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, ReactNode } from "react";
 import { buildZip } from "../../lib/zip";
+import { DropOverlay, UploadIcon, useWindowDrop } from "./premium";
 
 /* Pieces shared by the Format Conversions tools. Everything runs locally in the browser. */
 
@@ -34,18 +35,17 @@ export function DropArea(props: DropAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
 
+  const accept = (files: File[]) => {
+    if (props.busy || !files.length) return;
+    props.onFiles(props.multiple ? files : files.slice(0, 1));
+  };
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
     event.target.value = "";
-    if (files.length) props.onFiles(files);
+    accept(files);
   };
-  const onDrop = (event: DragEvent) => {
-    event.preventDefault();
-    setDragging(false);
-    if (props.busy) return;
-    const files = Array.from(event.dataTransfer.files);
-    if (files.length) props.onFiles(props.multiple ? files : files.slice(0, 1));
-  };
+  // Files can be dropped anywhere on the page, not only on the box.
+  const overlay = useWindowDrop(!props.busy, accept);
 
   return (
     <div
@@ -55,15 +55,16 @@ export function DropArea(props: DropAreaProps) {
         if (!props.busy) setDragging(true);
       }}
       onDragLeave={() => setDragging(false)}
-      onDrop={onDrop}
+      onDrop={() => setDragging(false)}
       tabIndex={0}
       role="group"
       aria-label={props.ariaLabel}
     >
-      {props.icon}
+      <DropOverlay active={overlay} label={props.emptyTitle} />
+      {!props.hasFiles && (props.icon ?? <UploadIcon />)}
       <p className="ic-drop-title">{props.hasFiles ? props.title : props.emptyTitle}</p>
       <p className="ic-drop-sub">{props.hasFiles ? props.filledSub : props.emptySub}</p>
-      <button type="button" className="button" onClick={() => inputRef.current?.click()} disabled={props.busy}>
+      <button type="button" className="button ic-pick" onClick={() => inputRef.current?.click()} disabled={props.busy}>
         {props.hasFiles ? props.moreLabel : props.buttonLabel}
       </button>
       <input

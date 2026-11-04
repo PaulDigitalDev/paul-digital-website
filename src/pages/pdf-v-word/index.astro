@@ -83,7 +83,7 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(appSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <ToolTop h1={h1} intro={intro} crumbs={[{ label: "Главная", href: "/" }, { label: h1 }]} breadcrumbLabel="Навигационная цепочка">
+  <ToolTop accent="word" h1={h1} intro={intro} crumbs={[{ label: "Главная", href: "/" }, { label: h1 }]} breadcrumbLabel="Навигационная цепочка">
     <PdfVWord client:load />
   </ToolTop>
   <section class="content-section" style="padding-top: 0">

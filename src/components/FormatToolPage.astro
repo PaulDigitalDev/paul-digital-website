@@ -106,7 +106,7 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(appSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <ToolTop h1={tool.h1} intro={tool.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Format Conversions", href: "/format-conversions/" }, { label: tool.h1 }]} breadcrumbLabel="Breadcrumb">
+  <ToolTop accent={tool.kind === "word" ? "word" : tool.kind === "ocr" ? "text" : "convert"} h1={tool.h1} intro={tool.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Format Conversions", href: "/format-conversions/" }, { label: tool.h1 }]} breadcrumbLabel="Breadcrumb">
       {tool.kind === "convert" && <FormatConverter client:load tool={tool} />}
       {tool.kind === "word" && <ImageToWord client:load tool={tool} />}
       {tool.kind === "ocr" && <OcrTool client:load tool={tool} />}
