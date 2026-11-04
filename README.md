@@ -33,7 +33,7 @@ Connect this repository using Cloudflare Pages Git integration. Select `main` as
 ## Project structure
 
 ```text
-public/                  Official logo, social card, robots.txt, and sitemap.xml
+public/                  Official logo, social card and robots.txt (sitemap.xml is generated at build time)
 src/
   components/            Shared navigation, footer, and content cards
   config/                Centralized Paul Digital brand asset paths

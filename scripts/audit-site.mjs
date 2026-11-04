@@ -1,4 +1,4 @@
-// Post-build audit: compares dist/ routes with public/sitemap.xml and checks
+// Post-build audit: compares dist/ routes with the generated dist/sitemap.xml and checks
 // canonical URLs, unique titles/descriptions, noindex flags and internal links.
 // Usage: npm run build && node scripts/audit-site.mjs
 import fs from "node:fs";
@@ -20,7 +20,7 @@ const routeOf = (file) => {
   return rel ? `/${rel}/` : "/";
 };
 const routes = pages.map(routeOf);
-const sitemap = [...fs.readFileSync("public/sitemap.xml", "utf8").matchAll(/<loc>(.*?)<\/loc>/g)].map((m) =>
+const sitemap = [...fs.readFileSync("dist/sitemap.xml", "utf8").matchAll(/<loc>(.*?)<\/loc>/g)].map((m) =>
   m[1].replace(origin, ""),
 );
 
@@ -58,6 +58,26 @@ pages.forEach((file, i) => {
 });
 for (const [t, rs] of titles) if (rs.length > 1) report(`duplicate title "${t}": ${rs.join(", ")}`);
 for (const [d, rs] of descriptions) if (rs.length > 1) report(`duplicate description: ${rs.join(", ")}`);
+
+// Content depth report (informational): visible words in <main>, without scripts, styles and SVG.
+// Pages with little text are the ones Google tends to leave "crawled, not indexed" and that AdSense
+// reviewers call "low value content".
+const wordCounts = pages
+  .map((file, i) => {
+    const html = fs.readFileSync(file, "utf8");
+    const main = html.match(/<main[^>]*>([\s\S]*?)<\/main>/)?.[1] ?? html;
+    const text = main
+      .replace(/<(script|style|svg)[^>]*>[\s\S]*?<\/\1>/g, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&[a-z#0-9]+;/gi, " ");
+    return { route: routes[i], words: text.split(/\s+/).filter(Boolean).length };
+  })
+  .sort((a, b) => a.words - b.words);
+const total = wordCounts.reduce((sum, p) => sum + p.words, 0);
+console.log(`\ncontent: ${total} words across ${wordCounts.length} pages; thinnest pages:`);
+wordCounts.slice(0, 25).forEach((p) => console.log(`  ${String(p.words).padStart(5)}  ${p.route}`));
+const thin = wordCounts.filter((p) => p.words < 300 && !/^\/(contact|licenses)\/$/.test(p.route));
+if (thin.length) console.log(`note: ${thin.length} page(s) under 300 words`);
 
 console.log(problems ? `${problems} problem(s)` : "audit clean");
 process.exitCode = problems ? 1 : 0;
