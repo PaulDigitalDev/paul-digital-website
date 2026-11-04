@@ -17,6 +17,11 @@ const pages = [
   { name: "jpg-to-pdf", url: "/jpg-to-pdf/", upload: true },
   { name: "jpg-to-pdf-100kb", url: "/jpg-to-pdf-under-100kb/" },
   { name: "webp-to-jpg", url: "/webp-to-jpg/" },
+  { name: "image-resizer", url: "/image-resizer/", upload: true },
+  { name: "passport", url: "/passport-photo-resizer/", upload: true },
+  { name: "pisah-pdf", url: "/pisah-pdf/", upload: true, file: "pdf" },
+  { name: "pdf-a-word", url: "/pdf-a-word/", upload: true, file: "pdf" },
+  { name: "unir-pdf", url: "/unir-pdf/", upload: true, file: "pdf" },
 ];
 const viewports = [
   { tag: "desktop", width: 1366, height: 900, isMobile: false },
@@ -24,6 +29,14 @@ const viewports = [
 ];
 
 const browser = await chromium.launch();
+// A small two-page PDF for the PDF tools, printed by Chromium itself.
+const pdfFixture = path.resolve(out, "fixture.pdf");
+{
+  const tmp = await browser.newPage();
+  await tmp.setContent("<h1>Paul Digital sample</h1><p>Page one.</p><div style='page-break-after:always'></div><h1>Page two</h1><p>More text.</p>");
+  await tmp.pdf({ path: pdfFixture });
+  await tmp.close();
+}
 for (const vp of viewports) {
   const context = await browser.newContext({
     viewport: { width: vp.width, height: vp.height },
@@ -47,9 +60,9 @@ for (const vp of viewports) {
     if (p.upload) {
       const input = page.locator('input[type="file"]').first();
       if (await input.count()) {
-        await input.setInputFiles(fixture);
+        await input.setInputFiles(p.file === "pdf" ? pdfFixture : fixture);
         await page.waitForTimeout(1500);
-        const action = page.locator("main .pt-action, main button.button-primary").first();
+        const action = page.locator("main .pt-action, main .ic-submit, main button.button-primary").first();
         await page.screenshot({ path: `${out}/${p.name}-${vp.tag}-loaded.png` });
         if (await action.count()) {
           await action.click().catch(() => {});

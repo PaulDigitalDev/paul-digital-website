@@ -1160,3 +1160,176 @@
 .hg-tabs[hidden] {
   display: none;
 }
+
+/* ---------- Legacy tools (shared DropArea + .ic-* markup) picking up the premium look ---------- */
+.tool-top .ic:not(.pt) {
+  max-width: 56rem;
+  margin-inline: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  gap: 1rem;
+}
+
+.tool-top .ic:not(.pt) .ic-drop {
+  gap: 0.35rem;
+  padding: clamp(2rem, 6vw, 3.25rem) 1rem;
+  border: 2px dashed color-mix(in srgb, var(--accent) 35%, #cfd6e6);
+  border-radius: 1.25rem;
+  background: #fff;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.tool-top .ic:not(.pt) .ic-drop > svg {
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+
+.tool-top .ic:not(.pt) .ic-drop:not(.has-file) .ic-drop-title {
+  color: #4b5470;
+  font-weight: 600;
+  font-size: 1.02rem;
+  order: 3;
+  margin-top: 0.75rem;
+}
+
+.tool-top .ic:not(.pt) .ic-drop:not(.has-file) .ic-drop-sub {
+  order: 4;
+}
+
+.tool-top .ic:not(.pt) .ic-drop:not(.has-file) .ic-pick {
+  order: 2;
+}
+
+.tool-top .ic:not(.pt) .ic-pick {
+  min-width: min(20rem, 100%);
+  min-height: 4.25rem;
+  padding: 0 2rem;
+  border: 0;
+  border-radius: 0.9rem;
+  background: var(--accent);
+  box-shadow: 0 10px 24px -8px color-mix(in srgb, var(--accent) 65%, transparent);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tool-top .ic:not(.pt) .ic-pick:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.tool-top .ic:not(.pt) .ic-drop.has-file {
+  grid-template-columns: 1fr auto;
+  justify-items: start;
+  align-items: center;
+  column-gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid #e3e7f0;
+  border-radius: 1rem;
+  text-align: left;
+}
+
+.tool-top .ic:not(.pt) .ic-drop.has-file .ic-pick {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  min-width: 0;
+  min-height: 2.5rem;
+  padding: 0 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, white);
+  background: var(--accent-soft);
+  box-shadow: none;
+  color: var(--accent-strong);
+  font-size: 0.95rem;
+}
+
+.tool-top .ic:not(.pt) .ic-drop.is-dragging {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.tool-top .ic:not(.pt) .ic-hint {
+  text-align: center;
+}
+
+.tool-top .ic:not(.pt) .ic-controls,
+.tool-top .ic:not(.pt) .ic-form,
+.tool-top .ic:not(.pt) .ic-options {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid #e3e7f0;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 6px 20px -14px rgb(20 30 70 / 25%);
+}
+
+.tool-top .ic:not(.pt) .ic-field input:focus-visible,
+.tool-top .ic:not(.pt) .ic-field select:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.tool-top .ic:not(.pt) .ic-field input,
+.tool-top .ic:not(.pt) .ic-field select {
+  min-height: 2.75rem;
+  border-radius: 0.7rem;
+}
+
+.tool-top .ic:not(.pt) .ic-submit {
+  min-height: 3.5rem;
+  border: 0;
+  border-radius: 0.85rem;
+  background: var(--accent);
+  box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--accent) 60%, transparent);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.tool-top .ic:not(.pt) .ic-submit:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.tool-top .ic:not(.pt) .ic-result {
+  padding: 1.25rem 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, #e3e7f0);
+  border-left-width: 1px;
+  border-radius: 1.1rem;
+  background: #fff;
+  box-shadow: 0 10px 28px -16px rgb(20 30 70 / 30%);
+}
+
+.tool-top .ic:not(.pt) .ic-result.is-ok h2,
+.tool-top .ic:not(.pt) .ic-result h2 {
+  color: var(--accent-strong);
+  font-size: 1.3rem;
+}
+
+.tool-top .ic:not(.pt) .ic-result .button:not(.ic-submit) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  min-height: 3rem;
+  font-weight: 800;
+}
+
+.tool-top .ic:not(.pt) .ic-result .button:not(.ic-submit):hover {
+  background: var(--accent-hover);
+}
+
+.tool-top .ic:not(.pt) .sp-chip[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+@media (max-width: 40rem) {
+  .tool-top .ic:not(.pt) .ic-drop.has-file {
+    grid-template-columns: 1fr;
+  }
+  .tool-top .ic:not(.pt) .ic-drop.has-file .ic-pick {
+    grid-row: auto;
+    grid-column: 1;
+    width: 100%;
+  }
+}
