@@ -119,7 +119,12 @@ export default function ImageEffect({ mode }: { mode: EffectMode }) {
   const [circleSize, setCircleSize] = useState(0);
   const previewRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => () => resultRef.current && URL.revokeObjectURL(resultRef.current.url), []);
+  useEffect(
+    () => () => {
+      if (resultRef.current) URL.revokeObjectURL(resultRef.current.url);
+    },
+    [],
+  );
 
   /* Use a format this browser can really save. */
   useEffect(() => {
