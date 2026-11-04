@@ -92,7 +92,7 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(appSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <ToolTop h1={route.h1} intro={route.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Tools", href: "/tools/" }, { label: route.h1 }]} breadcrumbLabel="Breadcrumb">
+  <ToolTop accent="pdf" h1={route.h1} intro={route.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Tools", href: "/tools/" }, { label: route.h1 }]} breadcrumbLabel="Breadcrumb">
       <JpgToPdf client:load target={route.target} unit={route.unit} label={route.label} />
   </ToolTop>
   <section class="content-section" style="padding-top: 0">

@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import type { ChangeEvent, DragEvent } from "react";
 import { toBytes } from "../../data/imageSizeRoutes";
 import type { SizeUnit } from "../../data/imageSizeRoutes";
 import { buildPdf, isJpegSignature, parseJpeg } from "../../lib/jpegPdf";
 import type { PageSizeChoice, PdfImage } from "../../lib/jpegPdf";
-import { ResultPanel, StatusArea } from "./shared";
+import { ActionButton, DoneView, DropOverlay, ErrorBox, SidePanel, UploadHero, Workspace, useFilePicker, useWindowDrop } from "./premium";
 
 /* Everything runs locally: files are read with File APIs, the PDF is assembled in memory. */
 
@@ -30,6 +29,8 @@ const LADDER: { quality: number; scale: number }[] = [
 interface Item {
   id: number;
   file: File;
+  /** Object URL used for the page thumbnail; revoked when the item is removed. */
+  thumb: string;
 }
 
 interface Result {
@@ -99,18 +100,19 @@ export default function JpgToPdf({
   const [unit, setUnit] = useState<SizeUnit>(initialUnit);
   const [pageSize, setPageSize] = useState<PageSizeChoice>("a4");
   const [busy, setBusy] = useState(false);
-  const [dragging, setDragging] = useState(false);
   const [status, setStatus] = useState("");
   const [progress, setProgress] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [result, setResult] = useState<Result | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const idRef = useRef(0);
   const urlRef = useRef<string | null>(null);
 
+  const itemsRef = useRef<Item[]>([]);
+  itemsRef.current = items;
   useEffect(
     () => () => {
       if (urlRef.current) URL.revokeObjectURL(urlRef.current);
+      itemsRef.current.forEach((item) => URL.revokeObjectURL(item.thumb));
     },
     [],
   );
@@ -123,6 +125,7 @@ export default function JpgToPdf({
 
   const reset = () => {
     clearResult();
+    items.forEach((item) => URL.revokeObjectURL(item.thumb));
     setItems([]);
     setErrors([]);
     setStatus("");
@@ -158,7 +161,7 @@ export default function JpgToPdf({
         continue;
       }
       total += file.size;
-      accepted.push({ id: ++idRef.current, file });
+      accepted.push({ id: ++idRef.current, file, thumb: URL.createObjectURL(file) });
     }
 
     setErrors(problems);
@@ -170,22 +173,17 @@ export default function JpgToPdf({
     }
   };
 
-  const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files ?? []);
-    event.target.value = "";
-    void addFiles(files);
-  };
-
-  const onDrop = (event: DragEvent) => {
-    event.preventDefault();
-    setDragging(false);
-    void addFiles(Array.from(event.dataTransfer.files));
-  };
+  const picker = useFilePicker(".jpg,.jpeg,image/jpeg", true, (files) => void addFiles(files));
+  const dropActive = useWindowDrop(!busy && !result, (files) => void addFiles(files));
 
   const removeItem = (id: number) => {
     if (busy) return;
     clearResult();
-    setItems((current) => current.filter((item) => item.id !== id));
+    setItems((current) => {
+      const gone = current.find((item) => item.id === id);
+      if (gone) URL.revokeObjectURL(gone.thumb);
+      return current.filter((item) => item.id !== id);
+    });
     setStatus("Image removed.");
   };
 
@@ -346,168 +344,185 @@ export default function JpgToPdf({
   };
 
   const totalSize = items.reduce((sum, item) => sum + item.file.size, 0);
+  const stage = result ? "done" : items.length ? "work" : "upload";
+  const originalTotal = totalSize;
 
   return (
-    <div className="ic">
-      <div
-        className={`ic-drop${dragging ? " is-dragging" : ""}${items.length ? " has-file" : ""}`}
-        onDragOver={(event) => {
-          event.preventDefault();
-          if (!busy) setDragging(true);
-        }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={onDrop}
-        tabIndex={0}
-        role="group"
-        aria-label={`${label} image drop area`}
-      >
-        <p className="ic-drop-title">
-          {items.length
-            ? `${items.length} image${items.length === 1 ? "" : "s"} selected`
-            : `Drag and drop ${label} images here`}
-        </p>
-        <p className="ic-drop-sub">
-          {items.length
-            ? `${formatBytes(totalSize)} in total · add more any time`
-            : `${label} only (.jpg, .jpeg) · select several at once · up to 50 MB each`}
-        </p>
-        <button type="button" className="button" onClick={() => inputRef.current?.click()} disabled={busy}>
-          {items.length ? "Add more images" : `Choose ${label} images`}
-        </button>
-        <input
-          ref={inputRef}
-          className="ic-file"
-          type="file"
-          accept=".jpg,.jpeg,image/jpeg"
-          multiple
-          onChange={onInputChange}
-          aria-label={`Choose ${label} files`}
-          tabIndex={-1}
-        />
-      </div>
-      <p className="ic-hint">Your images are turned into a PDF on this device and are never uploaded.</p>
+    <div className="ic pt" data-stage={stage}>
+      {picker.input}
+      <DropOverlay active={dropActive} label={items.length ? `Drop to add more ${label} images` : `Drop your ${label} images here`} />
 
-      {items.length > 0 && (
-        <>
-        <p className="ic-hint">Each image becomes one page, in this order. Use the arrows to reorder or Remove to take one out.</p>
-        <ol className="jp-list" aria-label="Selected images in PDF page order">
-          {items.map((item, index) => (
-            <li key={item.id} className="jp-item">
-              <span className="jp-num" aria-hidden="true">
-                {index + 1}
-              </span>
-              <span className="jp-name">
-                {item.file.name}
-                <small>{formatBytes(item.file.size)}</small>
-              </span>
-              <span className="jp-actions">
-                <button
-                  type="button"
-                  onClick={() => moveItem(index, -1)}
-                  disabled={busy || index === 0}
-                  aria-label={`Move ${item.file.name} up`}
-                >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  onClick={() => moveItem(index, 1)}
-                  disabled={busy || index === items.length - 1}
-                  aria-label={`Move ${item.file.name} down`}
-                >
-                  ↓
-                </button>
-                <button type="button" onClick={() => removeItem(item.id)} disabled={busy} aria-label={`Remove ${item.file.name}`}>
-                  Remove
-                </button>
-              </span>
-            </li>
-          ))}
-        </ol>
-        </>
+      {stage === "upload" && (
+        <UploadHero
+          buttonLabel={`Select ${label} images`}
+          dropLabel="or drop images anywhere on this page"
+          sub={`${label} only (.jpg, .jpeg) · select several at once · up to 50 MB each`}
+          busy={busy}
+          onOpen={picker.open}
+        >
+          <ErrorBox errors={errors} />
+        </UploadHero>
       )}
 
-      <form
-        className="ic-form"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void run();
-        }}
-      >
-        <div className="ic-controls">
-        <div className="ic-field">
-          <label htmlFor="jp-target">Target PDF size (maximum)</label>
-          <input
-            id="jp-target"
-            type="number"
-            inputMode="decimal"
-            min="0"
-            step="any"
-            value={targetValue}
-            onChange={(event) => setTargetValue(event.target.value)}
-            disabled={busy}
-          />
-        </div>
-        <div className="ic-field ic-field-unit">
-          <label htmlFor="jp-unit">Unit</label>
-          <select id="jp-unit" value={unit} onChange={(event) => setUnit(event.target.value as SizeUnit)} disabled={busy}>
-            <option value="KB">KB</option>
-            <option value="MB">MB</option>
-          </select>
-        </div>
-        <button type="submit" className="button button-primary ic-submit" disabled={items.length === 0 || busy}>
-          {busy ? "Working…" : "Create PDF"}
-        </button>
-        </div>
-        <details className="ic-options">
-          <summary>Page options</summary>
-          <div className="ic-controls">
-        <div className="ic-field">
-          <label htmlFor="jp-page">Page size</label>
-          <select id="jp-page" value={pageSize} onChange={(event) => setPageSize(event.target.value as PageSizeChoice)} disabled={busy}>
-            <option value="a4">A4 (fit image, auto orientation)</option>
-            <option value="letter">US Letter (fit image, auto orientation)</option>
-            <option value="image">Match image shape (no margins)</option>
-          </select>
-        </div>
-          </div>
-        </details>
-      </form>
-      <p className="ic-hint">
-        1 KB = 1,024 bytes. The size you enter is a goal, not a promise: the finished PDF is measured and the real size is reported.
-        Landscape images get landscape pages automatically.
-      </p>
+      {stage === "work" && (
+        <Workspace
+          main={
+            <>
+              <p className="pt-main-head">
+                {items.length} page{items.length === 1 ? "" : "s"} · {formatBytes(totalSize)}
+                <span> · each image becomes one page, in this order</span>
+              </p>
+              <ol className="pt-pages" aria-label="Selected images in PDF page order">
+                {items.map((item, index) => (
+                  <li key={item.id} className={`pt-page${busy ? " is-busy" : ""}`}>
+                    <div className="pt-page-thumb">
+                      <img src={item.thumb} alt="" loading="lazy" />
+                      <span className="pt-page-num" aria-hidden="true">
+                        {index + 1}
+                      </span>
+                      <button
+                        type="button"
+                        className="pt-file-remove"
+                        onClick={() => removeItem(item.id)}
+                        disabled={busy}
+                        aria-label={`Remove ${item.file.name}`}
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <span className="pt-page-name" title={item.file.name}>
+                      {item.file.name}
+                    </span>
+                    <span className="pt-page-move">
+                      <button type="button" onClick={() => moveItem(index, -1)} disabled={busy || index === 0} aria-label={`Move ${item.file.name} earlier`}>
+                        ←
+                      </button>
+                      <small>{formatBytes(item.file.size)}</small>
+                      <button
+                        type="button"
+                        onClick={() => moveItem(index, 1)}
+                        disabled={busy || index === items.length - 1}
+                        aria-label={`Move ${item.file.name} later`}
+                      >
+                        →
+                      </button>
+                    </span>
+                  </li>
+                ))}
+                <li className="pt-page pt-page-add">
+                  <button type="button" onClick={picker.open} disabled={busy}>
+                    <span aria-hidden="true">+</span>
+                    Add images
+                  </button>
+                </li>
+              </ol>
+            </>
+          }
+          side={
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                void run();
+              }}
+            >
+              <SidePanel
+                title="PDF options"
+                action={<ActionButton label="Convert to PDF" busyLabel={progress || "Working…"} busy={busy} disabled={items.length === 0} />}
+                footer={
+                  <div className="ic-status sr-only" role="status" aria-live="polite">
+                    {busy ? "Working…" : status}
+                  </div>
+                }
+              >
+                <fieldset className="pt-cards">
+                  <legend className="pt-label">Page size</legend>
+                  {(
+                    [
+                      ["a4", "A4", "Fits each image, auto orientation"],
+                      ["letter", "US Letter", "Fits each image, auto orientation"],
+                      ["image", "Image size", "Page matches the image, no margins"],
+                    ] as [PageSizeChoice, string, string][]
+                  ).map(([value, name, hint]) => (
+                    <label key={value} className={`pt-card-option${pageSize === value ? " is-checked" : ""}`}>
+                      <input
+                        type="radio"
+                        name="jp-page"
+                        value={value}
+                        checked={pageSize === value}
+                        onChange={() => setPageSize(value)}
+                        disabled={busy}
+                      />
+                      <span>
+                        <strong>{name}</strong>
+                        <small>{hint}</small>
+                      </span>
+                    </label>
+                  ))}
+                </fieldset>
+                <div className="pt-row">
+                  <div className="ic-field">
+                    <label htmlFor="jp-target">Maximum PDF size</label>
+                    <input
+                      id="jp-target"
+                      type="number"
+                      inputMode="decimal"
+                      min="0"
+                      step="any"
+                      value={targetValue}
+                      onChange={(event) => setTargetValue(event.target.value)}
+                      disabled={busy}
+                    />
+                  </div>
+                  <div className="ic-field ic-field-unit">
+                    <label htmlFor="jp-unit">Unit</label>
+                    <select id="jp-unit" value={unit} onChange={(event) => setUnit(event.target.value as SizeUnit)} disabled={busy}>
+                      <option value="KB">KB</option>
+                      <option value="MB">MB</option>
+                    </select>
+                  </div>
+                </div>
+                <p className="pt-help">
+                  Images are embedded unchanged when they already fit; otherwise they are recompressed gradually. The finished PDF is
+                  measured. 1 KB = 1,024 bytes.
+                </p>
+                <ErrorBox errors={errors} />
+              </SidePanel>
+            </form>
+          }
+        />
+      )}
 
-      <StatusArea busy={busy} progress={progress} status={status} errors={errors} />
-
-      {result && (
-        <ResultPanel
-          ariaLabel="Result"
-          tone={result.ok ? "success" : "warning"}
-          title={result.ok ? "Target met" : "Target not met"}
+      {stage === "done" && result && (
+        <DoneView
+          ok={result.ok}
+          title={result.ok ? "Your PDF is ready!" : "PDF created, but over the target"}
           summary={
             result.ok
-              ? `The PDF is ${formatBytes(result.size)}, within your ${formatBytes(result.target)} limit.`
+              ? `${result.pages} page${result.pages === 1 ? "" : "s"}, ${formatBytes(result.size)}: within your ${formatBytes(result.target)} limit.`
               : `The smallest PDF this tool will produce is ${formatBytes(result.size)}, above your ${formatBytes(result.target)} limit.`
           }
-          fileName={result.fileName}
-          details={[
-            { label: "Format", value: "PDF" },
-            {
-              label: "Size",
-              value: formatBytes(result.size),
-              hint: exactBytes(result.size),
-            },
+          downloadHref={result.url}
+          downloadName={result.fileName}
+          downloadLabel="Download PDF"
+          saving={
+            result.size < originalTotal
+              ? {
+                  percent: Math.round((1 - result.size / originalTotal) * 100),
+                  before: `${formatBytes(originalTotal)} of images`,
+                  after: formatBytes(result.size),
+                }
+              : undefined
+          }
+          stats={[
             { label: "Pages", value: String(result.pages) },
+            { label: "Size", value: formatBytes(result.size) },
+            { label: "Exact size", value: exactBytes(result.size) },
           ]}
           notes={result.notes}
-          primary={
-            <a className="button button-download" href={result.url} download={result.fileName}>
-              Download {result.fileName}
-            </a>
-          }
-          resetLabel="Convert more images"
+          onBack={clearResult}
+          backLabel="Back to the pages and options"
           onReset={reset}
+          resetLabel="Convert more images"
         />
       )}
     </div>

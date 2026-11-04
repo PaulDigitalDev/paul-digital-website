@@ -1,5 +1,6 @@
 ---
 import ToolCategoryPage from "../../components/ToolCategoryPage.astro";
+import ImageCompressor from "../../components/tools/ImageCompressor";
 import { imageSizeRoutes, targetLabel } from "../../data/imageSizeRoutes";
 
 const items = imageSizeRoutes.map((route) => {
@@ -14,14 +15,15 @@ const items = imageSizeRoutes.map((route) => {
   title="Image Compressor — Reduce Image Size Online | Paul Digital"
   description="Compress or resize JPEG, PNG and WebP images toward an exact file size such as 20 KB, 50 KB, 100 KB or 1 MB, right in your browser with nothing uploaded."
   h1="Image Compressor"
-  intro="Compress or resize an image toward a target file size, right in your browser. Nothing is uploaded, and the real output size is measured and shown."
+  intro="Reduce JPG, PNG and WebP images to the exact size you need, like 20 KB, 50 KB or 100 KB. Free, fast and private: your image never leaves your device."
   group="Image Tools"
   openHref="/compress-image-to-100kb/"
   openLabel="Open Image Compressor"
+  accent="image"
   gridId="image-target-sizes"
   items={items}
   about={[
-    "Pick an exact target size below to open the compressor with that goal already filled in, or open the default compressor and type your own limit. The target stays editable on every page.",
+    "Use the compressor above with any target, or open one of the exact-size pages below, which start with that goal already filled in. The target stays editable on every page.",
     "The size you choose is a goal, not a promise. The result depends on the original image and your browser, so the tool reports the actual size of the file it produces.",
   ]}
   sections={[
@@ -60,4 +62,6 @@ const items = imageSizeRoutes.map((route) => {
       a: "Yes. It is free, needs no sign-up, and processes images on your device without uploading them.",
     },
   ]}
-/>
+>
+  <ImageCompressor slot="tool" client:load mode="compress" scope="image" target={100} unit="KB" />
+</ToolCategoryPage>

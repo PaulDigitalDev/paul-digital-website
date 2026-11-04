@@ -64,7 +64,7 @@ const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
     <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
-  <ToolTop h1={route.h1} intro={content.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Tools", href: "/tools/" }, { label: route.h1 }]} breadcrumbLabel="Breadcrumb">
+  <ToolTop accent="image" h1={route.h1} intro={content.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Tools", href: "/tools/" }, { label: route.h1 }]} breadcrumbLabel="Breadcrumb">
       <ImageCompressor
         client:load
         mode={route.mode}

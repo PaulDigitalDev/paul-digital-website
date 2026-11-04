@@ -1,5 +1,6 @@
 ---
 import ToolCategoryPage from "../../components/ToolCategoryPage.astro";
+import JpgToPdf from "../../components/tools/JpgToPdf";
 import { jpgToPdfRoutes } from "../../data/jpgToPdfRoutes";
 
 const items = jpgToPdfRoutes.map((route) => ({
@@ -14,14 +15,15 @@ const items = jpgToPdfRoutes.map((route) => ({
   title="JPG to PDF Converter — Online, Private | Paul Digital"
   description="Convert JPG images into a PDF in your browser and check the real file size against a target such as 100 KB, 500 KB or 1 MB. Nothing is uploaded."
   h1="JPG to PDF"
-  intro="Combine JPG images into a single PDF in your browser and check the real file size against a target. Nothing is uploaded."
+  intro="Turn one or many JPG images into a single PDF. Reorder pages, choose A4 or image size, and keep it under an upload limit. Your images never leave your device."
   group="PDF Tools"
   openHref="/jpg-to-pdf-under-100kb/"
   openLabel="Open JPG to PDF Converter"
+  accent="pdf"
   gridId="pdf-target-sizes"
   items={items}
   about={[
-    "Choose an exact size limit below to open the converter with that target already set, or start with the default converter and edit the target yourself.",
+    "Use the converter above, or open one of the exact-size pages below, which start with that size limit already set.",
     "The actual size of the finished PDF is always measured and reported, so you can see whether it meets the limit before you download it.",
   ]}
   sections={[
@@ -59,4 +61,6 @@ const items = jpgToPdfRoutes.map((route) => ({
       a: "Use the 100 KB page with one or two cropped pages. For more pages, choose a larger target or reduce the number of pages.",
     },
   ]}
-/>
+>
+  <JpgToPdf slot="tool" client:load target={1} unit="MB" label="JPG" />
+</ToolCategoryPage>

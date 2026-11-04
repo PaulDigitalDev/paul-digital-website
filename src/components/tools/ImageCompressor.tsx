@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ChangeEvent, DragEvent, KeyboardEvent } from "react";
 import { toBytes } from "../../data/imageSizeRoutes";
-import { ResultPanel, StatusArea } from "./shared";
+import { ActionButton, DoneView, DropOverlay, ErrorBox, PresetChips, SidePanel, UploadHero, Workspace, useFilePicker, useWindowDrop } from "./premium";
 import type { ImageFormatScope, ImageSizeMode, SizeUnit } from "../../data/imageSizeRoutes";
 
 /* ------------------------------------------------------------------ */
@@ -277,13 +276,12 @@ export default function ImageCompressor(props: ImageCompressorProps) {
   const [output, setOutput] = useState<OutputChoice>("keep");
   const [webpOk, setWebpOk] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [dragging, setDragging] = useState(false);
+  const [preview, setPreview] = useState<{ url: string; width: number; height: number } | null>(null);
   const [status, setStatus] = useState("");
   const [progress, setProgress] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState<Result | null>(null);
 
-  const inputRef = useRef<HTMLInputElement>(null);
   const urlRef = useRef<string | null>(null);
   const runRef = useRef(0);
 
@@ -294,6 +292,16 @@ export default function ImageCompressor(props: ImageCompressorProps) {
       if (urlRef.current) URL.revokeObjectURL(urlRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (!file) {
+      setPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreview({ url, width: 0, height: 0 });
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   const clearResult = useCallback(() => {
     if (urlRef.current) URL.revokeObjectURL(urlRef.current);
@@ -341,23 +349,8 @@ export default function ImageCompressor(props: ImageCompressorProps) {
     [busy, clearResult, isJpegOnly],
   );
 
-  const onDrop = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragging(false);
-    void pickFile(event.dataTransfer.files[0]);
-  };
-
-  const onDropzoneKey = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
-      event.preventDefault();
-      inputRef.current?.click();
-    }
-  };
-
-  const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    void pickFile(event.target.files?.[0]);
-    event.target.value = "";
-  };
+  const picker = useFilePicker(accept, false, (files) => void pickFile(files[0]));
+  const dropActive = useWindowDrop(!busy && !result, (files) => void pickFile(files[0]));
 
   const run = async () => {
     if (!file || !inputType || busy) return;
@@ -470,149 +463,204 @@ export default function ImageCompressor(props: ImageCompressorProps) {
   };
 
   const actionLabel = mode === "resize" ? "Resize image" : "Compress image";
-  const sizeInfo = result
-    ? result.outputSize <= result.originalSize
-      ? `${Math.round((1 - result.outputSize / result.originalSize) * 100)}% smaller`
-      : "larger than the original"
-    : "";
+  const stage = result ? "done" : file ? "work" : "upload";
+  const currentTarget = parsePositive(targetValue);
+  const presets = [
+    { value: 20, unit: "KB" as SizeUnit },
+    { value: 50, unit: "KB" as SizeUnit },
+    { value: 100, unit: "KB" as SizeUnit },
+    { value: 200, unit: "KB" as SizeUnit },
+    { value: 500, unit: "KB" as SizeUnit },
+    { value: 1, unit: "MB" as SizeUnit },
+  ];
+  if (!presets.some((p) => p.value === props.target && p.unit === initialUnit)) {
+    presets.unshift({ value: props.target, unit: initialUnit });
+  }
+  const saving =
+    result && result.outputSize < result.originalSize
+      ? {
+          percent: Math.round((1 - result.outputSize / result.originalSize) * 100),
+          before: formatBytes(result.originalSize),
+          after: formatBytes(result.outputSize),
+        }
+      : undefined;
+  const verbPast = mode === "resize" ? "resized" : "compressed";
 
   return (
-    <div className="ic">
-      <div
-        className={`ic-drop${dragging ? " is-dragging" : ""}${file ? " has-file" : ""}`}
-        onDragOver={(event) => {
-          event.preventDefault();
-          if (!busy) setDragging(true);
-        }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={onDrop}
-        onKeyDown={onDropzoneKey}
-        tabIndex={0}
-        role="group"
-        aria-label="Image drop area"
-      >
-        <p className="ic-drop-title">{file ? file.name : "Drag and drop an image here"}</p>
-        <p className="ic-drop-sub">
-          {file
-            ? `${FORMAT_NAMES[inputType ?? "image/jpeg"]} · ${formatBytes(file.size)}`
-            : isJpegOnly
-              ? "JPEG only (.jpg, .jpeg) · up to 50 MB"
-              : "JPEG, PNG or WebP · up to 50 MB"}
-        </p>
-        <button type="button" className="button" onClick={() => inputRef.current?.click()} disabled={busy}>
-          {file ? "Choose a different image" : "Choose image"}
-        </button>
-        <input
-          ref={inputRef}
-          className="ic-file"
-          type="file"
-          accept={accept}
-          onChange={onInputChange}
-          aria-label="Choose an image file"
-          tabIndex={-1}
-        />
-      </div>
-      <p className="ic-hint">
-        {isJpegOnly
-          ? "This page works with JPEG files only. PNG and WebP images are not accepted here."
-          : "Supported input: JPEG, PNG and WebP (WebP depends on your browser). HEIC and AVIF are not supported."}{" "}
-        Your image is processed on this device and is never uploaded.
-      </p>
+    <div className="ic pt" data-stage={stage}>
+      {picker.input}
+      <DropOverlay active={dropActive} label={file ? "Drop to replace the image" : "Drop your image here"} />
 
-      <form
-        className="ic-controls"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void run();
-        }}
-      >
-        <div className="ic-field">
-          <label htmlFor="ic-target">Target size (maximum)</label>
-          <input
-            id="ic-target"
-            type="number"
-            inputMode="decimal"
-            min="0"
-            step="any"
-            value={targetValue}
-            onChange={(event) => setTargetValue(event.target.value)}
-            disabled={busy}
-          />
-        </div>
-        <div className="ic-field ic-field-unit">
-          <label htmlFor="ic-unit">Unit</label>
-          <select id="ic-unit" value={unit} onChange={(event) => setUnit(event.target.value as SizeUnit)} disabled={busy}>
-            <option value="KB">KB</option>
-            <option value="MB">MB</option>
-          </select>
-        </div>
-        {!isJpegOnly && (
-          <div className="ic-field">
-            <label htmlFor="ic-format">Output format</label>
-            <select
-              id="ic-format"
-              value={output}
-              onChange={(event) => setOutput(event.target.value as OutputChoice)}
-              disabled={busy}
+      {stage === "upload" && (
+        <UploadHero
+          buttonLabel="Select image"
+          dropLabel="or drop an image anywhere on this page"
+          sub={isJpegOnly ? "JPEG only (.jpg, .jpeg) · up to 50 MB" : "JPEG, PNG or WebP · up to 50 MB"}
+          busy={busy}
+          onOpen={picker.open}
+        >
+          <ErrorBox errors={error ? [error] : []} />
+        </UploadHero>
+      )}
+
+      {stage === "work" && file && (
+        <Workspace
+          main={
+            <div className="pt-files">
+              <figure className={`pt-file${busy ? " is-busy" : ""}`}>
+                <div className="pt-thumb">
+                  {preview && (
+                    <img
+                      src={preview.url}
+                      alt={`Preview of ${file.name}`}
+                      onLoad={(event) =>
+                        setPreview((current) =>
+                          current ? { ...current, width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight } : current,
+                        )
+                      }
+                    />
+                  )}
+                  {busy && (
+                    <div className="pt-file-busy" aria-hidden="true">
+                      <span className="ic-spinner" />
+                      <span>{progress || "Working…"}</span>
+                    </div>
+                  )}
+                </div>
+                <figcaption>
+                  <span className="pt-file-name">{file.name}</span>
+                  <span className="pt-file-meta">
+                    {FORMAT_NAMES[inputType ?? "image/jpeg"]} · {formatBytes(file.size)}
+                    {preview?.width ? ` · ${preview.width}×${preview.height}px` : ""}
+                  </span>
+                </figcaption>
+                <button type="button" className="pt-file-remove" onClick={reset} disabled={busy} aria-label={`Remove ${file.name}`}>
+                  ×
+                </button>
+              </figure>
+              <button type="button" className="pt-secondary" onClick={picker.open} disabled={busy}>
+                Choose a different image
+              </button>
+            </div>
+          }
+          side={
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                void run();
+              }}
             >
-              <option value="keep">Same as original</option>
-              <option value="image/jpeg">JPEG</option>
-              {webpOk && <option value="image/webp">WebP</option>}
-            </select>
-          </div>
-        )}
-        <button type="submit" className="button button-primary ic-submit" disabled={!file || busy}>
-          {busy ? "Working…" : actionLabel}
-        </button>
-      </form>
-      <p className="ic-hint">
-        1 KB = 1,024 bytes. Output is measured after encoding; the size is a goal, not a guarantee.
-        {output === "image/jpeg" || isJpegOnly ? " JPEG has no transparency, so transparent areas become white." : ""}
-      </p>
+              <SidePanel
+                title={mode === "resize" ? "Resize options" : "Compression options"}
+                action={<ActionButton label={actionLabel} busy={busy} disabled={!file} />}
+                footer={
+                  <div className="ic-status sr-only" role="status" aria-live="polite">
+                    {busy ? "Working…" : status}
+                  </div>
+                }
+              >
+                <p className="pt-label" id="ic-presets-label">Target size</p>
+                <PresetChips
+                  label="Common target sizes"
+                  disabled={busy}
+                  options={presets.map((p) => ({
+                    label: `${p.value} ${p.unit}`,
+                    active: currentTarget === p.value && unit === p.unit,
+                    onSelect: () => {
+                      setTargetValue(String(p.value));
+                      setUnit(p.unit);
+                    },
+                  }))}
+                />
+                <div className="pt-row">
+                  <div className="ic-field">
+                    <label htmlFor="ic-target">Custom maximum</label>
+                    <input
+                      id="ic-target"
+                      type="number"
+                      inputMode="decimal"
+                      min="0"
+                      step="any"
+                      value={targetValue}
+                      onChange={(event) => setTargetValue(event.target.value)}
+                      disabled={busy}
+                    />
+                  </div>
+                  <div className="ic-field ic-field-unit">
+                    <label htmlFor="ic-unit">Unit</label>
+                    <select id="ic-unit" value={unit} onChange={(event) => setUnit(event.target.value as SizeUnit)} disabled={busy}>
+                      <option value="KB">KB</option>
+                      <option value="MB">MB</option>
+                    </select>
+                  </div>
+                </div>
+                {!isJpegOnly && (
+                  <div className="ic-field">
+                    <label htmlFor="ic-format">Output format</label>
+                    <select
+                      id="ic-format"
+                      value={output}
+                      onChange={(event) => setOutput(event.target.value as OutputChoice)}
+                      disabled={busy}
+                    >
+                      <option value="keep">Same as original</option>
+                      <option value="image/jpeg">JPEG</option>
+                      {webpOk && <option value="image/webp">WebP</option>}
+                    </select>
+                  </div>
+                )}
+                <p className="pt-help">
+                  {mode === "resize"
+                    ? "Dimensions are reduced first, then quality if needed."
+                    : "Quality is lowered first, then dimensions if needed."}{" "}
+                  The real size is measured. 1 KB = 1,024 bytes.
+                  {output === "image/jpeg" || isJpegOnly ? " JPEG has no transparency, so transparent areas become white." : ""}
+                </p>
+                <ErrorBox errors={error ? [error] : []} />
+              </SidePanel>
+            </form>
+          }
+        />
+      )}
 
-      <StatusArea busy={busy} progress={progress} status={status} errors={error ? [error] : []} />
-
-      {result && (
-        <ResultPanel
-          ariaLabel="Result"
-          tone={result.ok ? "success" : "warning"}
-          title={result.ok ? "Target met" : "Target not met"}
+      {stage === "done" && result && (
+        <DoneView
+          ok={result.ok}
+          title={result.ok ? `Your image has been ${verbPast}!` : "Target not met"}
           summary={
             result.ok
-              ? `The image is ${formatBytes(result.outputSize)}, within your ${formatBytes(result.limit)} limit.`
+              ? `It is ${formatBytes(result.outputSize)}, within your ${formatBytes(result.limit)} limit.`
               : `The smallest result is ${formatBytes(result.outputSize)}, above your ${formatBytes(result.limit)} limit.`
           }
-          fileName={result.fileName}
-          details={[
+          downloadHref={result.url}
+          downloadName={result.fileName}
+          downloadLabel="Download image"
+          saving={saving}
+          stats={[
             { label: "Format", value: FORMAT_NAMES[result.format] },
-            { label: "Size", value: formatBytes(result.outputSize), hint: `${exactBytes(result.outputSize)} · ${sizeInfo}` },
             {
               label: "Dimensions",
-              value: `${result.width}×${result.height}px`,
-              hint:
+              value:
                 result.width === result.originalWidth && result.height === result.originalHeight
-                  ? "unchanged"
-                  : `was ${result.originalWidth}×${result.originalHeight}px`,
+                  ? `${result.width}×${result.height}px`
+                  : `${result.width}×${result.height}px (was ${result.originalWidth}×${result.originalHeight})`,
             },
-            { label: "Original", value: formatBytes(result.originalSize) },
+            { label: "Exact size", value: exactBytes(result.outputSize) },
           ]}
-          notes={result.notes}
-          primary={
-            <a className="button button-download" href={result.url} download={result.fileName}>
-              Download {result.fileName}
-            </a>
+          preview={
+            <img
+              src={result.url}
+              width={result.width}
+              height={result.height}
+              alt={`Preview of the ${verbPast} image, ${result.width} by ${result.height} pixels`}
+            />
           }
-          resetLabel="Process another image"
+          notes={result.notes}
+          onBack={clearResult}
+          backLabel="Back to options, to try another size"
           onReset={reset}
-        >
-          <img
-            className="ic-preview"
-            src={result.url}
-            width={result.width}
-            height={result.height}
-            alt={`Preview of the ${result.ok ? "processed" : "processed (target not met)"} image, ${result.width} by ${result.height} pixels`}
-          />
-        </ResultPanel>
+          resetLabel={mode === "resize" ? "Resize another image" : "Compress another image"}
+        />
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TargetSizeGrid from "./TargetSizeGrid.astro";
+import ToolTop from "./ToolTop.astro";
 
 interface Props {
   path: string;
@@ -17,9 +18,12 @@ interface Props {
   /** Optional in-depth sections (trusted HTML) shown after the size grid. */
   sections?: { heading: string; html: string }[];
   faqs?: { q: string; a: string }[];
+  /** Category colour, used when the working tool is shown at the top (slot "tool"). */
+  accent?: "pdf" | "word" | "image" | "convert" | "photo" | "social" | "text";
 }
 
-const { path, title, description, h1, intro, group, openHref, openLabel, gridId, items, about, sections = [], faqs = [] } = Astro.props;
+const { path, title, description, h1, intro, group, openHref, openLabel, gridId, items, about, sections = [], faqs = [], accent } = Astro.props;
+const hasTool = Astro.slots.has("tool");
 const site = (p: string) => new URL(p, Astro.site).href;
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -43,7 +47,13 @@ const faqSchema = {
     <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
     {faqs.length > 0 && <script type="application/ld+json" set:html={json(faqSchema)} />}
   </Fragment>
-  <section class="page-hero">
+  {
+    hasTool ? (
+      <ToolTop accent={accent} h1={h1} intro={intro} crumbs={[{ label: "Home", href: "/" }, { label: group, href: "/tools/" }, { label: h1 }]}>
+        <slot name="tool" />
+      </ToolTop>
+    ) : (
+    <section class="page-hero">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <ol>
@@ -59,6 +69,8 @@ const faqSchema = {
       </div>
     </div>
   </section>
+    )
+  }
   <section class="content-section">
     <div class="container">
       <TargetSizeGrid headingId={gridId} items={items} />
