@@ -1458,3 +1458,12 @@
 .calc-table-wrap { padding: 14px 18px 18px !important; }
 .calc-table-wrap > .calc-table { margin: 0; }
 @media (max-width: 560px) { .calc-row { grid-template-columns: 1fr; } .calc-row .calc-hint { grid-column: 1; } }
+
+/* Clean converter look (iLovePDF-style): before a file is chosen show only the title, one short line and the big button. */
+.tool-top .ic:not(.pt) .ic-drop:not(.has-file) .ic-drop-sub,
+.tool-top .pt[data-stage="upload"] .pt-trust,
+.tool-top .pt[data-stage="upload"] .pt-sub,
+.tool-top .ic:not(.pt) .ic-hint,
+.tool-top .st-note { display: none; }
+.tool-top .tool-head p { font-size: 1.05rem; max-width: 36rem; margin-inline: auto; }
+.tool-top .breadcrumb { display: none; }

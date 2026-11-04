@@ -18,6 +18,9 @@ interface Props {
 }
 
 const { h1, intro, crumbs, breadcrumbLabel = "Breadcrumb", accent } = Astro.props;
+// Keep the heading area short, like a clean converter page: the first sentence only. The full text stays in the page content below.
+const firstSentence = intro.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? intro;
+const shortIntro = firstSentence.length > 140 ? `${firstSentence.slice(0, 137).trimEnd()}…` : firstSentence;
 ---
 
 <section class="tool-top" data-accent={accent}>
@@ -35,7 +38,7 @@ const { h1, intro, crumbs, breadcrumbLabel = "Breadcrumb", accent } = Astro.prop
     </nav>
     <div class="tool-head">
       <h1>{h1}</h1>
-      <p>{intro}</p>
+      <p>{shortIntro}</p>
     </div>
     <slot />
   </div>
