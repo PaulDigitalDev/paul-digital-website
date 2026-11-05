@@ -5,6 +5,8 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import Analytics from "../components/Analytics.astro";
 import RelatedGuides from "../components/RelatedGuides.astro";
+import LanguageLinks from "../components/LanguageLinks.astro";
+import { alternatesFor } from "../data/languageTools";
 import { BRAND_LOGO } from "../config/brand";
 
 interface Props {
@@ -33,6 +35,7 @@ const ogLocale = lang.replace("-", "_");
 const chromeLang = lang === "en" ? undefined : "en";
 const canonical = new URL(canonicalUrlOverride ?? Astro.url.pathname, Astro.site);
 const socialImage = new URL(image, Astro.site);
+const alternates = alternatesFor(canonicalUrlOverride ?? Astro.url.pathname);
 ---
 
 <!doctype html>
@@ -60,6 +63,7 @@ const socialImage = new URL(image, Astro.site);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={new URL(alt.href, Astro.site)} />)}
     <title>{title}</title>
     <slot name="head" />
   </head>
@@ -69,6 +73,7 @@ const socialImage = new URL(image, Astro.site);
     <main id="main-content">
       <slot />
       <RelatedGuides />
+      <LanguageLinks />
     </main>
     {chromeLang ? <div lang={chromeLang} dir={dir ? "ltr" : undefined} style="display: contents"><SiteFooter /></div> : <SiteFooter />}
     <Analytics />

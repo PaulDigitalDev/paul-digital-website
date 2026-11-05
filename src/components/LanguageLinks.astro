@@ -1,0 +1,27 @@
+---
+// On an English tool page, lists the same tool in other languages so readers and crawlers can reach the translated pages.
+// Outputs nothing on any other page.
+import { englishToolNames, translationsOf, languageName, languageDir } from "../data/languageTools";
+
+const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const englishSlug = Object.keys(englishToolNames).find((slug) => `/${slug}/` === path);
+const translations = englishSlug ? translationsOf(englishSlug) : [];
+---
+
+{
+  englishSlug && translations.length > 0 && (
+    <section class="content-section related-guides" aria-labelledby="language-links-h" lang="en" dir="ltr">
+      <div class="container prose">
+        <h2 id="language-links-h">{englishToolNames[englishSlug]} in other languages</h2>
+        <ul>
+          {translations.map((t) => (
+            <li>
+              <a href={`/${t.slug}/`} lang={t.lang} hreflang={t.lang} dir={languageDir(t.lang)}>{t.name}</a> <span>({languageName(t.lang)})</span>
+            </li>
+          ))}
+        </ul>
+        <p><a href="/languages/">All tools in other languages</a></p>
+      </div>
+    </section>
+  )
+}
