@@ -1,6 +1,7 @@
 import type { EditorTool } from "./editorTools";
 import type { Faq } from "./formatTools";
 import type { SizePreset } from "./photoPresets";
+import { examPhotoPages } from "./examPhotoPages";
 
 /* Search-intent landing pages for the Image Resizer and the crop-to-size tools. Each page opens the same working tool with a goal
    already filled in (a unit, or an exact output size). The text on every page is written for that size: the pixel counts are
@@ -391,7 +392,7 @@ const pages: Page[] = [
   },
 ];
 
-export const editorSizePages: EditorTool[] = pages.map((page) => {
+const sizePages: EditorTool[] = pages.map((page) => {
   const unitWord = page.start?.unit === "mm" ? "Millimetres" : page.start?.unit === "in" ? "Inches" : page.start?.unit === "cm" ? "Centimetres" : "Pixels";
   return {
     slug: page.slug,
@@ -412,3 +413,6 @@ export const editorSizePages: EditorTool[] = pages.map((page) => {
     fixed: page.fixed ? fixedPreset(page.fixed) : undefined,
   };
 });
+
+/** Resize pages plus the exam photo pages, which are cited to official notices. */
+export const editorSizePages: EditorTool[] = [...sizePages, ...examPhotoPages];

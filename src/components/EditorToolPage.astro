@@ -27,9 +27,9 @@ const relatedLink = (id: string) => {
 };
 const related = tool.related.map(relatedLink).filter((item): item is { route: string; name: string } => Boolean(item));
 /* Size pages are grouped under the tool that does the work, so each page links to its siblings and to its parent. */
-const parentOf = { resize: "image-resizer", passport: "passport-photo-resizer", signature: "signature-resizer" } as Record<string, string>;
+const parentOf = { resize: "image-resizer", passport: "passport-photo-resizer", signature: "signature-resizer", government: "government-job-photo-signature-resizer" } as Record<string, string>;
 const isSizePage = editorSizePages.some((page) => page.slug === tool.slug);
-const groupMode = isSizePage ? tool.mode : ({ "image-resizer": "resize", "passport-photo-resizer": "passport", "signature-resizer": "signature" } as Record<string, string>)[tool.slug];
+const groupMode = isSizePage ? tool.mode : ({ "image-resizer": "resize", "passport-photo-resizer": "passport", "signature-resizer": "signature", "government-job-photo-signature-resizer": "government" } as Record<string, string>)[tool.slug];
 const moreSizes = groupMode ? editorSizePages.filter((page) => page.mode === groupMode && page.slug !== tool.slug) : [];
 const parent = isSizePage ? toolById.get(parentOf[tool.mode] ?? "") : undefined;
 
@@ -73,7 +73,7 @@ const appSchema = {
       {tool.mode === "metadata" && <MetadataTool client:load />}
       {tool.mode === "passport" && <CropEditor client:load variant="passport" fixed={tool.fixed} />}
       {tool.mode === "signature" && <CropEditor client:load variant="signature" fixed={tool.fixed} />}
-      {tool.mode === "government" && <CropEditor client:load variant="government" />}
+      {tool.mode === "government" && <CropEditor client:load variant="government" gov={tool.gov} />}
       {tool.mode === "ukdigital" && <UkPhotoCheck client:load />}
   </ToolTop>
   <section class="content-section" style="padding-top: 0">
@@ -100,7 +100,7 @@ const appSchema = {
                 </ul>
               </>
             ))}
-            <p>Paul Digital is not affiliated with the UK Government. Requirements can change, so confirm them on the official page before you apply.</p>
+            <p>{tool.sourceNote ?? "Paul Digital is not affiliated with the UK Government. Requirements can change, so confirm them on the official page before you apply."}</p>
           </>
         )
       }
