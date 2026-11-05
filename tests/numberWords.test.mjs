@@ -90,13 +90,18 @@ test("European languages", () => {
   assert.equal(words("1234567", { lang: "id" }), "satu juta dua ratus tiga puluh empat ribu lima ratus enam puluh tujuh");
 });
 
+test("currency name comes after the words, before Only", () => {
+  assert.equal(money("275000", { caseStyle: "sentence" }), "Two lakh seventy-five thousand rupees only");
+  assert.equal(money("275000", { currency: "PKR" }), "Two Lakh Seventy-Five Thousand Rupees Only");
+});
+
 test("currency wording", () => {
-  assert.equal(money("1250.5"), "Rupees One Thousand Two Hundred Fifty and Paise Fifty Only");
-  assert.equal(money("1"), "Rupees One Only");
-  assert.equal(money("0.75"), "Paise Seventy-Five Only");
+  assert.equal(money("1250.5"), "One Thousand Two Hundred Fifty Rupees and Fifty Paise Only");
+  assert.equal(money("1"), "One Rupee Only");
+  assert.equal(money("0.75"), "Seventy-Five Paise Only");
   assert.equal(money("1.01", { currency: "USD" }), "One Dollar and One Cent Only");
   assert.equal(money("1234.999", { currency: "USD" }), "One Thousand Two Hundred Thirty-Five Dollars Only");
-  assert.equal(money("1500000", { currency: "BDT" }), "Taka Fifteen Lakh Only");
+  assert.equal(money("1500000", { currency: "BDT" }), "Fifteen Lakh Taka Only");
   assert.equal(money("2000000", { currency: "GBP" }), "Two Million Pounds Only");
   assert.equal(money("50000", { currency: "BDT", lang: "bn" }), "পঞ্চাশ হাজার টাকা মাত্র");
   assert.equal(money("1234.5", { lang: "hi" }), "एक हज़ार दो सौ चौंतीस रुपये पचास पैसे केवल");
