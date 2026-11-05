@@ -102,7 +102,7 @@ const specs: GroupSpec[] = [
     id: "calculators",
     title: "Calculators",
     icon: "convert",
-    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator"],
+    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator", "superannuation-date-calculator", "service-length-calculator", "salary-increment-calculator", "leave-salary-encashment-calculator", "gratuity-calculator", "pension-calculator-ropa-2019", "commuted-value-of-pension-calculator"],
   },
   {
     id: "calendars",
