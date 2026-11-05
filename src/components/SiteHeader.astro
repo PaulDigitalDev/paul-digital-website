@@ -51,3 +51,23 @@ const isCurrent = (href: string) =>
     </details>
   </div>
 </header>
+
+<script>
+  // Close the mobile menu when tapping outside it, pressing Escape, or choosing a link.
+  const menu = document.querySelector<HTMLDetailsElement>("details.mobile-nav");
+  if (menu) {
+    const close = () => {
+      menu.open = false;
+    };
+    document.addEventListener("click", (event) => {
+      if (menu.open && !menu.contains(event.target as Node)) close();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu.open) {
+        close();
+        menu.querySelector("summary")?.focus();
+      }
+    });
+    menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", close));
+  }
+</script>
