@@ -1,0 +1,106 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ToolTop from "./ToolTop.astro";
+import TextTool from "./tools/TextTool";
+import { textPageBySlug } from "../data/textToolPages";
+import { toolById } from "../data/toolRegistry";
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const tool = textPageBySlug.get(slug);
+if (!tool) throw new Error(`Unknown text tool: ${slug}`);
+
+const bn = tool.lang === "bn";
+const path = `/${tool.slug}/`;
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\u003c");
+
+const related = tool.related
+  .map((id) => toolById.get(id))
+  .filter((item): item is NonNullable<typeof item> => Boolean(item))
+  .map((item) => ({ route: item.route, label: item.name }));
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: tool.faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: "Text Tools", item: site("/tools/text/") },
+    { "@type": "ListItem", position: 3, name: tool.h1, item: site(path) },
+  ],
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: tool.h1,
+  url: site(path),
+  description: tool.description,
+  applicationCategory: "UtilitiesApplication",
+  inLanguage: tool.lang,
+  operatingSystem: "Any (web browser)",
+  browserRequirements: "Requires JavaScript",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+};
+---
+
+<BaseLayout title={tool.title} description={tool.description} canonicalUrl={path} lang={tool.lang}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(appSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+  </Fragment>
+  <ToolTop accent="convert" h1={tool.h1} intro={tool.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Text Tools", href: "/tools/text/" }, { label: tool.h1 }]} breadcrumbLabel="Breadcrumb">
+      <TextTool client:load mode={tool.mode} sample={tool.sample} lang={tool.lang} />
+  </ToolTop>
+  <section class="content-section" style="padding-top: 0">
+    <div class="container prose">
+      <h2>{bn ? "কীভাবে ব্যবহার করবেন" : "How to use it"}</h2>
+      <ol>
+        {tool.steps.map((step) => <li>{step}</li>)}
+      </ol>
+
+      <h2>{bn ? "এই টুল সম্পর্কে" : "About this tool"}</h2>
+      {tool.explanation.map((text) => <p>{text}</p>)}
+
+      <h2>{bn ? "উদাহরণ" : "Examples"}</h2>
+      <ul>
+        {tool.worked().map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>{bn ? "কিছু পরামর্শ" : "Tips"}</h2>
+      <ul>
+        {tool.tips.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2>{bn ? "প্রশ্ন ও উত্তর" : "Questions and answers"}</h2>
+      <div class="faq-list">
+        {
+          tool.faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.q}</h3>
+              <p>{faq.a}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <h2>{bn ? "আরও টুল" : "More tools"}</h2>
+      <ul class="ic-links">
+        {related.map((item) => <li><a href={item.route}>{item.label}</a></li>)}
+        <li><a href="/tools/text/">{bn ? "সব টেক্সট টুল" : "All text tools"}</a></li>
+      </ul>
+
+      <h2>{bn ? "গোপনীয়তা" : "Privacy"}</h2>
+      <p>{bn ? "সব হিসাব আপনার ব্রাউজারে আপনার ডিভাইসেই হয়। আপনার লেখা কোনো সার্ভারে পাঠানো হয় না।" : "Everything runs in your browser on your own device. The text you type or paste is never sent to Paul Digital or any other server."}</p>
+    </div>
+  </section>
+</BaseLayout>
