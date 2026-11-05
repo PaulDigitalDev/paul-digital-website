@@ -102,7 +102,7 @@ const specs: GroupSpec[] = [
     id: "calculators",
     title: "Calculators",
     icon: "convert",
-    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator", "superannuation-date-calculator", "service-length-calculator", "salary-increment-calculator", "leave-salary-encashment-calculator", "gratuity-calculator", "pension-calculator-ropa-2019", "commuted-value-of-pension-calculator", "emi-calculator", "fd-calculator", "rd-calculator", "ppf-calculator", "million-to-crore-converter", "gold-price-calculator"],
+    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator", "superannuation-date-calculator", "service-length-calculator", "salary-increment-calculator", "leave-salary-encashment-calculator", "gratuity-calculator", "pension-calculator-ropa-2019", "commuted-value-of-pension-calculator", "emi-calculator", "fd-calculator", "rd-calculator", "ppf-calculator", "million-to-crore-converter", "gold-price-calculator", "discount-calculator", "tip-calculator", "sales-tax-calculator", "fuel-cost-calculator"],
   },
   {
     id: "calendars",
@@ -133,6 +133,12 @@ const specs: GroupSpec[] = [
     title: "Weight Converters",
     icon: "convert",
     ids: ["gold-weight-converter", "vori-to-gram", "gram-to-vori", "tola-to-gram", "ana-to-gram", "bangla-gold-weight-converter"],
+  },
+  {
+    id: "units",
+    title: "Unit Converters",
+    icon: "convert",
+    ids: ["cm-to-inches", "inches-to-cm", "feet-to-cm", "cm-to-feet", "mm-to-inches", "inches-to-mm", "miles-to-km", "km-to-miles", "meters-to-feet", "feet-to-meters", "yards-to-meters", "kg-to-lbs", "lbs-to-kg", "oz-to-grams", "grams-to-oz", "stone-to-kg", "kg-to-stone", "celsius-to-fahrenheit", "fahrenheit-to-celsius", "liters-to-gallons", "gallons-to-liters", "ml-to-oz", "cups-to-ml"],
   },
   {
     id: "social",

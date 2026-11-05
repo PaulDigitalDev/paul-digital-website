@@ -12,8 +12,9 @@ import { numberWordTools } from "./numberWordTools";
 import { landTools } from "./landTools";
 import { textPages } from "./textToolPages";
 import { weightTools } from "./weightTools";
+import { unitTools } from "./unitTools";
 
-export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "calendars" | "numbers" | "land" | "text" | "weight" | "media";
+export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "calendars" | "numbers" | "land" | "text" | "weight" | "units" | "media";
 /** "available" tools work today and are listed. Anything else is never shown or put in the sitemap. */
 export type ToolStatus = "available" | "planned";
 
@@ -89,6 +90,12 @@ export const categories: ToolCategory[] = [
     name: "Weight Converters",
     summary: "Gold weight converters for vori, tola, ana, roti and gram, in English and Bangla.",
     route: "/tools/weight/",
+  },
+  {
+    id: "units",
+    name: "Unit Converters",
+    summary: "Length, weight, volume and temperature converters: cm to inches, kg to lbs, Celsius to Fahrenheit and more.",
+    route: "/tools/units/",
   },
   { id: "media", name: "File and Media Utilities", summary: "Utilities for files, audio and video." },
 ];
@@ -206,6 +213,17 @@ const weightEntries: RegistryTool[] = weightTools.map((tool) => ({
   keywords: tool.keywords,
 }));
 
+const unitEntries: RegistryTool[] = unitTools.map((tool) => ({
+  id: tool.slug,
+  name: tool.h1,
+  category: "units",
+  route: `/${tool.slug}/`,
+  description: tool.summary,
+  status: "available",
+  related: tool.related,
+  keywords: tool.keywords,
+}));
+
 const textEntries: RegistryTool[] = textPages.map((tool) => ({
   id: tool.slug,
   name: tool.h1,
@@ -270,6 +288,7 @@ export const tools: RegistryTool[] = [
   ...landEntries,
   ...textEntries,
   ...weightEntries,
+  ...unitEntries,
 ];
 
 export const toolById = new Map(tools.map((tool) => [tool.id, tool]));
