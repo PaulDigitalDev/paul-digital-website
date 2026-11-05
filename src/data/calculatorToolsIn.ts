@@ -1,6 +1,6 @@
 import type { CalculatorTool } from "./calculatorTools.ts";
 import { loanSchedule } from "../lib/finance.ts";
-import { fdMaturity, inr, ppfSchedule, rdMaturity } from "../lib/calcDefsIn.ts";
+import { fdMaturity, goldValue, inr, ppfSchedule, rdMaturity } from "../lib/calcDefsIn.ts";
 
 const PRIVACY = { q: "Are my numbers saved or sent anywhere?", a: "No. The calculation runs in your browser on your own device. Nothing you type is sent to Paul Digital or any other server." };
 const NOT_ADVICE = { q: "Is this the figure my bank will give me?", a: "It is an estimate from the numbers you enter. Banks may use slightly different rounding, day counts, fees and taxes, so check the final figure with your bank. This is not financial advice." };
@@ -146,5 +146,33 @@ export const inCalculatorTools: CalculatorTool[] = [
       PRIVACY,
     ],
     related: ["number-to-words-in-lakhs-and-crores", "number-to-words", "rupees-in-words", "percentage-calculator"],
+  },
+  {
+    slug: "gold-price-calculator",
+    calc: "gold-price",
+    h1: "Gold Price Calculator",
+    title: "Gold Price Calculator: Vori, Ana, Roti, Gram Price",
+    description: "Work out the price of gold jewellery from the weight in vori, ana and roti, today's rate and the making charge. 1 vori is 11.664 grams. Free and private.",
+    summary: "Work out the price of gold from its weight, the rate and the making charge.",
+    intro: "Enter the weight in vori, ana and roti, today's gold rate and the making charge to see the estimated price.",
+    keywords: ["gold price calculator", "gold price calculator bd", "vori gold price", "gold jewellery price calculator", "making charge calculator"],
+    steps: ["Enter the weight in vori, ana and roti.", "Enter today's gold rate and choose whether it is per vori or per gram.", "Enter the making charge percentage and any fixed charge.", "Read the total price, the gold value and the making charge."],
+    explanation: [
+      "The price of jewellery is the value of the gold plus the making charge. The gold value is the weight in grams times the price per gram. One vori is 11.664 grams, one ana is 0.729 grams and one roti is about 0.1215 grams.",
+      "Look up the day's rate for your gold's purity (for example 22K) from a trusted source and type it in. This calculator does not fetch live prices. VAT, tax, stone cost and wastage are not included, so the bill from the jeweller can be different.",
+    ],
+    formula: ["Weight (g) = (vori + ana ÷ 16 + roti ÷ 96) × 11.664.", "Gold value = weight in grams × price per gram.", "Total = gold value + making charge (a percentage of the gold value, plus any fixed charge)."],
+    worked: () => {
+      const r = goldValue(2, 8, 0, 150000, "vori", 6, 0);
+      return [`2 vori 8 ana at 150,000 per vori with 6% making: weight ${r.grams.toFixed(3)} g, gold value ${r.metal.toLocaleString("en-US", { maximumFractionDigits: 2 })}, total ${r.total.toLocaleString("en-US", { maximumFractionDigits: 2 })}.`];
+    },
+    tips: ["Ask the jeweller whether the making charge is on the gold value or on the weight.", "Compare the weight on the bill with the shop scale.", "Rates change during the day, so check the rate on the day you buy."],
+    faqs: [
+      { q: "How is the price of gold jewellery calculated?", a: "It is the weight times the day's rate, plus the making charge and any tax or other charges the shop adds." },
+      { q: "How many grams is a vori?", a: "11.664 grams." },
+      { q: "Does this show live gold prices?", a: "No. You enter the rate yourself, so the result matches the rate you trust. The figure is an estimate and not an offer from any jeweller." },
+      PRIVACY,
+    ],
+    related: ["gold-weight-converter", "vori-to-gram", "gram-to-vori", "percentage-calculator"],
   },
 ];
