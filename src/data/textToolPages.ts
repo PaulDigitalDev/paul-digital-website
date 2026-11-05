@@ -256,7 +256,7 @@ export const textPages: TextPage[] = [
     sample: "  This   text has    too many    spaces.  \n\n\n\n   And too many   blank lines.   ",
     h1: "Remove Extra Spaces",
     title: "Remove Extra Spaces: Clean Up Spaces and Blank Lines",
-    description: "Remove extra spaces, trim line ends and reduce blank lines in pasted text. Free, private, in your browser.",
+    description: "Remove extra spaces, trim the ends of lines and reduce repeated blank lines in pasted text, with options for each. Free, private, in your browser.",
     summary: "Remove extra spaces and blank lines from pasted text.",
     intro: "Paste messy text and clean up repeated spaces, spaces at the ends of lines and extra blank lines.",
     keywords: ["remove extra spaces", "remove double spaces", "remove whitespace", "trim spaces online", "clean up text"],

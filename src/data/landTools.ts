@@ -218,7 +218,7 @@ export const landTools: LandTool[] = [
     value: "1",
     h1: "Bigha to Square Feet",
     title: "Bigha to Square Feet Converter (Bengal and Nepal)",
-    description: "How many square feet is a bigha? 1 bigha is 14,400 sq ft in Bangladesh and West Bengal, and 72,900 sq ft in Nepal's Terai. Convert bigha to acre, katha and more.",
+    description: "How many square feet is a bigha? 1 bigha is 14,400 sq ft in Bangladesh and West Bengal, and 72,900 sq ft in Nepal's Terai. Convert to acre and katha.",
     summary: "Convert bigha to square feet, katha, decimal and acre.",
     intro: "Type a number of bigha to see it in square feet, katha, decimal and acres, for Bengal or Nepal.",
     keywords: ["bigha to square feet", "bigha to sq ft", "1 bigha in square feet", "bigha to acre", "bigha to katha", "bigha to decimal"],

@@ -388,7 +388,7 @@ export const numberWordTools: NumberWordTool[] = [
       sample: l.sample,
       h1: `Number to Words in ${l.name}`,
       title: l.title,
-      description: `Write any number in ${l.name} words, up to 12 digits. Free, in your browser, nothing uploaded.`,
+      description: `Write any number in ${l.name} words, up to 12 digits, instantly as you type. Free, private, runs in your browser and nothing is uploaded.`,
       summary: `Numbers written out in ${l.name} words.`,
       intro: `Type a number to read it in ${l.name} words.`,
       keywords: [...l.keywords],

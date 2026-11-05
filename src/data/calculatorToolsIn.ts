@@ -11,7 +11,7 @@ export const inCalculatorTools: CalculatorTool[] = [
     calc: "emi",
     h1: "EMI Calculator",
     title: "EMI Calculator: Monthly Loan EMI, Interest and Total",
-    description: "Work out the monthly EMI for a home, car or personal loan from the amount, interest rate and tenure, with total interest and a year-by-year table. Free and private.",
+    description: "Work out the monthly EMI for a home, car or personal loan from the amount, rate and tenure, with total interest and a yearly table. Free and private.",
     summary: "Work out the monthly EMI, total interest and total payment for a loan.",
     intro: "Enter the loan amount, interest rate and tenure to see the monthly EMI, the total interest and a year-by-year table.",
     keywords: ["emi calculator", "loan emi calculator", "home loan emi calculator", "car loan emi", "personal loan emi calculator"],
