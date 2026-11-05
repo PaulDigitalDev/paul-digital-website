@@ -284,7 +284,7 @@ export const editorTools: EditorTool[] = [
       { q: "What if the file is still outside my limits?", a: "The result panel shows a warning with the real size. Adjust the pixel size or use a different original and try again." },
       { q: "Is my photo uploaded?", a: "No. It is processed in your browser and never leaves your device." },
     ],
-    related: ["ssc-photo-resizer", "upsc-photo-resizer", "passport-photo-resizer", "signature-resizer"],
+    related: ["passport-photo-resizer", "signature-resizer", "image-compressor", "jpg-to-pdf"],
   },
   {
     slug: "uk-passport-photo-digital",
