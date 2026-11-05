@@ -2,6 +2,7 @@ import type { Faq } from "./formatTools";
 import { growth, loanSchedule, roi, salaryFromPercent, solveFv, solvePmt } from "../lib/finance.ts";
 import { money, pct } from "../lib/calcDefs.ts";
 import { moreCalculatorTools } from "./calculatorToolsMore.ts";
+import { wbCalculatorTools } from "./calculatorToolsWb.ts";
 
 export interface CalculatorTool {
   slug: string;
@@ -306,6 +307,6 @@ const coreCalculatorTools: CalculatorTool[] = [
   },
 ];
 
-export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools];
+export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools, ...wbCalculatorTools];
 
 export const calculatorToolBySlug = new Map(calculatorTools.map((tool) => [tool.slug, tool]));
