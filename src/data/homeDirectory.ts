@@ -102,7 +102,7 @@ const specs: GroupSpec[] = [
     id: "calculators",
     title: "Calculators",
     icon: "convert",
-    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator", "superannuation-date-calculator", "service-length-calculator", "salary-increment-calculator", "leave-salary-encashment-calculator", "gratuity-calculator", "pension-calculator-ropa-2019", "commuted-value-of-pension-calculator", "emi-calculator", "fd-calculator", "rd-calculator", "ppf-calculator", "million-to-crore-converter", "gold-price-calculator", "discount-calculator", "tip-calculator", "sales-tax-calculator", "fuel-cost-calculator", "fraction-calculator", "average-calculator", "ratio-calculator", "percentage-change-calculator", "scientific-notation-converter", "gcf-lcm-calculator", "standard-deviation-calculator", "stamp-duty-calculator", "uk-take-home-pay-calculator", "25000-salary-after-tax-uk", "30000-salary-after-tax-uk", "35000-salary-after-tax-uk", "40000-salary-after-tax-uk", "45000-salary-after-tax-uk", "50000-salary-after-tax-uk", "60000-salary-after-tax-uk", "75000-salary-after-tax-uk", "100000-salary-after-tax-uk", "federal-income-tax-calculator", "paycheck-calculator", "mortgage-calculator", "uk-mortgage-calculator"],
+    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator", "superannuation-date-calculator", "service-length-calculator", "salary-increment-calculator", "leave-salary-encashment-calculator", "gratuity-calculator", "pension-calculator-ropa-2019", "commuted-value-of-pension-calculator", "emi-calculator", "fd-calculator", "rd-calculator", "ppf-calculator", "million-to-crore-converter", "gold-price-calculator", "discount-calculator", "tip-calculator", "sales-tax-calculator", "fuel-cost-calculator", "fraction-calculator", "average-calculator", "ratio-calculator", "percentage-change-calculator", "scientific-notation-converter", "gcf-lcm-calculator", "standard-deviation-calculator", "stamp-duty-calculator", "uk-take-home-pay-calculator", "25000-salary-after-tax-uk", "30000-salary-after-tax-uk", "35000-salary-after-tax-uk", "40000-salary-after-tax-uk", "45000-salary-after-tax-uk", "50000-salary-after-tax-uk", "60000-salary-after-tax-uk", "75000-salary-after-tax-uk", "100000-salary-after-tax-uk", "federal-income-tax-calculator", "paycheck-calculator", "mortgage-calculator", "uk-mortgage-calculator", "plot-area-calculator", "pond-excavation-calculator", "english-to-bangla-number-converter", "english-to-hindi-number-converter", "english-to-arabic-numerals-converter"],
   },
   {
     id: "calendars",
@@ -120,7 +120,7 @@ const specs: GroupSpec[] = [
     id: "land",
     title: "Land Converters",
     icon: "convert",
-    ids: ["land-area-converter", "bangladesh-land-converter", "west-bengal-land-converter", "nepal-land-converter", "katha-to-square-feet", "decimal-to-square-feet", "bigha-to-square-feet", "bangla-land-converter"],
+    ids: ["land-area-converter", "bangladesh-land-converter", "west-bengal-land-converter", "nepal-land-converter", "katha-to-square-feet", "decimal-to-square-feet", "bigha-to-square-feet", "bangla-land-converter", "square-feet-to-katha", "square-feet-to-decimal", "decimal-to-katha", "katha-to-decimal"],
   },
   {
     id: "text",
@@ -145,6 +145,12 @@ const specs: GroupSpec[] = [
     title: "Math and Number Tools",
     icon: "convert",
     ids: ["binary-to-decimal", "decimal-to-binary", "hex-to-decimal", "decimal-to-hex", "binary-to-hex", "hex-to-binary", "octal-to-decimal", "roman-numeral-converter"],
+  },
+  {
+    id: "color",
+    title: "Color Tools",
+    icon: "convert",
+    ids: ["color-converter", "hex-to-rgb", "rgb-to-hex", "hex-to-hsl"],
   },
   {
     id: "social",

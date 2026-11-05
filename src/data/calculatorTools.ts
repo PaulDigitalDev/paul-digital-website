@@ -5,6 +5,7 @@ import { moreCalculatorTools } from "./calculatorToolsMore.ts";
 import { wbCalculatorTools } from "./calculatorToolsWb.ts";
 import { inCalculatorTools } from "./calculatorToolsIn.ts";
 import { mathCalculatorTools } from "./calculatorToolsMath.ts";
+import { regionalCalculatorTools } from "./calculatorToolsRegional.ts";
 import { taxCalculatorTools } from "./calculatorToolsTax.ts";
 import { globalCalculatorTools } from "./calculatorToolsGlobal.ts";
 
@@ -313,6 +314,6 @@ const coreCalculatorTools: CalculatorTool[] = [
   },
 ];
 
-export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools, ...wbCalculatorTools, ...inCalculatorTools, ...globalCalculatorTools, ...mathCalculatorTools, ...taxCalculatorTools];
+export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools, ...wbCalculatorTools, ...inCalculatorTools, ...globalCalculatorTools, ...mathCalculatorTools, ...taxCalculatorTools, ...regionalCalculatorTools];
 
 export const calculatorToolBySlug = new Map(calculatorTools.map((tool) => [tool.slug, tool]));
