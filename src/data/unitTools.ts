@@ -214,7 +214,11 @@ function build(s: Spec): UnitTool {
     title,
     description: temp
       ? `Convert ${wa.p} to ${wb.p} instantly. Formula and worked examples. Free, private, runs in your browser.`
-      : `Convert ${wa.p} to ${wb.p}: ${fact}. Instant converter with a table of other units and examples. Free, private, runs in your browser.`,
+      : [
+          `Convert ${wa.p} to ${wb.p}: ${fact}. Instant converter with a table of other units and examples. Free, private.`,
+          `${fact}. Convert ${wa.p} to ${wb.p} instantly, with a table of other units. Free and private.`,
+          `Convert ${wa.p} to ${wb.p} instantly: ${fact}. Free and private.`,
+        ].find((d) => d.length <= 155) ?? `Convert ${wa.p} to ${wb.p} instantly. Free and private.`,
     summary: `Convert ${wa.p} to ${wb.p}.`,
     intro: `Type an amount in ${wa.p} to see it in ${wb.p} and other ${GROUP_NAME[a.group]} units.`,
     keywords: [keyword, `${wa.p} to ${wb.p} converter`, `how many ${wb.p} in a ${wa.s}`, `${h1.toLowerCase()} calculator`, `convert ${wa.p} to ${wb.p}`],

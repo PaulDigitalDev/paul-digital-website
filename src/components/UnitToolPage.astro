@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ToolTop from "./ToolTop.astro";
 import GlobalUnitConverter from "./tools/GlobalUnitConverter";
+import { convertUnit, formatNumber, unitById } from "../lib/unitData";
 import { unitToolBySlug } from "../data/unitTools";
 import { toolById } from "../data/toolRegistry";
 
@@ -14,6 +15,11 @@ const tool = unitToolBySlug.get(slug);
 if (!tool) throw new Error(`Unknown unit tool: ${slug}`);
 
 const bn = false;
+const fromUnit = unitById.get(tool.from)!;
+const toUnit = unitById.get(tool.to)!;
+const chartValues = fromUnit.group === "temperature" ? [-40, -20, -10, 0, 10, 20, 25, 30, 37, 50, 100, 200] : [0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 40, 50, 75, 100, 250, 500, 1000];
+const chart = chartValues.map((v) => [formatNumber(v), formatNumber(convertUnit(v, tool.from, tool.to))]);
+const chartBack = chartValues.slice(0, 12).map((v) => [formatNumber(v), formatNumber(convertUnit(v, tool.to, tool.from))]);
 const path = `/${tool.slug}/`;
 const site = (p: string) => new URL(p, Astro.site).href;
 const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\u003c");
@@ -75,6 +81,27 @@ const appSchema = {
       <ul>
         {tool.formula.map((item) => <li>{item}</li>)}
       </ul>
+
+      <h2>{fromUnit.symbol} to {toUnit.symbol} conversion chart</h2>
+      <div class="calc-table-wrap">
+        <table class="calc-table">
+          <caption>{fromUnit.name} converted to {toUnit.name}</caption>
+          <thead><tr><th scope="col">{fromUnit.symbol}</th><th scope="col">{toUnit.symbol}</th></tr></thead>
+          <tbody>
+            {chart.map((row) => <tr><td>{row[0]}</td><td>{row[1]}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+      <h3>{toUnit.symbol} to {fromUnit.symbol}</h3>
+      <div class="calc-table-wrap">
+        <table class="calc-table">
+          <caption>{toUnit.name} converted to {fromUnit.name}</caption>
+          <thead><tr><th scope="col">{toUnit.symbol}</th><th scope="col">{fromUnit.symbol}</th></tr></thead>
+          <tbody>
+            {chartBack.map((row) => <tr><td>{row[0]}</td><td>{row[1]}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
 
       <h2>{bn ? "উদাহরণ" : "Examples"}</h2>
       <ul>

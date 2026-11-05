@@ -177,7 +177,7 @@ const coreCalculatorTools: CalculatorTool[] = [
     calc: "salary-increase",
     h1: "Salary Increase Calculator (Pay Raise)",
     title: "Salary Increase and Pay Raise Calculator | Paul Digital",
-    description: "Work out your new pay after a raise, or the percentage raise from an old and new salary. Shows yearly, monthly, weekly and hourly figures. Free, in your browser.",
+    description: "Work out your new pay after a raise, or the percentage raise from an old and new salary, with yearly, monthly, weekly and hourly figures. Free and private.",
     summary: "Work out a new salary after a raise, or the percentage raise between two amounts.",
     intro: "Enter your current pay and either the raise percentage or the new amount. You see the increase per year, month, week and hour.",
     keywords: ["salary increase calculator", "pay increase calculator", "pay raise calculator", "percentage raise"],
