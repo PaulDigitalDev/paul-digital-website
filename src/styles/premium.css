@@ -1493,3 +1493,17 @@
 .bc-loading { text-align: center; padding: 2rem; color: #5b6579; }
 .bc .calc-card > .calc-error { margin: 16px 18px; }
 @media (max-width: 560px) { .bc-cell { min-height: 3rem; } .bc-day { font-size: 1rem; } .bc-head { font-size: 0.75rem; } .bc-nav button { padding: 7px 9px; } }
+
+/* Number to words */
+.nw .nw-words { font-size: clamp(1.15rem, 3.4vw, 1.6rem); line-height: 1.4; overflow-wrap: anywhere; font-weight: 700; }
+.nw .nw-checks { display: grid; gap: 0.5rem; padding: 0.25rem 0 0.5rem; }
+.nw .nw-checks label { display: flex; gap: 0.5rem; align-items: center; font-size: 0.95rem; }
+.nw .nw-copy { margin-top: 1rem; }
+.nw .nw-cheque { margin-top: 1rem; padding: 1rem; border: 1px solid #cfd8e3; border-radius: 10px; background: #f7fbff; display: grid; gap: 0.75rem; }
+.nw .nw-cheque-row { display: flex; gap: 0.75rem; align-items: baseline; border-bottom: 1px solid #b6c4d4; padding-bottom: 0.35rem; font-size: 0.95rem; }
+.nw .nw-cheque-row span { color: #5b6b7d; white-space: nowrap; }
+.nw .nw-cheque-row i { flex: 1; }
+.nw .nw-cheque-amount { justify-self: end; border: 1px solid #b6c4d4; background: #fff; padding: 0.3rem 0.75rem; font-weight: 700; }
+.nw .nw-bulk { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.nw .nw-bulk li { display: grid; gap: 0.15rem; padding: 0.6rem 0.75rem; background: #f4f7fb; border-radius: 8px; overflow-wrap: anywhere; }
+.nw .nw-bulk-num { font-weight: 700; color: #2b3a4a; }
