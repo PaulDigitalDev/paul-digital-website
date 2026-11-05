@@ -123,6 +123,12 @@ const specs: GroupSpec[] = [
     ids: ["land-area-converter", "bangladesh-land-converter", "west-bengal-land-converter", "nepal-land-converter", "katha-to-square-feet", "decimal-to-square-feet", "bigha-to-square-feet", "bangla-land-converter"],
   },
   {
+    id: "text",
+    title: "Text Tools",
+    icon: "convert",
+    ids: ["character-counter", "word-counter", "case-converter", "remove-line-breaks", "text-repeater", "reading-time-calculator", "sms-character-counter", "remove-duplicate-lines", "remove-extra-spaces", "bangla-word-counter"],
+  },
+  {
     id: "social",
     title: "Social Media Tools",
     icon: "social",

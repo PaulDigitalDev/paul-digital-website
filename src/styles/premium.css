@@ -1510,3 +1510,23 @@
 
 /* Land converter */
 .land .land-value { font-size: clamp(1.15rem, 3.6vw, 1.7rem); line-height: 1.35; overflow-wrap: anywhere; }
+
+/* Text tools */
+.tt .tt-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.tt textarea { width: 100%; box-sizing: border-box; font: inherit; }
+.tt .tt-out { margin: 12px 0 0; background: #f7fafc; }
+.tt .tt-copy { margin-top: 12px; }
+.tt .tt-note { margin: 8px 4px; }
+.tt .tt-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
+.tt .tt-stat { background: #f4f7fb; border-radius: 8px; padding: 10px 12px; }
+.tt .tt-stat-big { grid-column: 1 / -1; background: #eef8f1; border: 1px solid #b7dfc4; }
+.tt .tt-stat-value { font-size: 1.35rem; font-weight: 800; color: #1f3a2b; overflow-wrap: anywhere; }
+.tt .tt-stat-big .tt-stat-value { font-size: 2rem; }
+.tt .tt-stat-label { font-size: 0.85rem; color: #5b6b7d; }
+.tt .tt-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 8px; }
+.tt .tt-chips button { border: 1px solid #b6c4d4; background: #fff; border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 0.9rem; cursor: pointer; }
+.tt .tt-chips button[aria-pressed="true"] { background: #2563eb; border-color: #2563eb; color: #fff; }
+.tt .tt-limits { list-style: none; margin: 0; padding: 8px 12px 12px; display: grid; gap: 6px; }
+.tt .tt-limits li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid #e5ebf2; font-size: 0.95rem; }
+.tt .tt-over span:last-child { color: #b42318; font-weight: 700; }
+@media (min-width: 700px) { .tt .tt-stats { grid-template-columns: repeat(4, 1fr); } }
