@@ -38,3 +38,17 @@ test("area, speed, data, time, pressure, energy", () => {
   close(convertUnit(1, "kcal", "kj"), 4.184);
   close(convertUnit(1, "kwh", "btu"), 3412.14, 1e-2);
 });
+
+test("cooking and extra length and weight units", () => {
+  close(convertUnit(1, "cup", "tbsp"), 16, 1e-9);
+  close(convertUnit(1, "tbsp", "tsp"), 3, 1e-9);
+  close(convertUnit(1, "tbsp", "ml"), 14.78676478125, 1e-9);
+  close(convertUnit(1, "pint", "cup"), 2, 1e-6);
+  close(convertUnit(1, "quart", "cup"), 4, 1e-6);
+  close(convertUnit(1, "quart", "l"), 0.946352946, 1e-9);
+  close(convertUnit(1, "lb", "oz"), 16, 1e-9);
+  close(convertUnit(1, "st", "lb"), 14, 1e-6);
+  close(convertUnit(1, "mi", "ft"), 5280, 1e-6);
+  close(convertUnit(1, "km", "m"), 1000);
+  close(convertUnit(1, "tonne", "kg"), 1000);
+});
