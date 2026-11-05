@@ -7,8 +7,9 @@ import { englishPdfTools } from "./englishPdfTools";
 import { effectTools } from "./effectTools";
 import { densityTools } from "./densityTools";
 import { calculatorTools } from "./calculatorTools";
+import { calendarTools } from "./calendarTools";
 
-export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "media";
+export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "calendars" | "media";
 /** "available" tools work today and are listed. Anything else is never shown or put in the sitemap. */
 export type ToolStatus = "available" | "planned";
 
@@ -54,6 +55,12 @@ export const categories: ToolCategory[] = [
     name: "Calculators",
     summary: "Finance calculators for loans, savings growth, returns and pay raises.",
     route: "/tools/calculators/",
+  },
+  {
+    id: "calendars",
+    name: "Calendars",
+    summary: "Bangla date converter, today's Bangla date and Bangla calendar for Bangladesh and West Bengal.",
+    route: "/tools/calendars/",
   },
   { id: "media", name: "File and Media Utilities", summary: "Utilities for files, audio and video." },
 ];
@@ -127,6 +134,17 @@ const calculatorEntries: RegistryTool[] = calculatorTools.map((tool) => ({
   keywords: tool.keywords,
 }));
 
+const calendarEntries: RegistryTool[] = calendarTools.map((tool) => ({
+  id: tool.slug,
+  name: tool.h1,
+  category: "calendars",
+  route: `/${tool.slug}/`,
+  description: tool.summary,
+  status: "available",
+  related: tool.related,
+  keywords: tool.keywords,
+}));
+
 const pdfMainSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "word-to-pdf", "pdf-to-jpg"];
 const pdfEntries: RegistryTool[] = englishPdfTools
   .filter((tool) => pdfMainSlugs.includes(tool.slug))
@@ -175,6 +193,7 @@ export const tools: RegistryTool[] = [
   ...effectEntries,
   ...densityEntries,
   ...calculatorEntries,
+  ...calendarEntries,
 ];
 
 export const toolById = new Map(tools.map((tool) => [tool.id, tool]));
