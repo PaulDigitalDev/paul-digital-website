@@ -102,13 +102,19 @@ const specs: GroupSpec[] = [
     id: "calculators",
     title: "Calculators",
     icon: "convert",
-    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator", "superannuation-date-calculator", "service-length-calculator", "salary-increment-calculator", "leave-salary-encashment-calculator", "gratuity-calculator", "pension-calculator-ropa-2019", "commuted-value-of-pension-calculator"],
+    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator", "superannuation-date-calculator", "service-length-calculator", "salary-increment-calculator", "leave-salary-encashment-calculator", "gratuity-calculator", "pension-calculator-ropa-2019", "commuted-value-of-pension-calculator", "emi-calculator", "fd-calculator", "rd-calculator", "ppf-calculator", "million-to-crore-converter"],
   },
   {
     id: "calendars",
     title: "Calendars",
     icon: "convert",
     ids: ["bangla-date-converter", "bangla-date-today", "bangla-calendar"],
+  },
+  {
+    id: "numbers",
+    title: "Number to Words",
+    icon: "convert",
+    ids: ["number-to-words", "number-to-words-in-lakhs-and-crores", "rupees-in-words", "cheque-amount-in-words", "taka-in-words", "number-to-words-in-bangla", "number-to-words-in-hindi", "bulk-number-to-words", "dollars-in-words", "pounds-in-words", "euros-in-words", "australian-dollars-in-words", "canadian-dollars-in-words", "pakistani-rupees-in-words", "number-to-words-in-spanish", "number-to-words-in-french", "number-to-words-in-german", "number-to-words-in-portuguese", "number-to-words-in-turkish", "number-to-words-in-indonesian"],
   },
   {
     id: "social",

@@ -8,8 +8,9 @@ import { effectTools } from "./effectTools";
 import { densityTools } from "./densityTools";
 import { calculatorTools } from "./calculatorTools";
 import { calendarTools } from "./calendarTools";
+import { numberWordTools } from "./numberWordTools";
 
-export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "calendars" | "media";
+export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "calendars" | "numbers" | "media";
 /** "available" tools work today and are listed. Anything else is never shown or put in the sitemap. */
 export type ToolStatus = "available" | "planned";
 
@@ -61,6 +62,12 @@ export const categories: ToolCategory[] = [
     name: "Calendars",
     summary: "Bangla date converter, today's Bangla date and Bangla calendar for Bangladesh and West Bengal.",
     route: "/tools/calendars/",
+  },
+  {
+    id: "numbers",
+    name: "Number to Words",
+    summary: "Numbers and money in words: English, Hindi, Bangla, rupees, taka, dollars, a cheque writer and a bulk converter.",
+    route: "/tools/numbers/",
   },
   { id: "media", name: "File and Media Utilities", summary: "Utilities for files, audio and video." },
 ];
@@ -145,6 +152,17 @@ const calendarEntries: RegistryTool[] = calendarTools.map((tool) => ({
   keywords: tool.keywords,
 }));
 
+const numberEntries: RegistryTool[] = numberWordTools.map((tool) => ({
+  id: tool.slug,
+  name: tool.h1,
+  category: "numbers",
+  route: `/${tool.slug}/`,
+  description: tool.summary,
+  status: "available",
+  related: tool.related,
+  keywords: tool.keywords,
+}));
+
 const pdfMainSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "word-to-pdf", "pdf-to-jpg"];
 const pdfEntries: RegistryTool[] = englishPdfTools
   .filter((tool) => pdfMainSlugs.includes(tool.slug))
@@ -194,6 +212,7 @@ export const tools: RegistryTool[] = [
   ...densityEntries,
   ...calculatorEntries,
   ...calendarEntries,
+  ...numberEntries,
 ];
 
 export const toolById = new Map(tools.map((tool) => [tool.id, tool]));

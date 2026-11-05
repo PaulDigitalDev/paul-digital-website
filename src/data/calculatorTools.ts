@@ -3,6 +3,7 @@ import { growth, loanSchedule, roi, salaryFromPercent, solveFv, solvePmt } from 
 import { money, pct } from "../lib/calcDefs.ts";
 import { moreCalculatorTools } from "./calculatorToolsMore.ts";
 import { wbCalculatorTools } from "./calculatorToolsWb.ts";
+import { inCalculatorTools } from "./calculatorToolsIn.ts";
 
 export interface CalculatorTool {
   slug: string;
@@ -307,6 +308,6 @@ const coreCalculatorTools: CalculatorTool[] = [
   },
 ];
 
-export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools, ...wbCalculatorTools];
+export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools, ...wbCalculatorTools, ...inCalculatorTools];
 
 export const calculatorToolBySlug = new Map(calculatorTools.map((tool) => [tool.slug, tool]));
