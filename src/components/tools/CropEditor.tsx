@@ -73,7 +73,16 @@ const fraction = (r: PxRect, tw: number, th: number): CropRect => ({ x: r.x / tw
 const toPx = (c: CropRect, tw: number, th: number): PxRect => ({ x: c.x * tw, y: c.y * th, w: c.w * tw, h: c.h * th });
 const nextRotation = (r: Rotation, delta: 90 | -90): Rotation => (((r + delta + 360) % 360) as Rotation);
 
-export default function CropEditor({ variant, fixed }: { variant: EditorVariant; fixed?: SizePreset }) {
+export interface GovStart {
+  w?: number;
+  h?: number;
+  minKb?: number;
+  maxKb?: number;
+  /** Shown under the fields in place of the generic note. */
+  hint?: string;
+}
+
+export default function CropEditor({ variant, fixed, gov }: { variant: EditorVariant; fixed?: SizePreset; gov?: GovStart }) {
   const isPreset = variant !== "crop";
   /* "government" has no presets: the user types the pixel size and KB limits from their own notification. */
   const isGov = variant === "government";
@@ -94,12 +103,12 @@ export default function CropEditor({ variant, fixed }: { variant: EditorVariant;
   const [crop, setCrop] = useState<CropRect>({ x: 0, y: 0, w: 1, h: 1 });
   const [aspectId, setAspectId] = useState("free");
   const [presetId, setPresetId] = useState(initialPresetId);
-  const [customW, setCustomW] = useState(fixed ? String(fixed.w) : isGov ? "" : variant === "passport" ? "413" : "300");
-  const [customH, setCustomH] = useState(fixed ? String(fixed.h) : isGov ? "" : variant === "passport" ? "531" : "100");
+  const [customW, setCustomW] = useState(fixed ? String(fixed.w) : isGov ? (gov?.w ? String(gov.w) : "") : variant === "passport" ? "413" : "300");
+  const [customH, setCustomH] = useState(fixed ? String(fixed.h) : isGov ? (gov?.h ? String(gov.h) : "") : variant === "passport" ? "531" : "100");
   const [format, setFormat] = useState<OutputKind>("jpeg");
   const [quality, setQuality] = useState(0.92);
-  const [maxKb, setMaxKb] = useState("");
-  const [minKb, setMinKb] = useState("");
+  const [maxKb, setMaxKb] = useState(gov?.maxKb ? String(gov.maxKb) : "");
+  const [minKb, setMinKb] = useState(gov?.minKb ? String(gov.minKb) : "");
   const [draft, setDraft] = useState<Record<string, string>>({});
 
   const previewRef = useRef<HTMLCanvasElement | null>(null);
@@ -469,7 +478,7 @@ export default function CropEditor({ variant, fixed }: { variant: EditorVariant;
               </div>
               {isGov && (
                 <p className="st-note">
-                  File sizes use 1 KB = 1,024 bytes, the same unit shown in the result. Enter the width, height and file-size range exactly as your application notice states them. This page has no built-in exam presets because requirements change with each notification.
+                  File sizes use 1 KB = 1,024 bytes, the same unit shown in the result. {gov?.hint ?? "Enter the width, height and file-size range exactly as your application notice states them. This page has no built-in exam presets because requirements change with each notification."}
                 </p>
               )}
               {preset && presetId !== "custom" && (

@@ -33,6 +33,10 @@ export interface EditorTool {
   start?: { mode?: "pixels" | "percent" | "cm"; unit?: "cm" | "mm" | "in"; dpi?: number };
   /** Crop tools only: the exact output size the tool opens with. */
   fixed?: SizePreset;
+  /** Government mode only: values the tool opens with, taken from the cited official notice. */
+  gov?: { w?: number; h?: number; minKb?: number; maxKb?: number; hint?: string };
+  /** Replaces the default "not affiliated with the UK Government" line under the official sources. */
+  sourceNote?: string;
 }
 
 export const editorTools: EditorTool[] = [
@@ -275,12 +279,12 @@ export const editorTools: EditorTool[] = [
       "Keep the original files. This tool always creates a new file.",
     ],
     faqs: [
-      { q: "Does this have SSC, UPSC, NEET or railway presets?", a: "No. Those requirements are set per notification and change, and this site has not confirmed them from the official notices, so you enter the numbers yourself." },
+      { q: "Does this have SSC, UPSC, NEET or railway presets?", a: "This page has none, so you enter the numbers from your own notice. Separate pages open with the figures from the official SSC and UPSC notices we checked, each showing the notice name and date: see the SSC and UPSC pages linked below. NEET, railway and other exams have no preset yet." },
       { q: "Can I set only a maximum, or only a minimum?", a: "Yes. Either box can be left empty if your notice does not state that limit." },
       { q: "What if the file is still outside my limits?", a: "The result panel shows a warning with the real size. Adjust the pixel size or use a different original and try again." },
       { q: "Is my photo uploaded?", a: "No. It is processed in your browser and never leaves your device." },
     ],
-    related: ["passport-photo-resizer", "signature-resizer", "image-compressor", "jpg-to-pdf"],
+    related: ["ssc-photo-resizer", "upsc-photo-resizer", "passport-photo-resizer", "signature-resizer"],
   },
   {
     slug: "uk-passport-photo-digital",
