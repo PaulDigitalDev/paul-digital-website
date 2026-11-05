@@ -18,6 +18,7 @@ const tabs: Record<string, { label: string; color: string }> = {
   calculators: { label: "Calculators", color: "#6D4AFF" },
   calendars: { label: "Calendars", color: "#0E7490" },
   numbers: { label: "Number to Words", color: "#B45309" },
+  land: { label: "Land", color: "#15803D" },
 };
 
 // Simple white glyphs drawn on a 24-unit grid, one per kind of job.
@@ -82,7 +83,7 @@ const cards = englishGroups.flatMap((group) =>
         href: entry.href,
         description: tool.description,
         color: tabs[group.id].color,
-        glyph: glyphs[glyphFor[id] ?? (group.id === "convert" ? "convert" : group.id === "calculators" ? "calc" : group.id === "calendars" ? "cal" : group.id === "numbers" ? "convert" : "image")],
+        glyph: glyphs[glyphFor[id] ?? (group.id === "convert" ? "convert" : group.id === "calculators" ? "calc" : group.id === "calendars" ? "cal" : group.id === "numbers" || group.id === "land" ? "convert" : "image")],
       };
     }),
 );
