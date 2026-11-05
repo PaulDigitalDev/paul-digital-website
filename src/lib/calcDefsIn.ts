@@ -1,6 +1,7 @@
 import { loanSchedule } from "./finance.ts";
 import { Bad, guard, num, plain, positive } from "./calcDefs.ts";
 import type { CalcDef } from "./calcDefs.ts";
+import { VORI_GRAMS } from "./weightUnits.ts";
 
 /* Indian-style savings and loan calculators, and the lakh/crore/million converter. Amounts use Indian digit grouping. */
 
@@ -194,4 +195,54 @@ export const mtc: CalcDef = {
     }),
 };
 
-export const inDefs: Record<string, CalcDef> = { emi, fd, rd, ppf, "million-to-crore": mtc };
+
+/** Gold value: weight in vori/ana/roti, price per gram or per vori, making charge as a percentage plus an optional fixed amount. */
+export function goldValue(vori: number, ana: number, roti: number, price: number, basis: string, makingPct: number, fixed: number) {
+  const grams = (vori + ana / 16 + roti / 96) * VORI_GRAMS;
+  const perGram = basis === "vori" ? price / VORI_GRAMS : price;
+  const metal = grams * perGram;
+  const making = (metal * makingPct) / 100 + fixed;
+  return { grams, perGram, metal, making, total: metal + making };
+}
+
+const amt = (n: number) => n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+export const goldPrice: CalcDef = {
+  id: "gold-price",
+  fields: [
+    { id: "vori", label: "Vori", kind: "number", default: "1", step: "any" },
+    { id: "ana", label: "Ana", kind: "number", default: "0", step: "any" },
+    { id: "roti", label: "Roti", kind: "number", default: "0", step: "any" },
+    { id: "basis", label: "Price is per", kind: "select", default: "vori", options: [{ value: "vori", label: "Vori" }, { value: "gram", label: "Gram" }] },
+    { id: "price", label: "Gold price (from today's rate)", kind: "number", default: "150000", step: "any" },
+    { id: "making", label: "Making charge (% of gold value)", kind: "number", default: "6", step: "any" },
+    { id: "fixed", label: "Fixed charge (optional)", kind: "number", default: "0", step: "any" },
+  ],
+  compute: (v) =>
+    guard(() => {
+      const vori = num(v, "vori", "Vori");
+      const ana = num(v, "ana", "Ana");
+      const roti = num(v, "roti", "Roti");
+      if (vori < 0 || ana < 0 || roti < 0) throw new Bad("Weights cannot be negative.");
+      if (vori + ana + roti <= 0) throw new Bad("Enter a weight greater than zero.");
+      const price = positive(num(v, "price", "Gold price"), "Gold price");
+      const making = num(v, "making", "Making charge");
+      const fixed = num(v, "fixed", "Fixed charge");
+      if (making < 0 || making > 100) throw new Bad("Enter a making charge from 0 to 100%.");
+      if (fixed < 0) throw new Bad("The fixed charge cannot be negative.");
+      const r = goldValue(vori, ana, roti, price, v.basis, making, fixed);
+      if (!Number.isFinite(r.total) || r.total > 1e15) throw new Bad("That value is too large.");
+      return {
+        rows: [
+          { label: "Total price", value: amt(r.total), big: true },
+          { label: "Total weight", value: `${plain(r.grams, 3)} g` },
+          { label: "Gold value", value: amt(r.metal) },
+          { label: "Making charge", value: amt(r.making) },
+          { label: "Price per gram", value: amt(r.perGram) },
+        ],
+        notes: ["1 vori = 11.664 g = 16 ana = 96 roti. Enter the day's rate for your gold's purity. VAT, tax and stone or wastage charges are not included, so the jeweller's bill can differ."],
+      };
+    }),
+};
+
+export const inDefs: Record<string, CalcDef> = { emi, fd, rd, ppf, "million-to-crore": mtc, "gold-price": goldPrice };
