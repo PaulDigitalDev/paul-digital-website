@@ -117,6 +117,12 @@ const specs: GroupSpec[] = [
     ids: ["number-to-words", "number-to-words-in-lakhs-and-crores", "rupees-in-words", "cheque-amount-in-words", "taka-in-words", "number-to-words-in-bangla", "number-to-words-in-hindi", "bulk-number-to-words", "dollars-in-words", "pounds-in-words", "euros-in-words", "australian-dollars-in-words", "canadian-dollars-in-words", "pakistani-rupees-in-words", "number-to-words-in-spanish", "number-to-words-in-french", "number-to-words-in-german", "number-to-words-in-portuguese", "number-to-words-in-turkish", "number-to-words-in-indonesian"],
   },
   {
+    id: "land",
+    title: "Land Converters",
+    icon: "convert",
+    ids: ["land-area-converter", "bangladesh-land-converter", "west-bengal-land-converter", "nepal-land-converter", "katha-to-square-feet", "decimal-to-square-feet", "bigha-to-square-feet", "bangla-land-converter"],
+  },
+  {
     id: "social",
     title: "Social Media Tools",
     icon: "social",
