@@ -490,25 +490,23 @@ export interface Currency {
   symbol: string;
   major: [string, string];
   minor: [string, string];
-  /** Name before the amount ("Rupees One Thousand") as on Indian cheques, otherwise after ("one thousand dollars"). */
-  prefix: boolean;
   system: System;
   hi?: { major: string; minor: string };
   bn?: { major: string; minor: string };
 }
 
 export const CURRENCIES: Currency[] = [
-  { id: "INR", name: "Indian rupee", symbol: "₹", major: ["Rupee", "Rupees"], minor: ["Paisa", "Paise"], prefix: true, system: "indian", hi: { major: "रुपये", minor: "पैसे" }, bn: { major: "রুপি", minor: "পয়সা" } },
-  { id: "BDT", name: "Bangladeshi taka", symbol: "৳", major: ["Taka", "Taka"], minor: ["Paisa", "Paisa"], prefix: true, system: "indian", hi: { major: "टका", minor: "पैसा" }, bn: { major: "টাকা", minor: "পয়সা" } },
-  { id: "PKR", name: "Pakistani rupee", symbol: "Rs", major: ["Rupee", "Rupees"], minor: ["Paisa", "Paisas"], prefix: true, system: "indian" },
-  { id: "NPR", name: "Nepalese rupee", symbol: "Rs", major: ["Rupee", "Rupees"], minor: ["Paisa", "Paisa"], prefix: true, system: "indian" },
-  { id: "USD", name: "US dollar", symbol: "$", major: ["Dollar", "Dollars"], minor: ["Cent", "Cents"], prefix: false, system: "international" },
-  { id: "GBP", name: "British pound", symbol: "£", major: ["Pound", "Pounds"], minor: ["Penny", "Pence"], prefix: false, system: "international" },
-  { id: "EUR", name: "Euro", symbol: "€", major: ["Euro", "Euros"], minor: ["Cent", "Cents"], prefix: false, system: "international" },
-  { id: "AUD", name: "Australian dollar", symbol: "A$", major: ["Australian Dollar", "Australian Dollars"], minor: ["Cent", "Cents"], prefix: false, system: "international" },
-  { id: "CAD", name: "Canadian dollar", symbol: "C$", major: ["Canadian Dollar", "Canadian Dollars"], minor: ["Cent", "Cents"], prefix: false, system: "international" },
-  { id: "AED", name: "UAE dirham", symbol: "AED", major: ["Dirham", "Dirhams"], minor: ["Fils", "Fils"], prefix: false, system: "international" },
-  { id: "SGD", name: "Singapore dollar", symbol: "S$", major: ["Singapore Dollar", "Singapore Dollars"], minor: ["Cent", "Cents"], prefix: false, system: "international" },
+  { id: "INR", name: "Indian rupee", symbol: "₹", major: ["Rupee", "Rupees"], minor: ["Paisa", "Paise"], system: "indian", hi: { major: "रुपये", minor: "पैसे" }, bn: { major: "রুপি", minor: "পয়সা" } },
+  { id: "BDT", name: "Bangladeshi taka", symbol: "৳", major: ["Taka", "Taka"], minor: ["Paisa", "Paisa"], system: "indian", hi: { major: "टका", minor: "पैसा" }, bn: { major: "টাকা", minor: "পয়সা" } },
+  { id: "PKR", name: "Pakistani rupee", symbol: "Rs", major: ["Rupee", "Rupees"], minor: ["Paisa", "Paisas"], system: "indian" },
+  { id: "NPR", name: "Nepalese rupee", symbol: "Rs", major: ["Rupee", "Rupees"], minor: ["Paisa", "Paisa"], system: "indian" },
+  { id: "USD", name: "US dollar", symbol: "$", major: ["Dollar", "Dollars"], minor: ["Cent", "Cents"], system: "international" },
+  { id: "GBP", name: "British pound", symbol: "£", major: ["Pound", "Pounds"], minor: ["Penny", "Pence"], system: "international" },
+  { id: "EUR", name: "Euro", symbol: "€", major: ["Euro", "Euros"], minor: ["Cent", "Cents"], system: "international" },
+  { id: "AUD", name: "Australian dollar", symbol: "A$", major: ["Australian Dollar", "Australian Dollars"], minor: ["Cent", "Cents"], system: "international" },
+  { id: "CAD", name: "Canadian dollar", symbol: "C$", major: ["Canadian Dollar", "Canadian Dollars"], minor: ["Cent", "Cents"], system: "international" },
+  { id: "AED", name: "UAE dirham", symbol: "AED", major: ["Dirham", "Dirhams"], minor: ["Fils", "Fils"], system: "international" },
+  { id: "SGD", name: "Singapore dollar", symbol: "S$", major: ["Singapore Dollar", "Singapore Dollars"], minor: ["Cent", "Cents"], system: "international" },
 ];
 export const currencyById = new Map(CURRENCIES.map((c) => [c.id, c]));
 
@@ -520,7 +518,7 @@ export interface MoneyOptions extends WordOptions {
 
 export type MoneyResult = { ok: true; words: string; digits: string } | { ok: false; error: string };
 
-/** Amount in words with the currency, for example "Rupees One Thousand Two Hundred And Paise Fifty Only". */
+/** Amount in words with the currency after the words, for example "One Thousand Two Hundred Rupees and Fifty Paise Only". */
 export function moneyToWords(raw: string, o: MoneyOptions): MoneyResult {
   const a = parseAmount(raw);
   if ("error" in a) return { ok: false, error: a.error };
@@ -549,16 +547,14 @@ export function moneyToWords(raw: string, o: MoneyOptions): MoneyResult {
   }
   if (o.lang !== "en") return { ok: false, error: "Currency words are available in English, Hindi and Bangla." };
 
-  const majorName = cur.prefix ? cur.major[1] : isOne ? cur.major[0] : cur.major[1];
-  const minorName = minor === 1 && !cur.prefix ? cur.minor[0] : cur.minor[1];
-  const cased = (text: string) => applyCase(text, o.caseStyle);
-  const and = o.caseStyle === "upper" ? "AND" : "and";
+  const majorName = isOne ? cur.major[0] : cur.major[1];
+  const minorName = minor === 1 ? cur.minor[0] : cur.minor[1];
   const pieces: string[] = [];
-  if (!wholeZero || !minor) pieces.push(cur.prefix ? `${cased(majorName)} ${cased(majorWords)}` : `${cased(majorWords)} ${cased(majorName)}`);
+  if (!wholeZero || !minor) pieces.push(`${majorWords} ${majorName}`);
   if (minor) {
-    if (pieces.length) pieces.push(and);
-    pieces.push(cur.prefix ? `${cased(minorName)} ${cased(minorWords)}` : `${cased(minorWords)} ${cased(minorName)}`);
+    if (pieces.length) pieces.push("and");
+    pieces.push(`${minorWords} ${minorName}`);
   }
-  if (o.only) pieces.push(cased("only"));
-  return { ok: true, words: pieces.join(" "), digits };
+  if (o.only) pieces.push("only");
+  return { ok: true, words: applyCase(pieces.join(" ").toLowerCase(), o.caseStyle), digits };
 }
