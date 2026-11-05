@@ -102,7 +102,7 @@ const specs: GroupSpec[] = [
     id: "calculators",
     title: "Calculators",
     icon: "convert",
-    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator", "superannuation-date-calculator", "service-length-calculator", "salary-increment-calculator", "leave-salary-encashment-calculator", "gratuity-calculator", "pension-calculator-ropa-2019", "commuted-value-of-pension-calculator", "emi-calculator", "fd-calculator", "rd-calculator", "ppf-calculator", "million-to-crore-converter", "gold-price-calculator", "discount-calculator", "tip-calculator", "sales-tax-calculator", "fuel-cost-calculator"],
+    ids: ["tvm-calculator", "future-value-calculator", "compound-interest-calculator", "salary-increase-calculator", "loan-calculator", "roi-calculator", "age-calculator", "date-calculator", "time-calculator", "hours-calculator", "percentage-calculator", "grade-calculator", "gpa-calculator", "hourly-to-salary-calculator", "amortization-calculator", "bmi-calculator", "superannuation-date-calculator", "service-length-calculator", "salary-increment-calculator", "leave-salary-encashment-calculator", "gratuity-calculator", "pension-calculator-ropa-2019", "commuted-value-of-pension-calculator", "emi-calculator", "fd-calculator", "rd-calculator", "ppf-calculator", "million-to-crore-converter", "gold-price-calculator", "discount-calculator", "tip-calculator", "sales-tax-calculator", "fuel-cost-calculator", "fraction-calculator", "average-calculator", "ratio-calculator", "percentage-change-calculator", "scientific-notation-converter", "gcf-lcm-calculator", "standard-deviation-calculator"],
   },
   {
     id: "calendars",
@@ -138,7 +138,13 @@ const specs: GroupSpec[] = [
     id: "units",
     title: "Unit Converters",
     icon: "convert",
-    ids: ["cm-to-inches", "inches-to-cm", "feet-to-cm", "cm-to-feet", "mm-to-inches", "inches-to-mm", "miles-to-km", "km-to-miles", "meters-to-feet", "feet-to-meters", "yards-to-meters", "kg-to-lbs", "lbs-to-kg", "oz-to-grams", "grams-to-oz", "stone-to-kg", "kg-to-stone", "celsius-to-fahrenheit", "fahrenheit-to-celsius", "liters-to-gallons", "gallons-to-liters", "ml-to-oz", "cups-to-ml"],
+    ids: ["cm-to-inches", "inches-to-cm", "feet-to-cm", "cm-to-feet", "mm-to-inches", "inches-to-mm", "miles-to-km", "km-to-miles", "meters-to-feet", "feet-to-meters", "yards-to-meters", "kg-to-lbs", "lbs-to-kg", "oz-to-grams", "grams-to-oz", "stone-to-kg", "kg-to-stone", "celsius-to-fahrenheit", "fahrenheit-to-celsius", "liters-to-gallons", "gallons-to-liters", "ml-to-oz", "cups-to-ml", "square-feet-to-square-meters", "square-meters-to-square-feet", "acres-to-hectares", "hectares-to-acres", "acres-to-square-feet", "square-km-to-square-miles", "mph-to-kmh", "kmh-to-mph", "knots-to-mph", "meters-per-second-to-kmh", "mb-to-gb", "gb-to-mb", "gb-to-tb", "kb-to-mb", "hours-to-minutes", "minutes-to-hours", "days-to-hours", "psi-to-bar", "bar-to-psi", "kpa-to-psi", "kcal-to-kj", "kj-to-kcal", "calories-to-joules", "btu-to-kwh"],
+  },
+  {
+    id: "math",
+    title: "Math and Number Tools",
+    icon: "convert",
+    ids: ["binary-to-decimal", "decimal-to-binary", "hex-to-decimal", "decimal-to-hex", "binary-to-hex", "hex-to-binary", "octal-to-decimal", "roman-numeral-converter"],
   },
   {
     id: "social",

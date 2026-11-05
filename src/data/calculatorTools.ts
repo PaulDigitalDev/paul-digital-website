@@ -4,6 +4,7 @@ import { money, pct } from "../lib/calcDefs.ts";
 import { moreCalculatorTools } from "./calculatorToolsMore.ts";
 import { wbCalculatorTools } from "./calculatorToolsWb.ts";
 import { inCalculatorTools } from "./calculatorToolsIn.ts";
+import { mathCalculatorTools } from "./calculatorToolsMath.ts";
 import { globalCalculatorTools } from "./calculatorToolsGlobal.ts";
 
 export interface CalculatorTool {
@@ -309,6 +310,6 @@ const coreCalculatorTools: CalculatorTool[] = [
   },
 ];
 
-export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools, ...wbCalculatorTools, ...inCalculatorTools, ...globalCalculatorTools];
+export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools, ...wbCalculatorTools, ...inCalculatorTools, ...globalCalculatorTools, ...mathCalculatorTools];
 
 export const calculatorToolBySlug = new Map(calculatorTools.map((tool) => [tool.slug, tool]));

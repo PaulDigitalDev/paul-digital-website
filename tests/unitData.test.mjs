@@ -26,3 +26,15 @@ test("format and parse", () => {
   assert.equal(parseSigned("1,000.5"), 1000.5);
   assert.equal(parseSigned("abc"), null);
 });
+
+test("area, speed, data, time, pressure, energy", () => {
+  close(convertUnit(1, "acre", "sqft"), 43560, 1e-6);
+  close(convertUnit(1, "ha", "acre"), 2.4710538147, 1e-8);
+  close(convertUnit(60, "mph", "kmh"), 96.56064, 1e-6);
+  close(convertUnit(10, "ms", "kmh"), 36);
+  close(convertUnit(1, "gb", "mb"), 1000);
+  close(convertUnit(2.5, "hr", "min"), 150);
+  close(convertUnit(1, "bar", "psi"), 14.5037738, 1e-6);
+  close(convertUnit(1, "kcal", "kj"), 4.184);
+  close(convertUnit(1, "kwh", "btu"), 3412.14, 1e-2);
+});
