@@ -14,8 +14,9 @@ import { textPages } from "./textToolPages";
 import { weightTools } from "./weightTools";
 import { unitTools } from "./unitTools";
 import { mathTools } from "./mathTools";
+import { colorTools } from "./colorTools";
 
-export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "calendars" | "numbers" | "land" | "text" | "weight" | "units" | "math" | "media";
+export type ToolCategoryId = "image" | "pdf" | "document" | "developer" | "calculators" | "calendars" | "numbers" | "land" | "text" | "weight" | "units" | "math" | "color" | "media";
 /** "available" tools work today and are listed. Anything else is never shown or put in the sitemap. */
 export type ToolStatus = "available" | "planned";
 
@@ -103,6 +104,12 @@ export const categories: ToolCategory[] = [
     name: "Math and Number Tools",
     summary: "Binary, decimal, hex and octal converters and a Roman numeral converter.",
     route: "/tools/math/",
+  },
+  {
+    id: "color",
+    name: "Color Tools",
+    summary: "Convert colors between HEX, RGB and HSL with a color picker.",
+    route: "/tools/color/",
   },
   { id: "media", name: "File and Media Utilities", summary: "Utilities for files, audio and video." },
 ];
@@ -242,6 +249,17 @@ const mathEntries: RegistryTool[] = mathTools.map((tool) => ({
   keywords: tool.keywords,
 }));
 
+const colorEntries: RegistryTool[] = colorTools.map((tool) => ({
+  id: tool.slug,
+  name: tool.h1,
+  category: "color",
+  route: `/${tool.slug}/`,
+  description: tool.summary,
+  status: "available",
+  related: tool.related,
+  keywords: tool.keywords,
+}));
+
 const textEntries: RegistryTool[] = textPages.map((tool) => ({
   id: tool.slug,
   name: tool.h1,
@@ -308,6 +326,7 @@ export const tools: RegistryTool[] = [
   ...weightEntries,
   ...unitEntries,
   ...mathEntries,
+  ...colorEntries,
 ];
 
 export const toolById = new Map(tools.map((tool) => [tool.id, tool]));
