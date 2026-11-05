@@ -5,11 +5,14 @@ import { moreCalculatorTools } from "./calculatorToolsMore.ts";
 import { wbCalculatorTools } from "./calculatorToolsWb.ts";
 import { inCalculatorTools } from "./calculatorToolsIn.ts";
 import { mathCalculatorTools } from "./calculatorToolsMath.ts";
+import { taxCalculatorTools } from "./calculatorToolsTax.ts";
 import { globalCalculatorTools } from "./calculatorToolsGlobal.ts";
 
 export interface CalculatorTool {
   slug: string;
   calc: string;
+  /** Starting values that replace the calculator defaults on this page. */
+  preset?: Record<string, string>;
   h1: string;
   title: string;
   description: string;
@@ -310,6 +313,6 @@ const coreCalculatorTools: CalculatorTool[] = [
   },
 ];
 
-export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools, ...wbCalculatorTools, ...inCalculatorTools, ...globalCalculatorTools, ...mathCalculatorTools];
+export const calculatorTools: CalculatorTool[] = [...coreCalculatorTools, ...moreCalculatorTools, ...wbCalculatorTools, ...inCalculatorTools, ...globalCalculatorTools, ...mathCalculatorTools, ...taxCalculatorTools];
 
 export const calculatorToolBySlug = new Map(calculatorTools.map((tool) => [tool.slug, tool]));

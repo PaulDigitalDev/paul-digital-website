@@ -5,9 +5,9 @@ import type { Values } from "../../lib/calcDefs";
 
 /* Live calculator: results update as you type. Nothing is sent anywhere. */
 
-export default function Calculator({ calc }: { calc: string }) {
+export default function Calculator({ calc, preset }: { calc: string; preset?: Record<string, string> }) {
   const def = calcDefs[calc];
-  const [values, setValues] = useState<Values>(() => defaultsFor(def));
+  const [values, setValues] = useState<Values>(() => ({ ...defaultsFor(def), ...(preset ?? {}) }));
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const out = useMemo(() => (def.volatile && !mounted ? { rows: [] } : def.compute(values)), [def, values, mounted]);

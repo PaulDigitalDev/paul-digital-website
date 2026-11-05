@@ -57,7 +57,7 @@ const appSchema = {
     <script type="application/ld+json" set:html={json(faqSchema)} />
   </Fragment>
   <ToolTop accent="calc" h1={tool.h1} intro={tool.intro} crumbs={[{ label: "Home", href: "/" }, { label: "Web Tools", href: "/tools/" }, { label: tool.h1 }]} breadcrumbLabel="Breadcrumb">
-      <Calculator client:load calc={tool.calc} />
+      <Calculator client:load calc={tool.calc} preset={tool.preset} />
   </ToolTop>
   <section class="content-section" style="padding-top: 0">
     <div class="container prose">
