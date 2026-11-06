@@ -3417,3 +3417,151 @@ a.td-item:focus-visible {
 .related-guides {
   margin-top: 2rem;
 }
+
+/* Tools menu (desktop dropdown, mobile accordion) */
+.tools-menu {
+  position: static;
+}
+
+.tools-menu > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--navy);
+  cursor: pointer;
+  font-size: 0.83rem;
+  font-weight: 650;
+  list-style: none;
+}
+
+.tools-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.tools-menu > summary::after {
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-top: -0.15rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.tools-menu > summary:hover,
+.tools-menu[open] > summary,
+.tools-menu[data-current] > summary {
+  color: var(--blue-text);
+}
+
+.tools-menu[data-current] > summary {
+  text-decoration: underline;
+  text-decoration-color: var(--orange);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.45rem;
+}
+
+.tools-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  padding-block: 1rem 1.3rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+  box-shadow: 0 16px 32px rgb(11 31 94 / 10%);
+}
+
+.tools-panel-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin: 0 0 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.tools-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.1rem 1.5rem;
+}
+
+.tools-group-title {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tools-group-title a {
+  color: var(--muted);
+}
+
+.tools-panel ul,
+.mobile-tools ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tools-panel li a {
+  display: block;
+  padding: 0.22rem 0;
+  color: var(--navy);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tools-panel a:hover {
+  color: var(--blue-text);
+}
+
+.mobile-links {
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+}
+
+.mobile-tools > summary {
+  padding: 0.7rem 0.75rem;
+  border-radius: 0.45rem;
+  color: var(--navy);
+  cursor: pointer;
+  font-size: 0.83rem;
+  font-weight: 650;
+}
+
+.mobile-tools > summary:hover {
+  background: var(--background);
+}
+
+.mobile-tools-group {
+  padding: 0.3rem 0.75rem 0.3rem 1.25rem;
+}
+
+.mobile-links .mobile-tools-title {
+  padding: 0.3rem 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mobile-links .mobile-tools-group li a {
+  padding: 0.35rem 0;
+  font-weight: 550;
+}
+
+.mobile-links .mobile-tools-all {
+  padding-left: 1.25rem;
+}
+
+@media (max-width: 1100px) {
+  .tools-panel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

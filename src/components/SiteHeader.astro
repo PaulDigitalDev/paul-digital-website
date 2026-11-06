@@ -1,5 +1,6 @@
 ---
 import Brand from "./Brand.astro";
+import { buildDirectory } from "../data/homeDirectory";
 
 interface Props {
   currentPath: string;
@@ -9,11 +10,26 @@ const { currentPath } = Astro.props;
 const links = [
   { label: "Home", href: "/" },
   { label: "Apps", href: "/apps/" },
-  { label: "Web Tools", href: "/tools/" },
   { label: "Guides", href: "/guides/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
 ];
+
+/* Tools menu: the first few tools of each main group on the home page, plus a link to the whole category. Plain links in the
+   page HTML, so they work without script and are crawlable. */
+const directory = new Map(buildDirectory().map((group) => [group.id, group]));
+const menuSpec = [
+  { id: "pdf", title: "PDF Tools", all: "/tools/document/", count: 6 },
+  { id: "image", title: "Image Tools", all: "/tools/image/", count: 6 },
+  { id: "photo", title: "Photo & Form Resizers", all: "/tools/image/", count: 5 },
+  { id: "calculators", title: "Calculators", all: "/tools/calculators/", count: 6 },
+  { id: "units", title: "Unit Converters", all: "/tools/units/", count: 6 },
+  { id: "land", title: "Land Converters", all: "/tools/land/", count: 5 },
+  { id: "weight", title: "Weight Converters", all: "/tools/weight/", count: 5 },
+  { id: "text", title: "Text Tools", all: "/tools/text/", count: 5 },
+];
+const toolsMenu = menuSpec.map((spec) => ({ title: spec.title, all: spec.all, links: (directory.get(spec.id)?.tools ?? []).slice(0, spec.count) }));
+const inTools = currentPath === "/tools/" || currentPath.startsWith("/tools/");
 const playStoreUrl = "https://play.google.com/store/apps/dev?id=7949073170466838031";
 
 const isCurrent = (href: string) =>
@@ -24,7 +40,32 @@ const isCurrent = (href: string) =>
   <div class="container header-inner">
     <Brand />
     <nav class="desktop-nav" aria-label="Main navigation">
-      {links.map((link) => (
+      {links.slice(0, 2).map((link) => (
+        <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
+          {link.label}
+        </a>
+      ))}
+      <details class="tools-menu" data-current={inTools ? "true" : undefined}>
+        <summary>Tools</summary>
+        <div class="tools-panel">
+          <div class="container">
+            <p class="tools-panel-top"><a href="/tools/">All web tools</a> <a href="/languages/">Tools in other languages</a></p>
+            <div class="tools-panel-grid">
+              {toolsMenu.map((group) => (
+                <section>
+                  <p class="tools-group-title"><a href={group.all}>{group.title}</a></p>
+                  <ul>
+                    {group.links.map((tool) => (
+                      <li><a href={tool.href}>{tool.name}</a></li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          </div>
+        </div>
+      </details>
+      {links.slice(2).map((link) => (
         <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
           {link.label}
         </a>
@@ -39,7 +80,27 @@ const isCurrent = (href: string) =>
         <span>Menu</span>
       </summary>
       <nav class="mobile-links" aria-label="Mobile navigation">
-        {links.map((link) => (
+        {links.slice(0, 2).map((link) => (
+          <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
+            {link.label}
+          </a>
+        ))}
+        <details class="mobile-tools">
+          <summary>Tools</summary>
+          <a class="mobile-tools-all" href="/tools/">All web tools</a>
+          {toolsMenu.map((group) => (
+            <div class="mobile-tools-group">
+              <a class="mobile-tools-title" href={group.all}>{group.title}</a>
+              <ul>
+                {group.links.slice(0, 4).map((tool) => (
+                  <li><a href={tool.href}>{tool.name}</a></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <a class="mobile-tools-all" href="/languages/">Tools in other languages</a>
+        </details>
+        {links.slice(2).map((link) => (
           <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
             {link.label}
           </a>
@@ -54,6 +115,20 @@ const isCurrent = (href: string) =>
 
 <script>
   // Close the mobile menu when tapping outside it, pressing Escape, or choosing a link.
+  const toolsMenu = document.querySelector<HTMLDetailsElement>("details.tools-menu");
+  if (toolsMenu) {
+    document.addEventListener("click", (event) => {
+      if (toolsMenu.open && !toolsMenu.contains(event.target as Node)) toolsMenu.open = false;
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && toolsMenu.open) {
+        toolsMenu.open = false;
+        toolsMenu.querySelector("summary")?.focus();
+      }
+    });
+    toolsMenu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => (toolsMenu.open = false)));
+  }
+
   const menu = document.querySelector<HTMLDetailsElement>("details.mobile-nav");
   if (menu) {
     const close = () => {
