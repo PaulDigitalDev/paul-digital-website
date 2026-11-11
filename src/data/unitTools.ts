@@ -1,6 +1,7 @@
 import type { Faq } from "./formatTools";
 import { convertUnit, formatNumber, unitsOf, unitById } from "../lib/unitData.ts";
 import type { UnitGroup } from "../lib/unitData.ts";
+import { unitExtras } from "./unitExtras.ts";
 
 export interface UnitTool {
   slug: string;
@@ -201,6 +202,7 @@ function build(s: Spec): UnitTool {
       ? ["°F = °C × 9/5 + 32", "°C = (°F − 32) × 5/9", "K = °C + 273.15"]
       : ["°C = (°F − 32) × 5/9", "°F = °C × 9/5 + 32", "K = (°F − 32) × 5/9 + 273.15"]
     : [`${wb.p} = ${wa.p} × ${num(one)}`, `${wa.p} = ${wb.p} × ${num(back)}`];
+  const extra = unitExtras[s.slug];
   const rawTitle = temp ? `${h1} Converter: Temperature Formula and Examples` : `${h1} Converter: ${fact}`;
   const title = rawTitle.length > 70 ? `${h1} Converter: Formula and Examples` : rawTitle;
   return {
@@ -223,7 +225,7 @@ function build(s: Spec): UnitTool {
     intro: `Type an amount in ${wa.p} to see it in ${wb.p} and other ${GROUP_NAME[a.group]} units.`,
     keywords: [keyword, `${wa.p} to ${wb.p} converter`, `how many ${wb.p} in a ${wa.s}`, `${h1.toLowerCase()} calculator`, `convert ${wa.p} to ${wb.p}`],
     steps: STEPS,
-    explanation: temp
+    explanation: [...(temp
       ? [
           `To convert ${wa.p} to ${wb.p}, use the formula ${formula[0]}. For example, ${num(Number(s.value ?? 1))} ${a.symbol} is ${num(convertUnit(Number(s.value ?? 1), s.from, s.to))} ${b.symbol}.`,
           `Unlike most units, temperature scales start at different zero points, so a simple multiplication is not enough. Water freezes at 0°C (32°F) and boils at 100°C (212°F) at sea level, and the two scales meet at −40.`,
@@ -231,9 +233,9 @@ function build(s: Spec): UnitTool {
       : [
           `${fact}, so to convert ${wa.p} to ${wb.p}, multiply by ${num(one)}. To go the other way, ${num(1)} ${wb.s} = ${num(back)} ${wa.p}.`,
           s.tip,
-        ],
+        ]), ...(extra?.about ?? [])],
     formula,
-    worked: () => sample.map((v) => `${num(v)} ${a.symbol} = ${num(convertUnit(v, s.from, s.to))} ${b.symbol}`),
+    worked: () => [...sample, ...(extra?.common ?? [])].filter((v, i, arr) => arr.indexOf(v) === i).map((v) => `${num(v)} ${a.symbol} = ${num(convertUnit(v, s.from, s.to))} ${b.symbol}`),
     tips: [s.tip, "Use Swap units to convert the other way.", "Results are rounded for display. The exact factor is used in the calculation."],
     faqs: [
       temp
@@ -243,6 +245,7 @@ function build(s: Spec): UnitTool {
         ? { q: `What is 0 ${a.symbol} in ${b.symbol}?`, a: `0 ${a.symbol} is ${num(convertUnit(0, s.from, s.to))} ${b.symbol}.` }
         : { q: `How many ${wa.p} are in 1 ${wb.s}?`, a: `1 ${wb.s} = ${num(back)} ${wa.p}.` },
       { q: `How do I convert ${wa.p} to ${wb.p}?`, a: temp ? `Use ${formula[0]}.` : `Multiply the number of ${wa.p} by ${num(one)}.` },
+      ...(extra?.faqs ?? []),
       PRIVACY,
     ].filter((f, i, arr) => arr.findIndex((g) => g.q === f.q) === i),
     related: s.related,

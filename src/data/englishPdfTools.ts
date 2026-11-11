@@ -271,9 +271,10 @@ export const englishPdfTools: EnglishPdfTool[] = [
     [
       "50 KB is a very small PDF. A one-page text document can be this small, but a PDF with photos or scanned pages usually cannot, because each image carries most of the size. The tool starts on Maximum reduction and tells you what it really reached.",
       "For a scan, most of the size is one large image per page. Shrinking that image is the only way to save much, which is why scans react strongly to the strongest level. If the result is still above 50 KB, fewer pages, or scanning at a lower resolution, will do more than compressing again.",
+      "A useful way to judge a 50 KB target is to count images: at the strongest level one photo or one scanned page is usually larger than 50 KB by itself. A PDF can only reach this size if it is mostly text or vector drawing, or if the page is re-created as a small black-and-white scan.",
     ],
     ["Remove pages you do not need first with Split PDF.", "Scan at 150 DPI instead of 300 if you control the scanner.", "A target this small is realistic only for short, mostly-text files."],
-    [{ q: "How do I get a PDF under 50 KB?", a: "Select the PDF and press Compress PDF on Maximum reduction. If the result is still above 50 KB, remove pages with Split PDF or re-scan at a lower resolution." }],
+    [{ q: "How do I get a PDF under 50 KB?", a: "Select the PDF and press Compress PDF on Maximum reduction. If the result is still above 50 KB, remove pages with Split PDF or re-scan at a lower resolution." }, { q: "Why is my scanned PDF so much larger than 50 KB?", a: "A scanned page is one large picture, and pictures are the heavy part of a PDF. Scan at a lower resolution, scan in black and white if colour is not needed, or reduce the number of pages." }],
     ["compress-pdf-to-100kb", "compress-pdf", "split-pdf", "jpg-to-pdf-under-50kb"],
   ),
   sizePage(
@@ -281,9 +282,10 @@ export const englishPdfTools: EnglishPdfTool[] = [
     [
       "100 KB is a common limit on application forms and portals. A short text PDF is often far below it, while a multi-page scan is usually far above it. The tool starts on Maximum reduction and reports the real size so you do not have to guess.",
       "If your PDF came from photos, building it from images that are already small is more effective than squeezing the finished file. The JPG to PDF tool can make a PDF with a size target, and Split PDF can remove pages you do not need.",
+      "Because the size check is done by the website you upload to, not by this tool, leave a small margin under 100 KB. A file of 96 or 97 KB passes whether the site counts 1 KB as 1,000 or 1,024 bytes, while a file of 100.5 KB may not.",
     ],
     ["Check the limit on the form: some count 1 KB as 1,000 bytes, so aim a little under.", "Remove extra pages before compressing.", "For photos, shrink them first and then make the PDF."],
-    [{ q: "How do I reduce a PDF to under 100 KB?", a: "Select the PDF and press Compress PDF on Maximum reduction. If it is still above 100 KB, remove pages with Split PDF or use fewer or smaller images." }],
+    [{ q: "How do I reduce a PDF to under 100 KB?", a: "Select the PDF and press Compress PDF on Maximum reduction. If it is still above 100 KB, remove pages with Split PDF or use fewer or smaller images." }, { q: "Is 100 KB the same as 100,000 bytes?", a: "Some sites count 1 KB as 1,000 bytes and others as 1,024 bytes, so 100 KB is between 100,000 and 102,400 bytes. Aim a few KB below the limit to be safe." }],
     ["compress-pdf-to-50kb", "compress-pdf-to-200kb", "compress-pdf", "jpg-to-pdf-under-100kb"],
   ),
   sizePage(
@@ -291,9 +293,10 @@ export const englishPdfTools: EnglishPdfTool[] = [
     [
       "200 KB leaves room for a short document with a few images or a few pages of text. It is a frequent limit for supporting documents and certificates. The tool opens on Maximum reduction, then shows the real size.",
       "If the PDF is only slightly above 200 KB, the Balanced level may be enough and keeps images clearer. Try Balanced first, and move to Maximum reduction only if the file is still above the limit.",
+      "At 200 KB a mixed document, such as a one-page form with a photo or a short certificate, usually fits with a gentle level of compression. Two or three scanned pages in colour usually do not, so convert only the pages you need or scan in grayscale.",
     ],
     ["Try Balanced first for clearer images.", "Merge only the pages you need into the file, then compress.", "Keep the original in case you need the full quality."],
-    [{ q: "Should I use Balanced or Maximum reduction for 200 KB?", a: "Start with Balanced. If the file is still above 200 KB, use Maximum reduction. Balanced keeps images clearer, Maximum reduction saves more." }],
+    [{ q: "Should I use Balanced or Maximum reduction for 200 KB?", a: "Start with Balanced. If the file is still above 200 KB, use Maximum reduction. Balanced keeps images clearer, Maximum reduction saves more." }, { q: "Is 200 KB the same as 0.2 MB?", a: "In the decimal convention yes, 200 KB is 0.2 MB. In the binary convention 200 KB is about 0.195 MB. A limit written in KB is easier to check than one written in MB." }],
     ["compress-pdf-to-100kb", "compress-pdf-to-500kb", "compress-pdf", "merge-pdf"],
   ),
   sizePage(
@@ -301,9 +304,10 @@ export const englishPdfTools: EnglishPdfTool[] = [
     [
       "500 KB is a generous limit for a small document, and many PDFs are already under it. For a scan of a few pages, Balanced is often enough to get there while keeping the text readable. The tool starts on Maximum reduction and reports the real size, and you can choose a gentler level if the file is already close.",
       "If your PDF is much larger than 500 KB, the images are the likely cause. Compressing them is what saves space; text and drawn lines add very little.",
+      "Half a megabyte is enough for a multi-page text document and for a few clear scanned pages. If a portal gives its limit in MB, 500 KB is about 0.5 MB, so the same file also meets a 1 MB limit with room to spare.",
     ],
     ["For scans of text, check readability after compressing.", "Pick Balanced if the file is already close to 500 KB.", "Split a long document into parts if a single file will not fit."],
-    [{ q: "Will my text stay readable at 500 KB?", a: "Text in a PDF is not reduced. For a scanned page the text is part of an image, so check the result and use Balanced instead of Maximum reduction if it looks too soft." }],
+    [{ q: "Will my text stay readable at 500 KB?", a: "Text in a PDF is not reduced. For a scanned page the text is part of an image, so check the result and use Balanced instead of Maximum reduction if it looks too soft." }, { q: "Is 500 KB the same as 0.5 MB?", a: "In the decimal convention yes, 500 KB is 0.5 MB. In the binary convention it is about 0.49 MB. Either way the file is under a 1 MB limit." }],
     ["compress-pdf-to-200kb", "compress-pdf", "split-pdf", "jpg-to-pdf-under-500kb"],
   ),
 ];

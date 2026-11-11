@@ -5,6 +5,30 @@ const PRIVACY = { q: "Are my numbers saved or sent anywhere?", a: "No. The calcu
 const VARIES = { q: "Is a katha the same everywhere?", a: "No. The katha and bigha differ between regions. This page uses 720 sq ft per katha and 20 katha per bigha (Bangladesh and West Bengal). Check the value in your deed and with the local land office." };
 const f = (n: number, d = 2) => n.toLocaleString("en-US", { maximumFractionDigits: d });
 
+const DIGIT_MORE: Record<string, { about: string[]; faq: { q: string; a: string } }> = {
+  bn: {
+    about: [
+      "Bangla digits (০১২৩৪৫৬৭৮৯) are the numerals of the Bengali script, used in Bangladesh and in West Bengal, Tripura and parts of Assam. They appear in Bangla dates, newspapers, school documents, land records and many government forms, while banks, phones and websites often show the same numbers with English digits.",
+      "In Unicode the Bangla digits occupy the range U+09E6 to U+09EF, so they are real characters, not a font style, and they copy and paste into other apps. Searching a Bangla document for ২০২৬ will not match 2026, so convert the digits first if you need to search or sort.",
+    ],
+    faq: { q: "Why do some Bangla documents show English digits?", a: "Both are in use. Government and literary texts often use Bangla digits, while banks, software and many websites use English digits for compatibility with search and calculation." },
+  },
+  hi: {
+    about: [
+      "Hindi numerals (०१२३४५६७८९) are the Devanagari digits. They are also used for Marathi and Nepali, which share the same script. In India the Constitution specifies the international form of Indian numerals, meaning the digits 0 to 9, for the official purposes of the Union, so English digits are the norm on government forms, but the Devanagari digits are widely used in books, newspapers and traditional documents.",
+      "The Devanagari digits occupy the Unicode range U+0966 to U+096F. They copy and paste as real characters, but spreadsheets and calculators do not treat them as numbers, so convert them back to English digits before you add them up.",
+    ],
+    faq: { q: "Are Hindi and Marathi numerals the same?", a: "Yes. Hindi, Marathi and Nepali all use the Devanagari digits ०१२३४५६७८९, so this converter works for all three." },
+  },
+  ar: {
+    about: [
+      "This converter uses the Eastern Arabic numerals (٠١٢٣٤٥٦٧٨٩), which are common in Egypt, Iraq, Saudi Arabia and many other Arabic-speaking countries. The Maghreb countries, Morocco, Algeria and Tunisia, mostly use the Western digits 0 to 9 in writing, which are also called Arabic numerals in English because they came to Europe through the Arab world.",
+      "Persian, Urdu and Pashto use a related set (۰۱۲۳۴۵۶۷۸۹) in which the digits for 4, 5 and 6 look different from the Eastern Arabic ones, so this tool is not for those languages. Numbers are written left to right even inside right-to-left Arabic text, so the digits do not reverse.",
+    ],
+    faq: { q: "Are Persian and Urdu digits the same as Arabic digits?", a: "Not entirely. The digits for 4, 5 and 6 are different (۴ ۵ ۶ against ٤ ٥ ٦). This tool converts to the Eastern Arabic set." },
+  },
+};
+
 const digitPage = (slug: string, script: string, name: string, native: string, kw: string[]): CalculatorTool => ({
   slug,
   calc: "digit-convert",
@@ -19,6 +43,7 @@ const digitPage = (slug: string, script: string, name: string, native: string, k
   explanation: [
     `${name} numerals are a different set of symbols for the digits 0 to 9. This tool replaces each English digit with its ${name} form, so 2026 becomes ${toScriptDigits("2026", script)}. Letters, commas, points and other symbols stay the same.`,
     `It also works in the other direction: if your text has digits in ${name}, Bangla, Hindi or Arabic script, the second result shows them as English digits.`,
+    ...DIGIT_MORE[script].about,
   ],
   formula: [`0 1 2 3 4 5 6 7 8 9 → ${toScriptDigits("0123456789", script).split("").join(" ")}`],
   worked: () => [`2026 → ${toScriptDigits("2026", script)}`, `1,50,000 → ${toScriptDigits("1,50,000", script)}`, `3.14 → ${toScriptDigits("3.14", script)}`],
@@ -27,6 +52,7 @@ const digitPage = (slug: string, script: string, name: string, native: string, k
     { q: `How do I write 2026 in ${name} numerals?`, a: `2026 is written ${toScriptDigits("2026", script)}.` },
     { q: "Does it change letters?", a: "No. Only the digits 0 to 9 are changed." },
     { q: "Can it convert back to English digits?", a: "Yes. The second result always shows English digits." },
+    DIGIT_MORE[script].faq,
     PRIVACY,
   ],
   related: script === "bn" ? ["number-to-words-in-bangla", "taka-in-words", "bangla-date-converter", "english-to-hindi-number-converter"] : ["number-to-words-in-hindi", "rupees-in-words", "english-to-bangla-number-converter", "number-to-words"],

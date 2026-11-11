@@ -19,6 +19,8 @@ interface Props {
   lang?: string;
   /** Text direction of the page content. The shared English header and footer always stay left-to-right. */
   dir?: "ltr" | "rtl";
+  /** Ask search engines not to index this page (links on it are still followed). Left out of the sitemap. */
+  noindex?: boolean;
 }
 
 const {
@@ -29,6 +31,7 @@ const {
   type = "website",
   lang = "en",
   dir,
+  noindex = false,
 } = Astro.props;
 const ogLocale = lang.replace("-", "_");
 // The shared header, footer and skip link are English, so they are labelled as such on pages in another language.
@@ -45,6 +48,7 @@ const alternates = alternatesFor(canonicalUrlOverride ?? Astro.url.pathname);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#F7FAFF" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="google-adsense-account" content="ca-pub-5048291410050597" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" href={BRAND_LOGO} sizes="768x768" />

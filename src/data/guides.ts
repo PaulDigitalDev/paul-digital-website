@@ -4,6 +4,8 @@
  * and internal links only) and are rendered by src/pages/guides/[slug].astro.
  */
 
+import { moreGuides } from "./guidesMore";
+
 export interface GuideSection {
   heading: string;
   html: string;
@@ -17,7 +19,7 @@ export interface Guide {
   description: string;
   /** One or two sentences shown under the H1 and on the guides index. */
   summary: string;
-  category: "Images" | "PDF and documents" | "Privacy" | "Phones and apps";
+  category: "Images" | "PDF and documents" | "Privacy" | "Phones and apps" | "Money and tax" | "Units and measures" | "Numbers and words" | "Land and property";
   published: string;
   updated: string;
   sections: GuideSection[];
@@ -25,7 +27,7 @@ export interface Guide {
   tools: { href: string; label: string }[];
 }
 
-export const guides: Guide[] = [
+const baseGuides: Guide[] = [
   {
     slug: "compress-image-to-specific-kb-size",
     title: "How to compress an image to an exact size in KB",
@@ -894,6 +896,8 @@ export const guides: Guide[] = [
     ],
   },
 ];
+
+export const guides: Guide[] = [...baseGuides, ...moreGuides];
 
 export const guideBySlug = new Map(guides.map((guide) => [guide.slug, guide]));
 

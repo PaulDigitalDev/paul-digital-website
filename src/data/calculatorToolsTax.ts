@@ -8,39 +8,6 @@ const UK_NOTE = { q: "Is this exact?", a: "It is an estimate for the 2026/27 tax
 
 const UK_SALARIES = [25000, 30000, 35000, 40000, 45000, 50000, 60000, 75000, 100000];
 
-const ukSalaryPage = (annual: number): CalculatorTool => {
-  const r = ukTakeHome(annual);
-  const label = gbp(annual, 0);
-  const marginal = annual > 125140 ? 45 : annual > 50270 ? 40 : annual > 12570 ? 20 : 0;
-  const slug = `${annual}-salary-after-tax-uk`;
-  return {
-    slug,
-    calc: "uk-take-home",
-    preset: { gross: String(annual), per: "year" },
-    h1: `${label} Salary After Tax (UK)`,
-    title: `${label} Salary After Tax UK 2026/27: Take-Home Pay`,
-    description: `A ${label} salary in the UK leaves about ${gbp(r.net, 0)} a year (${gbp(r.net / 12, 0)} a month) after Income Tax and National Insurance in 2026/27. Free calculator.`,
-    summary: `Take-home pay on a ${label} salary in the UK for 2026/27.`,
-    intro: `See what ${label} a year is after Income Tax and National Insurance in 2026/27, per year, month and week. Change the salary to try other amounts.`,
-    keywords: [`${annual} salary after tax uk`, `${label} after tax`, `${annual} take home pay`, `${label} take home pay uk`, `how much is ${label} after tax`],
-    steps: ["The calculator starts with this salary. Change it to try another amount.", "Choose whether the salary is per year, month or week.", "Read the take-home pay and the tax and National Insurance deducted."],
-    explanation: [
-      `On a ${label} salary in 2026/27 you pay about ${gbp(r.tax, 0)} in Income Tax and ${gbp(r.ni, 0)} in National Insurance, which leaves about ${gbp(r.net, 0)} a year, or ${gbp(r.net / 12)} a month and ${gbp(r.net / 52)} a week. Together that is ${(((r.tax + r.ni) / annual) * 100).toFixed(1)}% of your pay.`,
-      `The first £12,570 is tax-free (the Personal Allowance). ${marginal ? `Your highest slice of pay is taxed at ${marginal}%.` : "All of this salary is within the Personal Allowance."} Employee National Insurance is 8% between £12,570 and £50,270, and 2% above that.`,
-    ],
-    formula: ["Income Tax: 20% on taxable income up to £37,700, 40% to £125,140, 45% above, after the Personal Allowance of £12,570 (reduced for incomes over £100,000).", "National Insurance: 8% of earnings from £12,570 to £50,270, and 2% above £50,270."],
-    worked: () => [`Salary ${label}: Income Tax ${gbp(r.tax, 0)}, National Insurance ${gbp(r.ni, 0)}.`, `Take-home pay: ${gbp(r.net, 0)} a year, ${gbp(r.net / 12)} a month, ${gbp(r.net / 52)} a week.`],
-    tips: ["Pension contributions can lower your tax bill.", "A student loan or a different tax code changes the result.", "Scottish taxpayers pay different Income Tax rates."],
-    faqs: [
-      { q: `How much is ${label} after tax in the UK?`, a: `About ${gbp(r.net, 0)} a year, or ${gbp(r.net / 12)} a month, in 2026/27.` },
-      { q: `How much National Insurance do I pay on ${label}?`, a: `About ${gbp(r.ni, 0)} a year.` },
-      UK_NOTE,
-      PRIVACY,
-    ],
-    related: ["uk-take-home-pay-calculator", "stamp-duty-calculator", "uk-mortgage-calculator", "percentage-calculator"],
-  };
-};
-
 export const taxCalculatorTools: CalculatorTool[] = [
   {
     slug: "stamp-duty-calculator",
@@ -71,7 +38,7 @@ export const taxCalculatorTools: CalculatorTool[] = [
       { q: "Is this exact?", a: "It is an estimate for standard purchases using the rates in force from 1 April 2025. Your solicitor will confirm the exact amount." },
       PRIVACY,
     ],
-    related: ["uk-mortgage-calculator", "uk-take-home-pay-calculator", "30000-salary-after-tax-uk", "loan-calculator"],
+    related: ["uk-mortgage-calculator", "uk-take-home-pay-calculator", "hourly-to-salary-calculator", "loan-calculator"],
   },
   {
     slug: "uk-take-home-pay-calculator",
@@ -81,25 +48,32 @@ export const taxCalculatorTools: CalculatorTool[] = [
     description: "Work out your UK take-home pay for 2026/27 after Income Tax and National Insurance, per year, month and week. Free and private.",
     summary: "Work out UK salary after Income Tax and National Insurance.",
     intro: "Enter your gross salary to see your take-home pay after Income Tax and National Insurance for the 2026/27 tax year.",
-    keywords: ["take home pay calculator uk", "salary after tax uk", "uk tax calculator", "income tax calculator uk", "national insurance calculator", "net pay calculator uk"],
+    keywords: ["take home pay calculator uk", "salary after tax uk", "uk tax calculator", "income tax calculator uk", "national insurance calculator", "net pay calculator uk", "25000 salary after tax uk", "30000 salary after tax uk", "40000 salary after tax uk", "50000 salary after tax uk", "100000 salary after tax uk", "uk salary after tax table"],
     steps: ["Enter your gross salary, before tax.", "Choose whether it is per year, month or week.", "Read your take-home pay and the Income Tax and National Insurance deducted."],
     explanation: [
       "Take-home pay is your salary minus Income Tax and employee National Insurance. In 2026/27 the first £12,570 is tax-free. The next £37,700 is taxed at 20%, income up to £125,140 at 40%, and anything above at 45%. The tax-free allowance shrinks by £1 for every £2 earned over £100,000.",
       "Employee National Insurance is 8% on earnings between £12,570 and £50,270, and 2% above £50,270. This calculator is for England, Wales and Northern Ireland with the standard tax code. Scottish Income Tax uses different bands, and pension, student loan and benefits are not included.",
+      "Salary after tax at a glance: the table in the worked examples below shows nine common salaries from £25,000 to £100,000, each with Income Tax, National Insurance and take-home pay per year and per month. Use it to compare offers quickly, then type your own figure into the calculator for an exact result.",
+      "Two points explain most of the differences between salaries. First, National Insurance drops from 8% to 2% above £50,270, so each extra pound above that point loses less to NI, but Income Tax rises from 20% to 40% at the same level, so take-home growth slows down. Second, between £100,000 and £125,140 the Personal Allowance is withdrawn at £1 for every £2 earned, which creates an effective Income Tax rate of about 60% on that slice of pay. A pension contribution or salary sacrifice that brings your adjusted income back under £100,000 can restore part of the allowance.",
+      "The calculator uses the standard tax code 1257L. If your payslip shows a different code, for example because of a company car, untaxed income or underpaid tax from a previous year, your real take-home will differ. Pension contributions, student loan repayments and Scottish rates are also outside this estimate, so treat the result as a close guide, not a payslip.",
     ],
     formula: ["Income Tax = 20% / 40% / 45% on income above the Personal Allowance, using the bands above.", "National Insurance = 8% × (earnings between £12,570 and £50,270) + 2% × (earnings above £50,270).", "Take-home = salary − Income Tax − National Insurance."],
-    worked: () => UK_SALARIES.slice(1, 6).map((s) => { const r = ukTakeHome(s); return `${gbp(s, 0)}: take-home ${gbp(r.net, 0)} a year (${gbp(r.net / 12, 0)} a month).`; }),
+    worked: () => UK_SALARIES.map((s) => { const r = ukTakeHome(s); return `${gbp(s, 0)} salary: Income Tax ${gbp(r.tax, 0)}, National Insurance ${gbp(r.ni, 0)}, take-home ${gbp(r.net, 0)} a year (${gbp(r.net / 12, 0)} a month, ${gbp(r.net / 52, 0)} a week).`; }),
     tips: ["Pension contributions through salary sacrifice reduce both tax and National Insurance.", "Your tax code on your payslip may differ from the standard one.", "Use the per-month option if your payslip shows a monthly gross."],
     faqs: [
       { q: "How much is £30,000 after tax in the UK?", a: `About ${gbp(ukTakeHome(30000).net, 0)} a year in 2026/27.` },
       { q: "What is the Personal Allowance?", a: "The amount you can earn tax-free each year: £12,570 in 2026/27." },
+      { q: "How much is £25,000 after tax in the UK?", a: `About ${gbp(ukTakeHome(25000).net, 0)} a year, or ${gbp(ukTakeHome(25000).net / 12, 0)} a month, in 2026/27.` },
+      { q: "How much is £40,000 after tax in the UK?", a: `About ${gbp(ukTakeHome(40000).net, 0)} a year, or ${gbp(ukTakeHome(40000).net / 12, 0)} a month, in 2026/27.` },
+      { q: "How much is £50,000 after tax in the UK?", a: `About ${gbp(ukTakeHome(50000).net, 0)} a year, or ${gbp(ukTakeHome(50000).net / 12, 0)} a month, in 2026/27.` },
+      { q: "How much is £100,000 after tax in the UK?", a: `About ${gbp(ukTakeHome(100000).net, 0)} a year, or ${gbp(ukTakeHome(100000).net / 12, 0)} a month, in 2026/27. At this level the Personal Allowance starts to be withdrawn.` },
+      { q: "Why does take-home pay grow more slowly above £50,270?", a: "Income Tax rises from 20% to 40% at that point, while National Insurance falls from 8% to 2%. The net effect is that each extra pound keeps less of its value than below the threshold." },
       { q: "Does this include Scottish tax?", a: "No. Scotland has its own Income Tax bands. This is for England, Wales and Northern Ireland." },
       UK_NOTE,
       PRIVACY,
     ],
-    related: ["stamp-duty-calculator", "uk-mortgage-calculator", "30000-salary-after-tax-uk", "hourly-to-salary-calculator"],
+    related: ["stamp-duty-calculator", "uk-mortgage-calculator", "hourly-to-salary-calculator", "percentage-calculator"],
   },
-  ...UK_SALARIES.map(ukSalaryPage),
   {
     slug: "federal-income-tax-calculator",
     calc: "federal-income-tax",
