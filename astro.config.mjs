@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 
 import react from "@astrojs/react";
 
@@ -16,9 +16,17 @@ function sitemap() {
     hooks: {
       "astro:build:done": ({ pages, dir }) => {
         const exclude = new Set(["404/", "500/"]);
+        const isNoindex = (pathname) => {
+          try {
+            const html = readFileSync(new URL(`${pathname}index.html`, dir), "utf8");
+            return /<meta name="robots" content="[^"]*noindex/i.test(html);
+          } catch {
+            return false;
+          }
+        };
         const urls = pages
           .map((page) => page.pathname)
-          .filter((pathname) => !exclude.has(pathname))
+          .filter((pathname) => !exclude.has(pathname) && !isNoindex(pathname))
           .map((pathname) => `${SITE}/${pathname}`.replace(/([^:])\/\/+/g, "$1/"))
           .sort((a, b) => (a === `${SITE}/` ? -1 : b === `${SITE}/` ? 1 : a.localeCompare(b)));
         const body = [...new Set(urls)].map((url) => `  <url><loc>${url}</loc></url>`).join("\n");

@@ -2,7 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { guides, readingMinutes } from "../../data/guides";
 
-const order = ["Images", "PDF and documents", "Privacy", "Phones and apps"] as const;
+const order = ["Images", "PDF and documents", "Privacy", "Phones and apps", "Money and tax", "Units and measures", "Numbers and words", "Land and property"] as const;
 const groups = order
   .map((category) => ({ category, items: guides.filter((g) => g.category === category) }))
   .filter((group) => group.items.length > 0);

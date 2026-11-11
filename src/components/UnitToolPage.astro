@@ -4,6 +4,7 @@ import ToolTop from "./ToolTop.astro";
 import GlobalUnitConverter from "./tools/GlobalUnitConverter";
 import { convertUnit, formatNumber, unitById } from "../lib/unitData";
 import { unitToolBySlug } from "../data/unitTools";
+import { INDEXED_UNIT_SLUGS } from "../data/unitExtras";
 import { toolById } from "../data/toolRegistry";
 
 interface Props {
@@ -58,7 +59,7 @@ const appSchema = {
 };
 ---
 
-<BaseLayout title={tool.title} description={tool.description} canonicalUrl={path}>
+<BaseLayout title={tool.title} description={tool.description} canonicalUrl={path} noindex={!INDEXED_UNIT_SLUGS.has(tool.slug)}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
     <script type="application/ld+json" set:html={json(appSchema)} />
