@@ -1530,3 +1530,8 @@
 .tt .tt-limits li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid #e5ebf2; font-size: 0.95rem; }
 .tt .tt-over span:last-child { color: #b42318; font-weight: 700; }
 @media (min-width: 700px) { .tt .tt-stats { grid-template-columns: repeat(4, 1fr); } }
+
+.hg-langs-all {
+  margin: 14px 0 0;
+  font-weight: 600;
+}

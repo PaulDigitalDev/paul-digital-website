@@ -146,12 +146,13 @@ const pills = [...compressPills, ...extraPills];
             <section lang={group.lang} dir={group.dir} aria-label={group.title}>
               <h3>{group.title}</h3>
               <ul>
-                {group.tools.map((tool) => <li><a href={tool.href}>{tool.name}</a></li>)}
+                {group.tools.slice(0, 3).map((tool) => <li><a href={tool.href}>{tool.name}</a></li>)}
               </ul>
             </section>
           ))
         }
       </div>
+      <p class="hg-langs-all"><a href="/languages/">See all tools in other languages</a></p>
     </div>
   </div>
 </section>
