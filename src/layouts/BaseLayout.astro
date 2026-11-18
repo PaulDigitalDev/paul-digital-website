@@ -5,6 +5,7 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import Analytics from "../components/Analytics.astro";
 import RelatedGuides from "../components/RelatedGuides.astro";
+import ToolArticle from "../components/ToolArticle.astro";
 import LanguageLinks from "../components/LanguageLinks.astro";
 import { alternatesFor } from "../data/languageTools";
 import { BRAND_LOGO } from "../config/brand";
@@ -76,6 +77,7 @@ const alternates = alternatesFor(canonicalUrlOverride ?? Astro.url.pathname);
     {chromeLang ? <div lang={chromeLang} dir={dir ? "ltr" : undefined} style="display: contents"><SiteHeader currentPath={Astro.url.pathname} /></div> : <SiteHeader currentPath={Astro.url.pathname} />}
     <main id="main-content">
       <slot />
+      <ToolArticle />
       <RelatedGuides />
       <LanguageLinks />
     </main>
