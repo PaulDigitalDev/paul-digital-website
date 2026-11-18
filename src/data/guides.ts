@@ -5,6 +5,8 @@
  */
 
 import { moreGuides } from "./guidesMore";
+import { extraGuidesA } from "./guidesExtraA";
+import { extraGuidesB } from "./guidesExtraB";
 
 export interface GuideSection {
   heading: string;
@@ -19,7 +21,7 @@ export interface Guide {
   description: string;
   /** One or two sentences shown under the H1 and on the guides index. */
   summary: string;
-  category: "Images" | "PDF and documents" | "Privacy" | "Phones and apps" | "Money and tax" | "Units and measures" | "Numbers and words" | "Land and property";
+  category: "Images" | "PDF and documents" | "Privacy" | "Phones and apps" | "Money and tax" | "Units and measures" | "Numbers and words" | "Land and property" | "Text and writing" | "Calculators and maths";
   published: string;
   updated: string;
   sections: GuideSection[];
@@ -897,7 +899,7 @@ const baseGuides: Guide[] = [
   },
 ];
 
-export const guides: Guide[] = [...baseGuides, ...moreGuides];
+export const guides: Guide[] = [...baseGuides, ...moreGuides, ...extraGuidesA, ...extraGuidesB];
 
 export const guideBySlug = new Map(guides.map((guide) => [guide.slug, guide]));
 
