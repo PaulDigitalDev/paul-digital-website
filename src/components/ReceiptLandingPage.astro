@@ -1,0 +1,108 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { receiptPageBySlug, receiptPlayUrl } from "../data/receiptPages";
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const page = receiptPageBySlug(slug);
+const playUrl = receiptPlayUrl(slug);
+const site = (p: string) => new URL(p, Astro.site).href;
+const json = (value: unknown) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site("/") },
+    { "@type": "ListItem", position: 2, name: page.h1, item: site(`/${page.slug}/`) },
+  ],
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: page.faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a },
+  })),
+};
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  name: "Receipt Scanner & Tax Expenses",
+  operatingSystem: "Android",
+  applicationCategory: "BusinessApplication",
+  description: page.description,
+  url: site(`/${page.slug}/`),
+  installUrl: playUrl,
+  author: { "@type": "Organization", name: "Paul Digital", url: site("/") },
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+---
+
+<BaseLayout title={page.metaTitle} description={page.description} canonicalUrl={`/${page.slug}/`}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={json(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={json(faqSchema)} />
+    {page.slug === "receipt-scanner" && <script type="application/ld+json" set:html={json(appSchema)} />}
+  </Fragment>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li aria-current="page">{page.h1}</li>
+        </ol>
+      </nav>
+      <span class="eyebrow">Paul Digital app</span>
+      <h1>{page.h1}</h1>
+      <p>{page.intro}</p>
+      <div class="actions">
+        <a class="button button-primary" href={playUrl} target="_blank" rel="noopener noreferrer">
+          Get it on Google Play <span aria-hidden="true">→</span>
+        </a>
+      </div>
+      <p><small>Private. Offline. No account. No subscription.</small></p>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="container prose">
+      {
+        page.sections.map((section) => (
+          <>
+            <h2>{section.heading}</h2>
+            <Fragment set:html={section.html} />
+          </>
+        ))
+      }
+
+      <h2 id="faq">Frequently asked questions</h2>
+      <div class="faq-list">
+        {
+          page.faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.q}</h3>
+              <p>{faq.a}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="actions">
+        <a class="button button-primary" href={playUrl} target="_blank" rel="noopener noreferrer">
+          Get Receipt Scanner &amp; Tax Expenses on Google Play <span aria-hidden="true">→</span>
+        </a>
+      </div>
+      <p>Questions or ideas? Email <a href="mailto:askpaulonline@gmail.com">askpaulonline@gmail.com</a>.</p>
+
+      <h2>Related</h2>
+      <ul>
+        {page.related.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        <li><a href="https://play.google.com/store/apps/dev?id=7949073170466838031" target="_blank" rel="noopener noreferrer">More apps by Paul Digital on Google Play</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

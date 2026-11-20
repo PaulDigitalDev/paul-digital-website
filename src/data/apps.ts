@@ -182,7 +182,13 @@ export const apps = {
       "Sorting expenses by category before a tax return",
       "Replacing a shoebox of paper receipts",
     ],
-    related: [{ href: "/tools/", label: "All web tools" }],
+    related: [
+      { href: "/receipt-scanner/", label: "Receipt Scanner for US and UK self-employed" },
+      { href: "/mileage-log-app/", label: "Mileage log app (IRS and HMRC rates)" },
+      { href: "/self-employed-receipts-guide/", label: "Guide: which receipts should a self-employed person keep?" },
+      { href: "/expense-tracker-no-subscription/", label: "Expense tracker with no subscription" },
+      { href: "/tools/", label: "All web tools" },
+    ],
   },
   "wifi-analyzer-scanner": {
     slug: "wifi-analyzer-scanner",
